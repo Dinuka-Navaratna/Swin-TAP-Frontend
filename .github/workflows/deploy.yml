@@ -30,6 +30,12 @@ jobs:
       - name: Add _redirects file
         run: echo "/* /index.html 200" > build/_redirects
 
+      - name: Add 200.html file
+        run: cp build/index.html build/200.html
+
+      - name: Add 404.html file
+        run: cp build/index.html build/404.html
+
       - name: Ensure service worker is in build directory
         run: cp src/serviceWorker.js build/serviceWorker.js
 
