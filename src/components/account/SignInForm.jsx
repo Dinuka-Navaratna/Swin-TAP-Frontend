@@ -11,7 +11,7 @@ import {
   minLengthMobileNo,
   digit,
 } from "../../helpers/validation";
-import { ReactComponent as IconPhone } from "bootstrap-icons/icons/phone.svg";
+import { ReactComponent as IconEmail } from "bootstrap-icons/icons/envelope.svg";
 import { ReactComponent as IconShieldLock } from "bootstrap-icons/icons/shield-lock.svg";
 
 const SignInForm = (props) => {
@@ -25,14 +25,12 @@ const SignInForm = (props) => {
       <Field
         name="mobileNo"
         type="number"
-        label="Mobile no"
+        label="Eamil"
         component={renderFormGroupField}
-        placeholder="Mobile no without country code"
-        icon={IconPhone}
-        validate={[required, maxLengthMobileNo, minLengthMobileNo, digit]}
+        placeholder="Email address"
+        icon={IconEmail}
+        validate={[required]}
         required={true}
-        max="999999999999999"
-        min="9999"
         className="mb-3"
       />
       <Field

@@ -1,5 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import './style.css';
 
 const Item = ({ item, index }) => (
   <div className={`carousel-item ${index === 0 ? "active" : ""}`}>
@@ -41,7 +42,7 @@ const Banner = (props) => {
           <Item item={item} index={index} key={index} />
         ))}
       </div>
-      <a
+      {/* <a
         className="carousel-control-prev"
         href={`#${props.id}`}
         role="button"
@@ -58,7 +59,7 @@ const Banner = (props) => {
       >
         <span className="carousel-control-next-icon" aria-hidden="true" />
         <span className="sr-only">Next</span>
-      </a>
+      </a> */}
     </div>
   );
 };
