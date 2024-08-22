@@ -160,7 +160,7 @@ const Footer = () => {
       </div>
       <div className="container-fluid bg-secondary text-white text-center">
         <div className="row">
-          <div className="col-md-2 py-2">
+          {/* <div className="col-md-2 py-2">
             <Link to="/" className="text-white text-decoration-none">
               <i className="bi bi-briefcase text-warning"></i> Partner with us
             </Link>
@@ -174,10 +174,9 @@ const Footer = () => {
             <Link to="/" className="text-white text-decoration-none">
               <i className="bi bi-gift"></i> Gift
             </Link>
-          </div>
-          <div className="col-md-3 py-2">
-            © 2009-{new Date().getFullYear()} React-E-Commerce.com (
-            {process.env.REACT_APP_VERSION})
+          </div> */}
+          <div className="col-md-9 py-2">
+            © {new Date().getFullYear()} autoassure.me
           </div>
           <div className="col-md-3 py-2 bg-white">
             <img
