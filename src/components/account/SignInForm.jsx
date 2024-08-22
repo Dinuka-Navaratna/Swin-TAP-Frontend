@@ -6,10 +6,7 @@ import renderFormGroupField from "../../helpers/renderFormGroupField";
 import {
   required,
   maxLength20,
-  minLength8,
-  maxLengthMobileNo,
-  minLengthMobileNo,
-  digit,
+  minLength8
 } from "../../helpers/validation";
 import { ReactComponent as IconEmail } from "bootstrap-icons/icons/envelope.svg";
 import { ReactComponent as IconShieldLock } from "bootstrap-icons/icons/shield-lock.svg";
