@@ -176,7 +176,7 @@ const Footer = () => {
             </Link>
           </div> */}
           <div className="col-md-9 py-2">
-            © {new Date().getFullYear()} autoassure.me
+            © {new Date().getFullYear()} autoassure.me ({process.env.REACT_APP_VERSION})
           </div>
           {/* <div className="col-md-3 py-2 bg-white">
             <img
