@@ -1,6 +1,5 @@
 import { lazy } from "react";
 import { Link } from "react-router-dom";
-const Search = lazy(() => import("./Search"));
 
 const Header = () => {
   return (
