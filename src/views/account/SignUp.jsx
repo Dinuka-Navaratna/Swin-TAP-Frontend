@@ -12,14 +12,14 @@ const SignUpView = () => {
         <div className="col-md-6 bg-light bg-gradient p-3 d-none d-md-block">
           <Link to="/">
             <img
-              src="../../images/banner/Dell.webp"
+              src="../../images/banner/Banner_4.png"
               alt="..."
               className="img-fluid"
             />
           </Link>
           <Link to="/">
             <img
-              src="../../images/banner/Laptops.webp"
+              src="../../images/banner/Banner_5.png"
               alt="..."
               className="img-fluid"
             />
