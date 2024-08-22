@@ -85,3 +85,8 @@
 .accordion-icon-button.collapsed {
   border-bottom: none;
 }
+
+.dropdown-menu[data-bs-popper] {
+  left: "";
+  right: 0;
+}

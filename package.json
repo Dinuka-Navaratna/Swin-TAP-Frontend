@@ -1,6 +1,6 @@
 {
-  "name": "e-commerce-template",
-  "version": "1.0.0",
+  "name": "AutoAssure",
+  "version": "0.0.1",
   "private": true,
   "dependencies": {
     "@babel/runtime": "^7.23.1",
@@ -27,7 +27,7 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "predeploy": "npm run build && cp build/index.html build/404.html && cp CNAME build/",
-    "deploy": "surge build",
+    "deploy": "gh-pages -d build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
