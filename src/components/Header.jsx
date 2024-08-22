@@ -1,7 +1,28 @@
-// import { lazy } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { getSession, clearSession } from "../actions/session";
 
 const Header = () => {
+  const [session, setSession] = useState(null);
+
+  useEffect(() => {
+    const sessionData = getSession();
+    if (sessionData) {
+      setSession(sessionData);
+    }
+  }, []);
+
+  const handleLogout = () => {
+    const confirmLogout = window.confirm("Are you sure you want to log out?");
+    if (confirmLogout) {
+      clearSession();
+      setSession(null);
+      window.location.reload();
+    } else {
+      alert("That's what I thought, you dummy!\nThink twice before clicking!");
+    }
+  };
+
   return (
     <header className="p-3 border-bottom bg-light">
       <div className="container-fluid">
@@ -17,7 +38,7 @@ const Header = () => {
           <div className="col-md-6 navbar navbar-expand-lg navbar-light bg-light p-0">
             {/* <div className="position-relative d-inline me-3">
               <Link to="/cart" className="btn btn-primary">
-                <i className="bi bi-cart3"></i>
+                <i className="bi bi-cart3"></i>&nbsp;
                 <div className="position-absolute top-0 start-100 translate-middle badge bg-danger rounded-circle">
                   2
                 </div>
@@ -36,7 +57,7 @@ const Header = () => {
             </button>
             <div className="collapse navbar-collapse" id="navbarSupportedContent">
               <ul className="navbar-nav">
-                <li className="nav-item dropdown">
+                {/* <li className="nav-item dropdown">
                   <button
                     className="btn nav-link dropdown-toggle fw-bold"
                     id="navbarDropdown"
@@ -94,42 +115,43 @@ const Header = () => {
                       </Link>
                     </li>
                   </ul>
-                </li>
+                </li> */}
                 <li className="nav-item">
                   <Link className="nav-link" to="/category">
-                    Fashion
+                    Navigation
                   </Link>
                 </li>
                 <li className="nav-item">
                   <Link className="nav-link" to="/category">
-                    Supermarket
+                    Navigation
                   </Link>
                 </li>
                 <li className="nav-item">
                   <Link className="nav-link" to="/category">
-                    Electronics
+                    Navigation
                   </Link>
                 </li>
                 <li className="nav-item">
                   <Link className="nav-link" to="/category">
-                    Furniture
+                    Navigation
                   </Link>
                 </li>
                 <li className="nav-item">
                   <Link className="nav-link" to="/category">
-                    Garden & Outdoors
+                    Navigation
                   </Link>
                 </li>
                 <li className="nav-item">
                   <Link className="nav-link" to="/category">
-                    Jewellery
+                    Navigation
                   </Link>
                 </li>
-                <li className="nav-item">
+                
+                {/* <li className="nav-item">
                   <Link className="nav-link" to="/documentation">
                     Documentation
                   </Link>
-                </li>
+                </li> */}
               </ul>
             </div>
             <div className="btn-group">
@@ -144,50 +166,73 @@ const Header = () => {
                 <i className="bi bi-person-fill text-light"></i>
               </button>
               <ul className="dropdown-menu">
-                <li>
-                  <Link className="dropdown-item" to="/account/profile">
-                    <i className="bi bi-person-square"></i> My Profile
-                  </Link>
-                </li>
-                <li>
-                  <Link className="dropdown-item" to="/star/zone">
-                    <i className="bi bi-star-fill text-warning"></i> Star Zone
-                  </Link>
-                </li>
-                <li>
-                  <Link className="dropdown-item" to="/account/orders">
-                    <i className="bi bi-list-check text-primary"></i> Orders
-                  </Link>
-                </li>
-                <li>
-                  <Link className="dropdown-item" to="/account/wishlist">
-                    <i className="bi bi-heart-fill text-danger"></i> Wishlist
-                  </Link>
-                </li>
-                <li>
-                  <hr className="dropdown-divider" />
-                </li>
-                <li>
-                  <Link className="dropdown-item" to="/account/notification">
-                    <i className="bi bi-bell-fill text-primary"></i>
-                    Notification
-                  </Link>
-                </li>
-                <li>
-                  <Link className="dropdown-item" to="/support">
-                    <i className="bi bi-info-circle-fill text-success"></i>
-                    Support
-                  </Link>
-                </li>
-                <li>
-                  <hr className="dropdown-divider" />
-                </li>
-                <li>
-                  <Link className="dropdown-item" to="/">
-                    <i className="bi bi-door-closed-fill text-danger"></i>
-                    Logout
-                  </Link>
-                </li>
+                {session ? (
+                  <>
+                    <li>
+                      <Link className="dropdown-item" to="/account/profile">
+                        <i className="bi bi-person-square"></i>&nbsp;
+                        My Profile
+                      </Link>
+                    </li>
+                    <li>
+                      <Link className="dropdown-item" to="/star/zone">
+                        <i className="bi bi-star-fill text-warning"></i>&nbsp;
+                        Star Zone
+                      </Link>
+                    </li>
+                    <li>
+                      <Link className="dropdown-item" to="/account/orders">
+                        <i className="bi bi-list-check text-primary"></i>&nbsp;
+                        Orders
+                      </Link>
+                    </li>
+                    <li>
+                      <Link className="dropdown-item" to="/account/wishlist">
+                        <i className="bi bi-heart-fill text-danger"></i>&nbsp;
+                        Wishlist
+                      </Link>
+                    </li>
+                    <li>
+                      <hr className="dropdown-divider" />
+                    </li>
+                    <li>
+                      <Link className="dropdown-item" to="/account/notification">
+                        <i className="bi bi-bell-fill text-primary"></i>&nbsp;
+                        Notification
+                      </Link>
+                    </li>
+                    <li>
+                      <Link className="dropdown-item" to="/support">
+                        <i className="bi bi-info-circle-fill text-success"></i>&nbsp;
+                        Support
+                      </Link>
+                    </li>
+                    <li>
+                      <hr className="dropdown-divider" />
+                    </li>
+                    <li>
+                      <Link className="dropdown-item" onClick={handleLogout}>
+                        <i className="bi bi-box-arrow-in-left text-danger"></i>&nbsp;
+                        Logout
+                      </Link>
+                    </li>
+                  </>
+                ) : (
+                  <>
+                    <li>
+                      <Link className="dropdown-item" to="/account/signin">
+                      <i className="bi bi-box-arrow-in-right text-primary"></i>&nbsp;
+                        Sign In
+                      </Link>
+                    </li>
+                    <li>
+                      <Link className="dropdown-item" to="/account/signup">
+                      <i className="bi bi-person-check text-success"></i>&nbsp;
+                        Sign Up
+                      </Link>
+                    </li>
+                  </>
+                )}
               </ul>
             </div>
             {/* <Link to="/account/signin">Sign In</Link> |{" "}
