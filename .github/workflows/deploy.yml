@@ -1,4 +1,4 @@
-name: Deploy to GitHub Pages
+name: Deploy to Surge
 
 on:
   push:
@@ -8,35 +8,29 @@ on:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
-    environment: staging
-    env:
-      FORCE_JAVASCRIPT_ACTIONS_TO_NODE20: true
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-        with:
-          persist-credentials: false
 
-      - name: Set up Git
-        run: |
-          git config --global user.name "${{ github.actor }}"
-          git config --global user.email "${{ github.actor }}@users.noreply.github.com"
-          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '14'
 
       - name: Install dependencies
         run: npm ci
 
       - name: Build project
-        run: |
-          echo "CI=false" >> $GITHUB_ENV
-          npm run build
+        run: npm run build
 
-      - name: Add .nojekyll file
-        run: echo "" > build/.nojekyll
+      - name: Add CNAME file
+        run: echo "autoassure.me" > build/CNAME
 
-      - name: Deploy to GitHub Pages
-        run: |
-          npm install -g gh-pages
-          gh-pages -d build
+      - name: Deploy to Surge
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SURGE_LOGIN: ${{ secrets.SURGE_LOGIN }}
+          SURGE_TOKEN: ${{ secrets.SURGE_TOKEN }}
+        run: |
+          npm install -g surge
+          surge ./build autoassure.me --token $SURGE_TOKEN
