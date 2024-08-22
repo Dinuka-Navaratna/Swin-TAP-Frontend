@@ -27,7 +27,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "predeploy": "npm run build && cp build/index.html build/404.html && cp CNAME build/ && cp build/index.html build/200.html",
+    "predeploy": "npm run build && cp build/index.html build/404.html && cp CNAME build/ && cp build/index.html build/200.html && echo '/* /index.html 200' > build/_redirects",
     "deploy": "surge ./build autoassure.me",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
