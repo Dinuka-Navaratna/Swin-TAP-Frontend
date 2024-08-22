@@ -1,4 +1,4 @@
-import { lazy } from "react";
+// import { lazy } from "react";
 import { Link } from "react-router-dom";
 
 const Header = () => {

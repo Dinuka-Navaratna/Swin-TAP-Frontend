@@ -83,7 +83,7 @@ const SignUpForm = (props) => {
         </button>
       </div>
       <Link className="float-start" to="/account/signin" title="Sign In">
-        Sing In
+        Sign In
       </Link>
       <Link
         className="float-end"
