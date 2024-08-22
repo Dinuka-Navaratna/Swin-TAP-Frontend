@@ -27,6 +27,12 @@ jobs:
       - name: Add CNAME file
         run: echo "autoassure.me" > build/CNAME
 
+      - name: Add _redirects file
+        run: echo "/* /index.html 200" > build/_redirects
+
+      - name: Ensure service worker is in build directory
+        run: cp src/serviceWorker.js build/serviceWorker.js
+
       - name: Deploy to Surge
         env:
           SURGE_LOGIN: ${{ secrets.SURGE_LOGIN }}
