@@ -39,6 +39,17 @@ jobs:
       - name: Ensure service worker is in build directory
         run: cp src/serviceWorker.js build/serviceWorker.js
 
+      - name: Create GitHub Deployment
+        id: create_deployment
+        uses: octokit/request-action@v2.x
+        with:
+          route: POST /repos/${{ github.repository }}/deployments
+          ref: ${{ github.sha }}
+          environment: Staging
+          description: "Deploying to Surge"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Deploy to Surge
         env:
           SURGE_LOGIN: ${{ secrets.SURGE_LOGIN }}
@@ -46,3 +57,21 @@ jobs:
         run: |
           npm install -g surge
           surge ./build autoassure.me --token $SURGE_TOKEN
+
+      - name: Update Deployment Status to Success
+        if: success()
+        uses: octokit/request-action@v2.x
+        with:
+          route: POST /repos/${{ github.repository }}/deployments/${{ steps.create_deployment.outputs.id }}/statuses
+          state: success
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Update Deployment Status to Failure
+        if: failure()
+        uses: octokit/request-action@v2.x
+        with:
+          route: POST /repos/${{ github.repository }}/deployments/${{ steps.create_deployment.outputs.id }}/statuses
+          state: failure
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
