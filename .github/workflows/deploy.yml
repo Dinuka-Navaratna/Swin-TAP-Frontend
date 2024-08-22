@@ -39,33 +39,6 @@ jobs:
       - name: Ensure service worker is in build directory
         run: cp src/serviceWorker.js build/serviceWorker.js
 
-      - name: Install Octokit
-        run: npm install @octokit/rest
-
-      - name: Create Deployment
-        id: create_deployment
-        run: |
-          node -e "
-          const { Octokit } = require('@octokit/rest');
-          const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
-          octokit.repos.createDeployment({
-            owner: '${{ github.repository_owner }}',
-            repo: '${{ github.event.repository.name }}',
-            ref: '${{ github.sha }}',
-            required_contexts: [],
-            environment: 'staging',
-            description: 'Deploying to Surge'
-          }).then(({ data }) => {
-            console.log('Deployment ID:', data.id);
-            console.log('::set-output name=deployment_id::' + data.id);
-          }).catch(err => {
-            console.error(err);
-            process.exit(1);
-          });
-          "
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
       - name: Deploy to Surge
         env:
           SURGE_LOGIN: ${{ secrets.SURGE_LOGIN }}
@@ -73,41 +46,3 @@ jobs:
         run: |
           npm install -g surge
           surge ./build autoassure.me --token $SURGE_TOKEN
-
-      - name: Update Deployment Status to Success
-        if: success()
-        run: |
-          node -e "
-          const { Octokit } = require('@octokit/rest');
-          const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
-          octokit.repos.createDeploymentStatus({
-            owner: '${{ github.repository_owner }}',
-            repo: '${{ github.event.repository.name }}',
-            deployment_id: '${{ steps.create_deployment.outputs.deployment_id }}',
-            state: 'success'
-          }).catch(err => {
-            console.error(err);
-            process.exit(1);
-          });
-          "
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Update Deployment Status to Failure
-        if: failure()
-        run: |
-          node -e "
-          const { Octokit } = require('@octokit/rest');
-          const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
-          octokit.repos.createDeploymentStatus({
-            owner: '${{ github.repository_owner }}',
-            repo: '${{ github.event.repository.name }}',
-            deployment_id: '${{ steps.create_deployment.outputs.deployment_id }}',
-            state: 'failure'
-          }).catch(err => {
-            console.error(err);
-            process.exit(1);
-          });
-          "
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
