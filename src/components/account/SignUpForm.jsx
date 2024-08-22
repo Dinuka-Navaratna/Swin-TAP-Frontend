@@ -1,22 +1,51 @@
+import React from "react";
 import { Field, reduxForm } from "redux-form";
 import { compose } from "redux";
 import { Link } from "react-router-dom";
+import axios from "axios";
 import renderFormGroupField from "../../helpers/renderFormGroupField";
 import renderFormField from "../../helpers/renderFormField";
-import {
-  required,
-  maxLength20,
-  minLength8,
-  maxLengthMobileNo,
-  minLengthMobileNo,
-  digit,
-  name,
-} from "../../helpers/validation";
-import { ReactComponent as IconPhone } from "bootstrap-icons/icons/phone.svg";
+import { setSession } from "../../actions/session";
+import { required, maxLength20, minLength8, email, name } from "../../helpers/validation";
+import { ReactComponent as IconEmail } from "bootstrap-icons/icons/envelope.svg";
 import { ReactComponent as IconShieldLock } from "bootstrap-icons/icons/shield-lock.svg";
 
 const SignUpForm = (props) => {
-  const { handleSubmit, submitting, onSubmit, submitFailed } = props;
+  const { handleSubmit, submitting, submitFailed } = props;
+
+  const onSubmit = async (formValues) => {
+    const data = JSON.stringify({
+      name: `${formValues.firstName} ${formValues.lastName}`,
+      email: formValues.email,
+      password: formValues.password
+    });
+
+    const config = {
+      method: 'post',
+      maxBodyLength: Infinity,
+      // url: `${process.env.REACT_APP_API_URL}/api/users`,
+      url: 'https://jsonplaceholder.typicode.com/posts', // Dummy API endpoint
+      headers: { 
+        'Content-Type': 'application/json'
+      },
+      data: data
+    };
+
+    try {
+      const response = await axios.request(config);
+      if (response.data.id) {
+        setSession(response.data.email);
+        alert("Sign up successful!");
+        window.location.href = "/account/profile";
+      } else {
+        alert("Sign up failed. Please check your details.");
+      }
+    } catch (error) {
+      console.error("Error during sign up:", error);
+      alert("An error occurred. Please try again later.");
+    }
+  };
+
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
@@ -48,16 +77,14 @@ const SignUpForm = (props) => {
         </div>
       </div>
       <Field
-        name="mobileNo"
-        type="number"
-        label="Mobile no"
+        name="email"
+        type="email"
+        label="Email:"
         component={renderFormGroupField}
-        placeholder="Mobile no without country code"
-        icon={IconPhone}
-        validate={[required, maxLengthMobileNo, minLengthMobileNo, digit]}
+        placeholder="Email address"
+        icon={IconEmail}
+        validate={[required, email]}
         required={true}
-        max="999999999999999"
-        min="9999"
         className="mb-3"
       />
       <Field
@@ -83,7 +110,7 @@ const SignUpForm = (props) => {
         </button>
       </div>
       <Link className="float-start" to="/account/signin" title="Sign In">
-        Sing In
+        Sign In
       </Link>
       <Link
         className="float-end"
