@@ -74,7 +74,7 @@ class HomeView extends Component {
               <Support />
             </div>
             <div className="col-md-3">
-              <CardLogin className="mb-3" />
+              {/* <CardLogin className="mb-3" /> */}
               <CardImage src="../../images/banner/Watches.webp" to="promo" />
             </div>
           </div>
