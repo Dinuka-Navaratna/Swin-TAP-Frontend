@@ -224,7 +224,7 @@ const Footer = () => {
           </div> */}
           
           <div className="col-md-3 py-2 bg-white" style={{color: "#000"}}>
-            In association with: <img src="../../images/swinburne-logo.png" style={{height: "25px"}}></img>
+            In association with: <img src="../../images/swinburne-logo.png" alt="Swinburne University Logo" style={{height: "25px"}}></img>
           </div>
         </div>
       </div>
