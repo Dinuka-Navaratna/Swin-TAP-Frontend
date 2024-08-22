@@ -2,17 +2,45 @@ import React from "react";
 import { Field, reduxForm } from "redux-form";
 import { compose } from "redux";
 import { Link } from "react-router-dom";
+import axios from "axios";
 import renderFormGroupField from "../../helpers/renderFormGroupField";
-import {
-  required,
-  maxLengthMobileNo,
-  minLengthMobileNo,
-  digit,
-} from "../../helpers/validation";
-import { ReactComponent as IconPhone } from "bootstrap-icons/icons/phone.svg";
+import { setSession } from "../../actions/session";
+import { required, email } from "../../helpers/validation";
+import { ReactComponent as IconEmail } from "bootstrap-icons/icons/envelope.svg";
 
 const ForgotPasswordForm = (props) => {
-  const { handleSubmit, submitting, onSubmit, submitFailed } = props;
+  const { handleSubmit, submitting, submitFailed } = props;
+  
+  const onSubmit = async (formValues) => {
+    const data = JSON.stringify(formValues);
+
+    const config = {
+      method: 'post',
+      maxBodyLength: Infinity,
+      // url: `${process.env.REACT_APP_API_URL}/api/users/login`,
+      url: 'https://jsonplaceholder.typicode.com/posts', // Dummy API endpoint
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      data: data
+    };
+
+    try {
+      const response = await axios.request(config);
+      console.log('Response:', response.data);
+      if (response.data.success) {
+        setSession(response.data.token);
+        alert("An email has been sent!");
+        window.location.href = "/account/signin";
+      } else {
+        alert("Password reset failed. Please try again.");
+      }
+    } catch (error) {
+      console.error("Error during password reset:", error);
+      alert("An error occurred. Please try again later.");
+    }
+  };
+
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
@@ -20,16 +48,14 @@ const ForgotPasswordForm = (props) => {
       noValidate
     >
       <Field
-        name="mobileNo"
-        type="number"
-        label="Mobile no"
+        name="email"
+        type="email"
+        label="Email"
         component={renderFormGroupField}
-        placeholder="Mobile no without country code"
-        icon={IconPhone}
-        validate={[required, maxLengthMobileNo, minLengthMobileNo, digit]}
+        placeholder="Email address"
+        icon={IconEmail}
+        validate={[required, email]}
         required={true}
-        max="999999999999999"
-        min="9999"
         className="mb-3"
       />
       <div className="d-grid">

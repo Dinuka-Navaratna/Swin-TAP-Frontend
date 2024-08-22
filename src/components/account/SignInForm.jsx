@@ -2,17 +2,46 @@ import React from "react";
 import { Field, reduxForm } from "redux-form";
 import { compose } from "redux";
 import { Link } from "react-router-dom";
+import axios from "axios";
 import renderFormGroupField from "../../helpers/renderFormGroupField";
-import {
-  required,
-  maxLength20,
-  minLength8
-} from "../../helpers/validation";
+import { setSession } from "../../actions/session";
+import { required, email, maxLength20, minLength8 } from "../../helpers/validation";
 import { ReactComponent as IconEmail } from "bootstrap-icons/icons/envelope.svg";
 import { ReactComponent as IconShieldLock } from "bootstrap-icons/icons/shield-lock.svg";
 
 const SignInForm = (props) => {
-  const { handleSubmit, submitting, onSubmit, submitFailed } = props;
+  const { handleSubmit, submitting, submitFailed } = props;
+
+  const onSubmit = async (formValues) => {
+    const data = JSON.stringify(formValues);
+
+    const config = {
+      method: 'post',
+      maxBodyLength: Infinity,
+      // url: `${process.env.REACT_APP_API_URL}/api/users/login`,
+      url: 'https://jsonplaceholder.typicode.com/posts', // Dummy API endpoint
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      data: data
+    };
+
+    try {
+      const response = await axios.request(config);
+      console.log('Response:', response.data);
+      if (response.data.id) {
+        setSession(response.data.email);
+        alert("Login successful!");
+        window.location.href = "/account/profile";
+      } else {
+        alert("Login failed. Please check your credentials.");
+      }
+    } catch (error) {
+      console.error("Error during login:", error);
+      alert("An error occurred. Please try again later.");
+    }
+  };
+
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
@@ -20,13 +49,13 @@ const SignInForm = (props) => {
       noValidate
     >
       <Field
-        name="mobileNo"
-        type="number"
-        label="Eamil"
+        name="email"
+        type="email"
+        label="Email"
         component={renderFormGroupField}
         placeholder="Email address"
         icon={IconEmail}
-        validate={[required]}
+        validate={[required, email]}
         required={true}
         className="mb-3"
       />
