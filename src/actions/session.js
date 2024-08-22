@@ -1,4 +1,3 @@
-// src/utils/session.js
 export const setSession = (token) => {
     const expirationDate = new Date();
     expirationDate.setDate(expirationDate.getDate() + 7);

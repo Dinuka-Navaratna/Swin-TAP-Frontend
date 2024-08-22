@@ -29,8 +29,8 @@ const SignInForm = (props) => {
     try {
       const response = await axios.request(config);
       console.log('Response:', response.data);
-      if (response.data.success) {
-        setSession(response.data.token);
+      if (response.data.id) {
+        setSession(response.data.email);
         alert("Login successful!");
         window.location.href = "/account/profile";
       } else {

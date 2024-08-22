@@ -1,14 +1,19 @@
 import { lazy, Component } from "react";
+import { getSession } from "../../actions/session";
 const ProfileForm = lazy(() => import("../../components/account/ProfileForm"));
-const ChangePasswordForm = lazy(() =>
-  import("../../components/account/ChangePasswordForm")
-);
+const ChangePasswordForm = lazy(() => import("../../components/account/ChangePasswordForm"));
 const SettingForm = lazy(() => import("../../components/account/SettingForm"));
-const CardListForm = lazy(() =>
-  import("../../components/account/CardListForm")
-);
+const CardListForm = lazy(() => import("../../components/account/CardListForm"));
 
 class MyProfileView extends Component {
+  constructor(props) {
+    super(props);
+    const session = getSession();
+    if (!session) {
+      window.location.href = "/account/signin";
+    }
+  }
+
   state = { imagePreview: "", isDeleting: false };
 
   onSubmitProfile = async (values) => {

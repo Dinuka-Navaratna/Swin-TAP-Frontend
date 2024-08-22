@@ -178,7 +178,7 @@ const Footer = () => {
           <div className="col-md-9 py-2">
             © {new Date().getFullYear()} autoassure.me
           </div>
-          <div className="col-md-3 py-2 bg-white">
+          {/* <div className="col-md-3 py-2 bg-white">
             <img
               src="../../images/payment/american_express.webp"
               width="32"
@@ -221,6 +221,10 @@ const Footer = () => {
               alt="Visa"
               className="me-2"
             />
+          </div> */}
+          
+          <div className="col-md-3 py-2 bg-white" style={{color: "#000"}}>
+            In association with: <img src="../../images/swinburne-logo.png" style={{height: "25px"}}></img>
           </div>
         </div>
       </div>
