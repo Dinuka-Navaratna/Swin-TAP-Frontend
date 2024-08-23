@@ -23,8 +23,8 @@ const SignUpForm = (props) => {
     const config = {
       method: 'post',
       maxBodyLength: Infinity,
-      // url: `${process.env.REACT_APP_API_URL}/api/users`,
-      url: 'https://jsonplaceholder.typicode.com/posts', // Dummy API endpoint
+      url: `${process.env.REACT_APP_API_URL}/api/users`,
+      // url: 'https://jsonplaceholder.typicode.com/posts', // Dummy API endpoint
       headers: { 
         'Content-Type': 'application/json'
       },
@@ -32,13 +32,15 @@ const SignUpForm = (props) => {
     };
 
     try {
+      console.log(data);
       const response = await axios.request(config);
-      if (response.data.id) {
-        setSession(response.data.email);
-        alert("Sign up successful!");
-        window.location.href = "/account/profile";
+      if (response.data.status) {
+        // setSession(response.data.email);
+        alert("Sign up successful!\nPlease sign in to continue.");
+        window.location.href = "/account/signin";
       } else {
         alert("Sign up failed. Please check your details.");
+        console.log("User registration failed: "+response.data.msg);
       }
     } catch (error) {
       console.error("Error during sign up:", error);
@@ -86,6 +88,7 @@ const SignUpForm = (props) => {
         validate={[required, email]}
         required={true}
         className="mb-3"
+        normalize={(value) => value && value.toLowerCase()}
       />
       <Field
         name="password"

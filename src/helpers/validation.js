@@ -35,15 +35,12 @@ const minValue = (min) => (value) =>
 export const minValueMobile = minValue(9999);
 export const minValue10 = minValue(10);
 export const minValue0 = minValue(0);
-export const email = (value) =>
-  value && !/^[a-zA-Z0-9._%-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/i.test(value)
-    ? "Invalid email address"
-    : undefined;
+export const email = (value) => value && !/^[a-zA-Z0-9._%-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/i.test(value) ? "Invalid email address" : undefined;
 export const name = (value) =>
   value && !/^[a-zA-Z\s]*$/i.test(value) ? "Invalid name" : undefined;
-  export const fName = (value) =>
+export const fName = (value) =>
   value && !/^[a-zA-Z\s]*$/i.test(value) ? "Invalid father name" : undefined;
-  export const mName = (value) =>
+export const mName = (value) =>
   value && !/^[a-zA-Z\s]*$/i.test(value) ? "Invalid mother name" : undefined;
 export const isOverEighteen = (date) => {
   let birthday = new Date(date);
