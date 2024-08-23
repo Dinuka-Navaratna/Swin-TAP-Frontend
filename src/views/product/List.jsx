@@ -4,11 +4,11 @@ const Paging = lazy(() => import("../../components/Paging"));
 const Breadcrumb = lazy(() => import("../../components/Breadcrumb"));
 const FilterCategory = lazy(() => import("../../components/filter/Category"));
 const FilterPrice = lazy(() => import("../../components/filter/Price"));
-const FilterSize = lazy(() => import("../../components/filter/Size"));
-const FilterStar = lazy(() => import("../../components/filter/Star"));
+// const FilterSize = lazy(() => import("../../components/filter/Size"));
+// const FilterStar = lazy(() => import("../../components/filter/Star"));
 const FilterColor = lazy(() => import("../../components/filter/Color"));
 const FilterTag = lazy(() => import("../../components/filter/Tag"));
-const FilterClear = lazy(() => import("../../components/filter/Clear"));
+// const FilterClear = lazy(() => import("../../components/filter/Clear"));
 const CardServices = lazy(() => import("../../components/card/CardServices"));
 const CardProductGrid = lazy(() =>
   import("../../components/card/CardProductGrid")
@@ -23,7 +23,7 @@ class ProductListView extends Component {
     currentPage: null,
     totalPages: null,
     totalItems: 0,
-    view: "list",
+    view: "grid",
   };
 
   UNSAFE_componentWillMount() {
@@ -59,12 +59,12 @@ class ProductListView extends Component {
         <div
           className="p-5 bg-primary bs-cover"
           style={{
-            backgroundImage: "url(../../images/banner/50-Banner.webp)",
+            backgroundImage: "url(../../images/banner/Banner_listing.png)",
           }}
         >
           <div className="container text-center">
             <span className="display-5 px-3 bg-white rounded shadow">
-              T-Shirts
+              Find Your Dream Vehicle
             </span>
           </div>
         </div>
@@ -74,10 +74,10 @@ class ProductListView extends Component {
             <div className="col-md-3">
               <FilterCategory />
               <FilterPrice />
-              <FilterSize />
-              <FilterStar />
+              {/* <FilterSize /> */}
+              {/* <FilterStar /> */}
               <FilterColor />
-              <FilterClear />
+              {/* <FilterClear /> */}
               <FilterTag />
               <CardServices />
             </div>
@@ -86,7 +86,7 @@ class ProductListView extends Component {
                 <div className="col-7">
                   <span className="align-middle fw-bold">
                     {this.state.totalItems} results for{" "}
-                    <span className="text-warning">"t-shirts"</span>
+                    <span className="text-warning">"testing"</span>
                   </span>
                 </div>
                 <div className="col-5 d-flex justify-content-end">
