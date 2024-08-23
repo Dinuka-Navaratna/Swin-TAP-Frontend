@@ -17,8 +17,8 @@ const ForgotPasswordForm = (props) => {
     const config = {
       method: 'post',
       maxBodyLength: Infinity,
-      // url: `${process.env.REACT_APP_API_URL}/api/users/login`,
-      url: 'https://jsonplaceholder.typicode.com/posts', // Dummy API endpoint
+      url: `${process.env.REACT_APP_API_URL}/api/users/forget-password`,
+      // url: 'https://jsonplaceholder.typicode.com/posts', // Dummy API endpoint
       headers: {
         'Content-Type': 'application/json'
       },
@@ -28,12 +28,11 @@ const ForgotPasswordForm = (props) => {
     try {
       const response = await axios.request(config);
       console.log('Response:', response.data);
-      if (response.data.success) {
-        setSession(response.data.token);
+      if (response.data.status) {
         alert("An email has been sent!");
         window.location.href = "/account/signin";
       } else {
-        alert("Password reset failed. Please try again.");
+        alert(response.data.msg);
       }
     } catch (error) {
       console.error("Error during password reset:", error);
@@ -57,6 +56,7 @@ const ForgotPasswordForm = (props) => {
         validate={[required, email]}
         required={true}
         className="mb-3"
+        normalize={(value) => value && value.toLowerCase()}
       />
       <div className="d-grid">
         <button
