@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import renderFormGroupField from "../../helpers/renderFormGroupField";
 import renderFormField from "../../helpers/renderFormField";
-import { setSession } from "../../actions/session";
+// import { setSession } from "../../actions/session";
 import { required, maxLength20, minLength8, email, name } from "../../helpers/validation";
 import { ReactComponent as IconEmail } from "bootstrap-icons/icons/envelope.svg";
 import { ReactComponent as IconShieldLock } from "bootstrap-icons/icons/shield-lock.svg";

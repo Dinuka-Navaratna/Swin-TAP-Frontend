@@ -4,7 +4,7 @@ import { compose } from "redux";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import renderFormGroupField from "../../helpers/renderFormGroupField";
-import { setSession } from "../../actions/session";
+// import { setSession } from "../../actions/session";
 import { required, email } from "../../helpers/validation";
 import { ReactComponent as IconEmail } from "bootstrap-icons/icons/envelope.svg";
 
