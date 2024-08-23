@@ -7,7 +7,7 @@ const CardServices = (props) => {
   return (
     <div className="card mb-3">
       <div className="card-header fw-bold text-uppercase">
-        Custom Service
+        Why AutoAssure?
       </div>
       <div className="card-body">
         <div className="row border-bottom">
@@ -16,8 +16,8 @@ const CardServices = (props) => {
           </div>
           <div className="col">
             <div className="ms-3">
-              <span className="fw-bold">Free Delivery</span>
-              <p className="text-muted small">From $59.89</p>
+              <span className="fw-bold">Assured vehicles</span>
+              <p className="text-muted small">Mechanically verified vehicles</p>
             </div>
           </div>
         </div>
@@ -38,8 +38,8 @@ const CardServices = (props) => {
           </div>
           <div className="col">
             <div className="ms-3">
-              <span className="fw-bold">Free return</span>
-              <p className="text-muted small m-0">365 a day</p>
+              <span className="fw-bold">On-going Maintenance</span>
+              <p className="text-muted small m-0">No need to worry about vehicle maintenance</p>
             </div>
           </div>
         </div>

@@ -18,8 +18,8 @@ const SignInForm = (props) => {
     const config = {
       method: 'post',
       maxBodyLength: Infinity,
-      // url: `${process.env.REACT_APP_API_URL}/api/users/login`,
-      url: 'https://jsonplaceholder.typicode.com/posts', // Dummy API endpoint
+      url: `${process.env.REACT_APP_API_URL}/api/users/login`,
+      // url: 'https://jsonplaceholder.typicode.com/posts', // Dummy API endpoint
       headers: {
         'Content-Type': 'application/json'
       },
@@ -29,16 +29,22 @@ const SignInForm = (props) => {
     try {
       const response = await axios.request(config);
       console.log('Response:', response.data);
-      if (response.data.id) {
-        setSession(response.data.email);
+      if (response.data.status) {
+        setSession(response.data.data);
         alert("Login successful!");
         window.location.href = "/account/profile";
       } else {
         alert("Login failed. Please check your credentials.");
+        console.log("Login failed: "+response.data.msg);
       }
     } catch (error) {
       console.error("Error during login:", error);
-      alert("An error occurred. Please try again later.");
+      if (error.response) {
+        console.error("Server response:", error.response.data);
+        alert(`Login failed: ${error.response.data.message}`);
+      } else {
+        alert("An error occurred. Please try again later.");
+      }
     }
   };
 
@@ -58,6 +64,7 @@ const SignInForm = (props) => {
         validate={[required, email]}
         required={true}
         className="mb-3"
+        normalize={(value) => value && value.toLowerCase()}
       />
       <Field
         name="password"

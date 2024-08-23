@@ -1,4 +1,5 @@
 import React from "react";
+
 const renderFormField = (props) => {
   const {
     input,
@@ -7,6 +8,7 @@ const renderFormField = (props) => {
     required,
     meta: { touched, error, warning },
   } = props;
+
   return (
     <React.Fragment>
       {label && (
@@ -17,7 +19,12 @@ const renderFormField = (props) => {
           {label}
         </label>
       )}
-      <input {...input} {...props} id={input.name} className="form-control" />
+      <input
+        {...input}
+        {...props}
+        id={input.name}
+        className={`form-control ${touched && error ? "is-invalid" : ""} ${touched && !error ? "is-valid" : ""}`}
+      />
       {tips && <div className="form-text">{tips}</div>}
       {touched &&
         ((error && <div className="invalid-feedback">{error}</div>) ||
@@ -25,4 +32,5 @@ const renderFormField = (props) => {
     </React.Fragment>
   );
 };
+
 export default renderFormField;
