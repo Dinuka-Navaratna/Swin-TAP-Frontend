@@ -87,6 +87,6 @@
 }
 
 .dropdown-menu[data-bs-popper] {
-  left: "";
+  left: unset;
   right: 0;
 }
