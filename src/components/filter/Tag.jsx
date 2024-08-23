@@ -11,29 +11,29 @@ const FilterTag = (props) => {
         aria-expanded="true"
         aria-controls="filterTag"
       >
-        Product Tags
+        Vehicle Brands
       </div>
       <div className="card-body show" id="filterTag">
         <Link to="/" className="btn btn-sm btn-outline-info me-2 mb-2">
-          Summer
+          Toyota
         </Link>
         <Link to="/" className="btn btn-sm btn-outline-secondary me-2 mb-2">
-          Clothing
+          Nissan
         </Link>
         <Link to="/" className="btn btn-sm btn-outline-success me-2 mb-2">
-          Woman
+          Honda
         </Link>
         <Link to="/" className="btn btn-sm btn-outline-danger me-2 mb-2">
-          Hot Trend
+          Ford
         </Link>
         <Link to="/" className="btn btn-sm btn-outline-dark me-2 mb-2">
-          Jacket
+          BMW
         </Link>
         <Link to="/" className="btn btn-sm btn-outline-primary me-2 mb-2">
-          Men
+          Mercedes-Benz
         </Link>
         <Link to="/" className="btn btn-sm btn-outline-warning me-2 mb-2">
-          Luxyry
+          Audi
         </Link>
       </div>
     </div>
