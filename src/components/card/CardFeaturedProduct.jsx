@@ -23,11 +23,18 @@ const CardFeaturedProduct = (props) => {
                 </Link>
               </h6>
               <div className="mb-2">
-                {Array.from({ length: product.star }, (_, key) => (
-                  <i className="bi bi-star-fill text-warning me-1" key={key} />
-                ))}
+                <span className="fw-bold h5">${product.price}</span>&nbsp;&nbsp;&nbsp;
+                {product.star === 1 ? (
+                  <>
+                    <i className="bi bi-patch-check-fill text-success me-1" />
+                    AutoAssured
+                  </>
+                ) : (
+                  Array.from({ length: product.star }, (_, key) => (
+                    <i className="bi bi-star-fill text-warning me-1" key={key} />
+                  ))
+                )}
               </div>
-              <span className="fw-bold h5">${product.price}</span>
               {product.originPrice > 0 && (
                 <del className="small text-muted ms-2">
                   ${product.originPrice}

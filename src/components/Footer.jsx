@@ -37,7 +37,7 @@ const Footer = () => {
       <div className="container-fluid bg-dark text-white">
         <div className="row ">
           <div className="col-md-3 py-3">
-            <div className="h6">Company Name</div>
+            <div className="h6">AutoAssure</div>
             <hr />
             <p>
               Lorem Ipsum is simply dummy text of the printing and typesetting
@@ -47,7 +47,7 @@ const Footer = () => {
             </p>
           </div>
           <div className="col-md-3 py-3">
-            <div className="h6">Products</div>
+            <div className="h6">Vehicle Brands</div>
             <hr />
             <ul className="list-group list-group-flush">
               <li className="list-group-item bg-dark text-white border-light">
@@ -55,7 +55,7 @@ const Footer = () => {
                   to="/"
                   className="text-decoration-none text-white stretched-link"
                 >
-                  Electronics
+                  Toyota
                 </Link>
               </li>
               <li className="list-group-item bg-dark text-white border-light">
@@ -63,7 +63,7 @@ const Footer = () => {
                   to="/"
                   className="text-decoration-none text-white stretched-link"
                 >
-                  Mobiles
+                  Nissan
                 </Link>
               </li>
               <li className="list-group-item bg-dark text-white border-light">
@@ -71,7 +71,7 @@ const Footer = () => {
                   to="/"
                   className="text-decoration-none text-white stretched-link"
                 >
-                  Car & bike
+                  Honda
                 </Link>
               </li>
               <li className="list-group-item bg-dark text-white border-light">
@@ -79,7 +79,7 @@ const Footer = () => {
                   to="/"
                   className="text-decoration-none text-white stretched-link"
                 >
-                  Super Market
+                  BMW
                 </Link>
               </li>
               <li className="list-group-item bg-dark text-white border-light">
@@ -87,7 +87,7 @@ const Footer = () => {
                   to="/"
                   className="text-decoration-none text-white stretched-link"
                 >
-                  Travel Cards
+                  Audi
                 </Link>
               </li>
             </ul>
@@ -142,19 +142,17 @@ const Footer = () => {
             <div className="h6">Address</div>
             <hr />
             <address>
-              <strong>Twitter, Inc.</strong>
+              <strong>AutoAssure</strong>
               <br />
-              1355 Market St, Suite 900
+              Dummy dummy
               <br />
-              San Francisco, CA 94103
+              Melbourne, VIC
               <br />
-              <abbr title="Phone">P:</abbr> (123) 456-7890
+              <hr />
+              <i className="bi bi-telephone"></i>&nbsp;&nbsp;(123) 456-7890
+              <br />
+              <i className="bi bi-envelope"></i>&nbsp;&nbsp;support@autoassure.me
             </address>
-            <div className="h6">Customer Care</div>
-            <hr />
-            <i className="bi bi-telephone"></i> +1800 100 1000
-            <br />
-            <i className="bi bi-envelope"></i> info@email.com
           </div>
         </div>
       </div>
@@ -222,9 +220,9 @@ const Footer = () => {
               className="me-2"
             />
           </div> */}
-          
-          <div className="col-md-3 py-2 bg-white" style={{color: "#000"}}>
-            In association with: <img src="../../images/swinburne-logo.png" alt="Swinburne University Logo" style={{height: "25px"}}></img>
+
+          <div className="col-md-3 py-2 bg-white" style={{ color: "#000" }}>
+            In association with: <img src="../../images/swinburne-logo.png" alt="Swinburne University Logo" style={{ height: "25px" }}></img>
           </div>
         </div>
       </div>

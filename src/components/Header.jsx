@@ -117,33 +117,33 @@ const Header = () => {
                   </ul>
                 </li> */}
                 <li className="nav-item">
-                  <Link className="nav-link" to="/category">
-                    Navigation
+                  <Link className="nav-link" to="/">
+                    Home
                   </Link>
                 </li>
                 <li className="nav-item">
                   <Link className="nav-link" to="/category">
-                    Navigation
+                    Vehicle Listing
                   </Link>
                 </li>
                 <li className="nav-item">
-                  <Link className="nav-link" to="/category">
-                    Navigation
+                  <Link className="nav-link" to="/">
+                    Our Assurance
                   </Link>
                 </li>
                 <li className="nav-item">
-                  <Link className="nav-link" to="/category">
-                    Navigation
+                  <Link className="nav-link" to="/">
+                    About
                   </Link>
                 </li>
                 <li className="nav-item">
-                  <Link className="nav-link" to="/category">
-                    Navigation
+                  <Link className="nav-link" to="/">
+                    Contact Us
                   </Link>
                 </li>
                 <li className="nav-item">
-                  <Link className="nav-link" to="/category">
-                    Navigation
+                  <Link className="nav-link" to="/">
+                    T & C
                   </Link>
                 </li>
                 

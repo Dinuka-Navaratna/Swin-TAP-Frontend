@@ -24,44 +24,41 @@ const ProductDetailView = () => {
           <div className="row mb-3">
             <div className="col-md-5 text-center">
               <img
-                src="../../images/products/tshirt_red_480x400.webp"
+                src="../../images/products/vehicle.jpg"
                 className="img-fluid mb-3"
                 alt=""
               />
               <img
-                src="../../images/products/tshirt_grey_480x400.webp"
+                src="../../images/products/vehicle.jpg"
                 className="border border-secondary me-2"
                 width="75"
                 alt="..."
               />
               <img
-                src="../../images/products/tshirt_black_480x400.webp"
+                src="../../images/products/vehicle.jpg"
                 className="border border-secondary me-2"
                 width="75"
                 alt="..."
               />
               <img
-                src="../../images/products/tshirt_green_480x400.webp"
+                src="../../images/products/vehicle.jpg"
                 className="border border-secondary me-2"
                 width="75"
                 alt="..."
               />
             </div>
             <div className="col-md-7">
-              <h1 className="h5 d-inline me-2">Great product name goes here</h1>
+              <br></br>
+              <h1 className="h5 d-inline me-2">Advertisement Title</h1>
               <span className="badge bg-success me-2">New</span>
               <span className="badge bg-danger me-2">Hot</span>
               <div className="mb-3">
-                <i className="bi bi-star-fill text-warning me-1" />
-                <i className="bi bi-star-fill text-warning me-1" />
-                <i className="bi bi-star-fill text-warning me-1" />
-                <i className="bi bi-star-fill text-warning me-1" />
-                <i className="bi bi-star-fill text-secondary me-1" />|{" "}
-                <span className="text-muted small">
-                  42 ratings and 4 reviews
-                </span>
+              <br></br>
+                <span className="fw-bold h5 me-2">$1900</span>
+                <i className="bi bi-patch-check-fill text-success me-1" />
+                AutoAssured
               </div>
-              <dl className="row small mb-3">
+              {/* <dl className="row small mb-3">
                 <dt className="col-sm-3">Availability</dt>
                 <dd className="col-sm-9">In stock</dd>
                 <dt className="col-sm-3">Sold by</dt>
@@ -136,16 +133,9 @@ const ProductDetailView = () => {
                   <button className="btn btn-sm btn-info p-2 me-2"></button>
                   <button className="btn btn-sm btn-dark p-2 me-2"></button>
                 </dd>
-              </dl>
+              </dl> */}
 
-              <div className="mb-3">
-                <span className="fw-bold h5 me-2">$1900</span>
-                <del className="small text-muted me-2">$2000</del>
-                <span className="rounded p-1 bg-warning  me-2 small">
-                  -$100
-                </span>
-              </div>
-              <div className="mb-3">
+              {/* <div className="mb-3">
                 <div className="d-inline float-start me-2">
                   <div className="input-group input-group-sm mw-140">
                     <button
@@ -188,10 +178,16 @@ const ProductDetailView = () => {
                 >
                   <i className="bi bi-heart-fill"></i>
                 </button>
-              </div>
+              </div> */}
               <div>
+              <br></br>
                 <p className="fw-bold mb-2 small">Product Highlights</p>
                 <ul className="small">
+                  <li>
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                  </li>
+                  <li>Etiam ullamcorper nibh eget faucibus dictum.</li>
+                  <li>Cras consequat felis ut vulputate porttitor.</li>
                   <li>
                     Lorem ipsum dolor sit amet, consectetur adipiscing elit.
                   </li>
@@ -214,18 +210,18 @@ const ProductDetailView = () => {
                     aria-controls="nav-details"
                     aria-selected="true"
                   >
-                    Details
+                    Vehicle Details
                   </a>
                   <a
                     className="nav-link"
-                    id="nav-randr-tab"
+                    id="nav-ship-returns-tab"
                     data-bs-toggle="tab"
-                    href="#nav-randr"
+                    href="#nav-ship-returns"
                     role="tab"
-                    aria-controls="nav-randr"
+                    aria-controls="nav-ship-returns"
                     aria-selected="false"
                   >
-                    Ratings & Reviews
+                    Our Assurance
                   </a>
                   <a
                     className="nav-link"
@@ -240,25 +236,14 @@ const ProductDetailView = () => {
                   </a>
                   <a
                     className="nav-link"
-                    id="nav-ship-returns-tab"
+                    id="nav-randr-tab"
                     data-bs-toggle="tab"
-                    href="#nav-ship-returns"
+                    href="#nav-randr"
                     role="tab"
-                    aria-controls="nav-ship-returns"
+                    aria-controls="nav-randr"
                     aria-selected="false"
                   >
-                    Shipping & Returns
-                  </a>
-                  <a
-                    className="nav-link"
-                    id="nav-size-chart-tab"
-                    data-bs-toggle="tab"
-                    href="#nav-size-chart"
-                    role="tab"
-                    aria-controls="nav-size-chart"
-                    aria-selected="false"
-                  >
-                    Size Chart
+                    T & C
                   </a>
                 </div>
               </nav>

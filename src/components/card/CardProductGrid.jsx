@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 const CardProductGrid = (props) => {
   const product = props.data;
   return (
+    <Link to={product.link} className="text-decoration-none">
     <div className="card">
       <img src={product.img} className="card-img-top" alt="..." />
       {product.isNew && (
@@ -17,9 +18,8 @@ const CardProductGrid = (props) => {
       )}
       {(product.discountPercentage > 0 || product.discountPrice > 0) && (
         <span
-          className={`rounded position-absolute p-2 bg-warning  ms-2 small ${
-            product.isNew ? "mt-5" : "mt-2"
-          }`}
+          className={`rounded position-absolute p-2 bg-warning  ms-2 small ${product.isNew ? "mt-5" : "mt-2"
+            }`}
         >
           -
           {product.discountPercentage > 0
@@ -39,12 +39,20 @@ const CardProductGrid = (props) => {
             <del className="small text-muted ms-2">${product.originPrice}</del>
           )}
           <span className="ms-2">
-            {Array.from({ length: product.star }, (_, key) => (
-              <i className="bi bi-star-fill text-warning me-1" key={key} />
-            ))}
+            {product.star === 1 ? (
+              <>
+                <i className="bi bi-patch-check-fill text-success me-1" />
+                AutoAssured
+              </>
+            ) : (
+              Array.from({ length: product.star }, (_, key) => (
+                <i className="bi bi-star-fill text-warning me-1" key={key} />
+              ))
+            )}
           </span>
+          <p className="small mt-2">{product.description}</p>
         </div>
-        <div className="btn-group  d-flex" role="group">
+        {/* <div className="btn-group  d-flex" role="group">
           <button
             type="button"
             className="btn btn-sm btn-primary"
@@ -59,9 +67,10 @@ const CardProductGrid = (props) => {
           >
             <i className="bi bi-heart-fill" />
           </button>
-        </div>
+        </div> */}
       </div>
     </div>
+    </Link>
   );
 };
 
