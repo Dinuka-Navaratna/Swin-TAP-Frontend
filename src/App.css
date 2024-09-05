@@ -90,3 +90,7 @@
   left: unset;
   right: 0;
 }
+
+.float-right {
+  float: right;
+}
