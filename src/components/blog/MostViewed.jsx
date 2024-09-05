@@ -16,8 +16,8 @@ const MostViewed = (props) => {
           />
           <div className="card-img-overlay">
             <h5 className="card-title position-absolute bottom-0 mb-3">
-              Lorem Ipsum is simply dummy text of the printing and typesetting
-              industry
+              {/* Lorem Ipsum is simply dummy text of the printing and typesetting
+              industry */}
             </h5>
           </div>
         </Link>
