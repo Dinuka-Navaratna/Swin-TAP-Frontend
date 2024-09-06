@@ -1,25 +1,27 @@
-import { lazy, useRef, useState } from "react";
+import { lazy, useRef, useState, useEffect } from "react";
+import { useParams } from 'react-router-dom';
 import { data } from "../../data";
-const CardFeaturedProduct = lazy(() =>
-  import("../../components/card/CardFeaturedProduct")
-);
+const CardFeaturedProduct = lazy(() => import("../../components/card/CardFeaturedProduct"));
 const CardServices = lazy(() => import("../../components/card/CardServices"));
 const Details = lazy(() => import("../../components/others/Details"));
-const RatingsReviews = lazy(() =>
-  import("../../components/others/RatingsReviews")
-);
-const QuestionAnswer = lazy(() =>
-  import("../../components/others/QuestionAnswer")
-);
-const ShippingReturns = lazy(() =>
-  import("../../components/others/ShippingReturns")
-);
+const TermsConditions = lazy(() => import("../../components/others/TermsConditions"));
+const QuestionAnswer = lazy(() => import("../../components/others/QuestionAnswer"));
+const OurAssurance = lazy(() => import("../../components/others/OurAssurance"));
 const SizeChart = lazy(() => import("../../components/others/SizeChart"));
 
 
 const ProductDetailView = () => {
   const [isEditMode, setIsEditMode] = useState(false);
   const detailsRef = useRef(null);
+  const { id } = useParams();
+
+  useEffect(() => {
+    if (id === 'new') {
+      setIsEditMode(true);
+    } else {
+      setIsEditMode(false);
+    }
+  }, [id]);
 
   const handleEditClick = () => {
     setIsEditMode(true);
@@ -70,38 +72,38 @@ const ProductDetailView = () => {
             </div>
             <div className="col-md-7">
               <br></br>
-              <h1 className="h5 d-inline me-2">{isEditMode ? <input type="text" defaultValue="" Placeholder="Advertisement Title"/> : "Advertisement Title"}</h1>
+              <h1 className="h5 d-inline me-2">{isEditMode ? <input type="text" defaultValue="" Placeholder="Advertisement Title" /> : "Advertisement Title"}</h1>
               {!isEditMode && (
                 <>
                   <span className="badge bg-success me-2">New</span>
                   <span className="badge bg-danger me-2">Hot</span>
                 </>
               )}
-              {isEditMode && <span className="badge bg-dark me-2 float-right" onClick={handleCancelClick}>Cancel</span> }
+              {isEditMode && <span className="badge bg-dark me-2 float-right" onClick={handleCancelClick}>Cancel</span>}
               <span className="badge bg-primary me-2 float-right" onClick={isEditMode ? handleSaveClick : handleEditClick}>{isEditMode ? 'Save' : 'Edit'}</span>
               <div className="mb-3">
                 <br></br>
                 <span className="fw-bold h5 me-2">${isEditMode ? <input type="text" defaultValue="1900" Placeholder="Price" /> : "1900"}</span>
-                {!isEditMode && <> <i className="bi bi-patch-check-fill text-success me-1" /> AutoAssured </> }
+                {!isEditMode && <> <i className="bi bi-patch-check-fill text-success me-1" /> AutoAssured </>}
               </div>
               <div>
                 <p>{isEditMode ? <textarea defaultValue="Description" Placeholder="Description" /> : "Description"}</p>
                 {!isEditMode && <>
-                <p className="fw-bold mb-2 small">Vehicle Highlights</p>
-                <ul className="small">
-                  <li>Brand: </li>
-                  <li>Model: </li>
-                  <li>Year: </li>
-                </ul>
-                <details>
-                  <summary className="fw-bold mb-2 small">Contact Details</summary>
+                  <p className="fw-bold mb-2 small">Vehicle Highlights</p>
                   <ul className="small">
-                    <li>Seller Name: </li>
-                    <li>Phone No: </li>
-                    <li>Address: </li>
+                    <li>Brand: </li>
+                    <li>Model: </li>
+                    <li>Year: </li>
                   </ul>
-                </details>
-                </> }
+                  <details>
+                    <summary className="fw-bold mb-2 small">Contact Details</summary>
+                    <ul className="small">
+                      <li>Seller Name: </li>
+                      <li>Phone No: </li>
+                      <li>Address: </li>
+                    </ul>
+                  </details>
+                </>}
               </div>
 
               {/* <div className="mb-3">
@@ -148,6 +150,7 @@ const ProductDetailView = () => {
                   <i className="bi bi-heart-fill"></i>
                 </button>
               </div> */}
+
             </div>
           </div>
           <div className="row">
@@ -174,30 +177,33 @@ const ProductDetailView = () => {
                     aria-controls="nav-ship-returns"
                     aria-selected="false"
                   >
-                    Our Assurance
+                    {isEditMode ? "Book Inspection" : "Our Assurance"}
                   </a>
-                  <a
-                    className="nav-link"
-                    id="nav-faq-tab"
-                    data-bs-toggle="tab"
-                    href="#nav-faq"
-                    role="tab"
-                    aria-controls="nav-faq"
-                    aria-selected="false"
-                  >
-                    Questions and Answers
-                  </a>
-                  <a
-                    className="nav-link"
-                    id="nav-randr-tab"
-                    data-bs-toggle="tab"
-                    href="#nav-randr"
-                    role="tab"
-                    aria-controls="nav-randr"
-                    aria-selected="false"
-                  >
-                    T & C
-                  </a>
+                  {!isEditMode ? <>
+                    <a
+                      className="nav-link"
+                      id="nav-faq-tab"
+                      data-bs-toggle="tab"
+                      href="#nav-faq"
+                      role="tab"
+                      aria-controls="nav-faq"
+                      aria-selected="false"
+                    >
+                      Questions and Answers
+                    </a>
+                  </> : <>
+                    <a
+                      className="nav-link"
+                      id="nav-randr-tab"
+                      data-bs-toggle="tab"
+                      href="#nav-randr"
+                      role="tab"
+                      aria-controls="nav-randr"
+                      aria-selected="false"
+                    >
+                      T & C
+                    </a>
+                  </>}
                 </div>
               </nav>
               <div className="tab-content p-3 small" id="nav-tabContent">
@@ -207,37 +213,38 @@ const ProductDetailView = () => {
                   role="tabpanel"
                   aria-labelledby="nav-details-tab"
                 >
-                  <Details ref={detailsRef} isEditMode={isEditMode} description="Your dynamic text here" />
+                  <Details ref={detailsRef} isEditMode={isEditMode} description="Description Description Description Description Description " />
                 </div>
-                <div
-                  className="tab-pane fade"
-                  id="nav-randr"
-                  role="tabpanel"
-                  aria-labelledby="nav-randr-tab"
-                >
-                  {Array.from({ length: 5 }, (_, key) => (
-                    <RatingsReviews key={key} />
-                  ))}
-                </div>
-                <div
-                  className="tab-pane fade"
-                  id="nav-faq"
-                  role="tabpanel"
-                  aria-labelledby="nav-faq-tab"
-                >
-                  <dl>
-                    {Array.from({ length: 5 }, (_, key) => (
-                      <QuestionAnswer key={key} />
-                    ))}
-                  </dl>
-                </div>
+                {isEditMode ? <>
+                  <div
+                    className="tab-pane fade"
+                    id="nav-randr"
+                    role="tabpanel"
+                    aria-labelledby="nav-randr-tab"
+                  >
+                    <TermsConditions />
+                  </div>
+                </> : <>
+                  <div
+                    className="tab-pane fade"
+                    id="nav-faq"
+                    role="tabpanel"
+                    aria-labelledby="nav-faq-tab"
+                  >
+                    <dl>
+                      {Array.from({ length: 5 }, (_, key) => (
+                        <QuestionAnswer key={key} />
+                      ))}
+                    </dl>
+                  </div>
+                </>}
                 <div
                   className="tab-pane fade"
                   id="nav-ship-returns"
                   role="tabpanel"
                   aria-labelledby="nav-ship-returns-tab"
                 >
-                  <ShippingReturns />
+                  <OurAssurance isEditMode={isEditMode} id={id} />
                 </div>
                 <div
                   className="tab-pane fade"

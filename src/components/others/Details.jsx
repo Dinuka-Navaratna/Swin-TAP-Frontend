@@ -35,7 +35,7 @@ const Details = forwardRef((props, ref) => {
   return (
     <React.Fragment>
       <p>
-      {!isEditMode && <> ({props.description}) 
+      {!isEditMode && <> {props.description})
       <hr />
       </> }
       </p>
