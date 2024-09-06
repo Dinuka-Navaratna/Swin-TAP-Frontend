@@ -8,8 +8,8 @@ const Archives = lazy(() => import("../../components/blog/Archives"));
 const Widgets = (props) => {
   return (
     <React.Fragment>
-      <About title="About Me" />
-      <Follow title="Follow Me" />
+      <About title="About Us" />
+      <Follow title="Follow us" />
       <MostViewed title="Most Viewed" />
       <Tags title="Tags" />
       <Archives title="Archives" />
