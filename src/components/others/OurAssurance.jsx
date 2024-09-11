@@ -2,6 +2,7 @@ import React, { forwardRef, useRef } from "react";
 
 const ShippingReturns = forwardRef((props, ref) => {
   const { isEditMode, id } = props;
+  const { vehicleData } = props;
 
   return (
     <React.Fragment>
@@ -27,8 +28,9 @@ const ShippingReturns = forwardRef((props, ref) => {
             </div>
           )}
         </div>
-        <br></br><br></br><br></br>
-      </> : <>This vehicle is not AutoAssured. Edit the advertisement to book for an inspection.<br></br><br></br></>}
+        <br/>
+      </> : <><b>Inspection status:</b> {vehicleData.inspection_status}<br/></>}
+      <hr/>
       <p>! What are the benefits of being AutoAssured?</p>
       <ul>
         <li>Benefit Benefit Benefit Benefit Benefit </li>

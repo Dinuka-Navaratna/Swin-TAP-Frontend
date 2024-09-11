@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import renderFormGroupField from "../../helpers/renderFormGroupField";
 import renderFormField from "../../helpers/renderFormField";
-// import { setSession } from "../../actions/session";
+import { setSession } from "../../actions/session";
 import { required, maxLength20, minLength8, email, name } from "../../helpers/validation";
 import { ReactComponent as IconEmail } from "bootstrap-icons/icons/envelope.svg";
 import { ReactComponent as IconShieldLock } from "bootstrap-icons/icons/shield-lock.svg";
@@ -35,9 +35,10 @@ const SignUpForm = (props) => {
       console.log(data);
       const response = await axios.request(config);
       if (response.data.status) {
-        // setSession(response.data.email);
-        alert("Sign up successful!\nPlease sign in to continue.");
-        window.location.href = "/account/signin";
+        console.log(response.data.data);
+        setSession(response.data.data);
+        // alert("Sign up successful!\nPlease sign in to continue.");
+        window.location.href = "/account/profile";
       } else {
         alert("Sign up failed. Please check your details.");
         console.log("User registration failed: "+response.data.msg);
