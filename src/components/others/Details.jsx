@@ -1,12 +1,12 @@
-import React, { useState, forwardRef, useRef } from "react";
+import React, { useState, forwardRef, useRef, useImperativeHandle } from "react";
 import { vehicleBrands } from '../../data/vehicleBrands';
 import { vehicleModels } from '../../data/vehicleModels';
 
 const Details = forwardRef((props, ref) => {
-  const { isEditMode } = props;
+  const { isEditMode, vehicleData, onSave } = props;
   // eslint-disable-next-line no-unused-vars
-  const [selectedBrand, setSelectedBrand] = useState('');
-  const [models, setModels] = useState([]);
+  const [selectedBrand, setSelectedBrand] = useState(vehicleData.brand || '');
+  const [models, setModels] = useState(vehicleModels[vehicleData.brand] || []);
   const detailsBrand = useRef(null);
   const detailsModel = useRef(null);
   const detailsYear = useRef(null);
@@ -32,12 +32,34 @@ const Details = forwardRef((props, ref) => {
     return years;
   };
 
+  const toTitleCase = (str) => {
+    return str.replace(/\w\S*/g, (txt) => {
+      return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+    });
+  };
+
+  useImperativeHandle(ref, () => ({
+    getDetails: () => {
+      return {
+        brand: detailsBrand.current.value,
+        model: detailsModel.current.value,
+        year: detailsYear.current.value,
+        transmission: detailsTransmission.current.value,
+        mileage: detailsMileage.current.value,
+        fuel: detailsFuel.current.value,
+        color: detailsColor.current.value,
+        body_type: detailsType.current.value,
+        condition: detailsCondition.current.value,
+      };
+    }
+  }));
+
   return (
     <React.Fragment>
       <p>
-      {!isEditMode && <> {props.description})
-      <hr />
-      </> }
+        {!isEditMode && <> {vehicleData.description}
+          <hr />
+        </>}
       </p>
       <div className="col-md-7">
         <dt>Specifications</dt>
@@ -48,44 +70,56 @@ const Details = forwardRef((props, ref) => {
             {isEditMode ? <select ref={detailsBrand} onChange={handleBrandChange}>
               <option selected disabled>Select a Brand</option>
               {vehicleBrands.map((option, index) => (
-                <option key={index} value={option.value}>{option.label}</option>
+                vehicleData.brand.toLowerCase() === option.value.toLowerCase() ?
+                  <option key={index} value={option.value} selected>{option.label}</option>
+                  :
+                  <option key={index} value={option.value}>{option.label}</option>
               ))}
-            </select> : "N/A"}
+            </select> : toTitleCase(vehicleData.brand)}
           </dd>
           <dt className="col-sm-3">Model</dt>
           <dd className="col-sm-9">
             {isEditMode ? <select ref={detailsModel}>
               <option selected disabled>Select a Model</option>
               {models.map((model, index) => (
-                <option key={index} value={model}>{model}</option>
+                vehicleData.model.toLowerCase() === model.toLowerCase() ?
+                  <option key={index} value={model} selected>{model}</option>
+                  :
+                  <option key={index} value={model}>{model}</option>
               ))}
-            </select> : "N/A"}</dd>
+            </select> : toTitleCase(vehicleData.model)}</dd>
           <dt className="col-sm-3">Year</dt>
           <dd className="col-sm-9">{isEditMode ? <select ref={detailsYear}>
             {getYears().map((year, index) => (
-              <option key={index} value={year}>{year}</option>
+              vehicleData.yom === year ?
+                <option key={index} value={year} selected>{year}</option>
+                :
+                <option key={index} value={year}>{year}</option>
             ))}
-          </select> : "N/A"}</dd>
+          </select> : vehicleData.yom}</dd>
           <dt className="col-sm-3">Transmission</dt>
-          <dd className="col-sm-9">{isEditMode ? <select ref={detailsTransmission}>
+          <dd className="col-sm-9">{isEditMode ? <select ref={detailsTransmission} value={vehicleData.transmission.toLowerCase()}>
+            <option value="" disabled selected>Select Transmission Type</option>
             <option value="Automatic">Automatic</option>
             <option value="Manual">Manual</option>
             <option value="Other">Other</option>
-          </select> : "N/A"}</dd>
+          </select> : toTitleCase(vehicleData.transmission)}</dd>
           <dt className="col-sm-3">Mileage</dt>
-          <dd className="col-sm-9">{isEditMode ? <input type="text" defaultValue="N/A" Placeholder="Brand" ref={detailsMileage} /> : "N/A"}</dd>
+          <dd className="col-sm-9">{isEditMode ? <input type="number" defaultValue={vehicleData !== null ? vehicleData.mileage : ''} Placeholder="0" ref={detailsMileage} /> : vehicleData.mileage + " Km"}</dd>
           <dt className="col-sm-3">Fuel Type</dt>
-          <dd className="col-sm-9">{isEditMode ? <select ref={detailsFuel}>
+          <dd className="col-sm-9">{isEditMode ? <select ref={detailsFuel} value={vehicleData.fuel_type.toLowerCase()}>
+          <option value="" disabled selected>Select Fuel Type</option>
             <option value="Petrol">Petrol</option>
             <option value="Diesel">Diesel</option>
             <option value="Hybrid">Hybrid</option>
             <option value="Electric">Electric</option>
             <option value="Other">Other</option>
-          </select> : "N/A"}</dd>
+          </select> : toTitleCase(vehicleData.fuel_type)}</dd>
           <dt className="col-sm-3">Color</dt>
-          <dd className="col-sm-9">{isEditMode ? <input type="text" defaultValue="N/A" Placeholder="Brand" ref={detailsColor} /> : "N/A"}</dd>
+          <dd className="col-sm-9">{isEditMode ? <input type="text" defaultValue={vehicleData !== null ? toTitleCase(vehicleData.color) : ''} Placeholder="Color" ref={detailsColor} /> : toTitleCase(vehicleData.color)}</dd>
           <dt className="col-sm-3">Body Type</dt>
-          <dd className="col-sm-9">{isEditMode ? <select ref={detailsType}>
+          <dd className="col-sm-9">{isEditMode ? <select ref={detailsType} value={vehicleData.body_type.toLowerCase()}>
+          <option value="" disabled selected>Select Body Type</option>
             <option value="Sedan">Sedan</option>
             <option value="Hatchback">Hatchback</option>
             <option value="SUV">SUV</option>
@@ -96,16 +130,23 @@ const Details = forwardRef((props, ref) => {
             <option value="Truck">Truck</option>
             <option value="Supercar">Supercar</option>
             <option value="Other">Other</option>
-          </select> : "N/A"}</dd>
+          </select> : toTitleCase(vehicleData.body_type)}</dd>
           <dt className="col-sm-3">Condition</dt>
-          <dd className="col-sm-9">{isEditMode ? <select ref={detailsCondition}>
+          <dd className="col-sm-9">{isEditMode ? <select ref={detailsCondition} value={vehicleData.condition.toLowerCase()}>
+          <option value="" disabled selected>Select Condition</option>
             <option>Brand New</option><option>Used</option><option>Reconditioned</option>
-          </select> : "N/A"}</dd>
+          </select> : toTitleCase(vehicleData.condition)}</dd>
         </dl>}
       </div>
       <hr />
 
-      {!isEditMode && <p>Advertised on: </p> }
+      {!isEditMode && (
+        <p><b>Advertised on:</b> {new Date(vehicleData.created_at).toLocaleDateString('en-GB', {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric'
+        })}</p>
+      )}
     </React.Fragment>
   );
 });
