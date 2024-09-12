@@ -2,6 +2,7 @@ import { lazy, useRef, useState, useEffect } from "react";
 import { useParams } from 'react-router-dom';
 import { data } from "../../data";
 import { getSession } from "../../actions/session";
+import { toTitleCase } from '../../helpers/letterCaseChange'
 import axios from "axios";
 const CardFeaturedProduct = lazy(() => import("../../components/card/CardFeaturedProduct"));
 const CardServices = lazy(() => import("../../components/card/CardServices"));
@@ -19,6 +20,7 @@ const ProductDetailView = () => {
   const [isLoading, setIsLoading] = useState(true);
   const { id } = useParams();
   const detailsRef = useRef(null);
+  const inspectionRef = useRef(null);
   const detailsTitle = useRef(null);
   const detailsPrice = useRef(null);
   const detailsDescription = useRef(null);
@@ -73,11 +75,13 @@ const ProductDetailView = () => {
 
   const handleEditClick = () => {
     setIsEditMode(true);
+    if (vehicleData.inspection_status === 'accepted') {
+      alert('Modifying inspection booking details (date/location) will cause in additional payment as a mechanic has already accepted the booking.');
+    }
   };
 
   const handleSaveClick = () => {
     alert('Saving changes...');
-    setIsEditMode(false);
     if (detailsRef.current) {
       const details = detailsRef.current.getDetails();
       details.title = detailsTitle.current.value;
@@ -87,31 +91,37 @@ const ProductDetailView = () => {
       details.state = detailsState.current.value;
       details.postal_code = detailsPostalCode.current.value;
       details.seller_id = sessionData.user_id;
-      details.inspection_status = "None";
 
-      return; // Chek the axios and modify once the backend is ready
+      details.inspection_status = "not_requested";
+      const inspection = inspectionRef.current.getDetails();
+      if (vehicleData && vehicleData.inspection_status !== 'completed') {
+        if (inspection.inspectionPostCode !== '' && inspection.inspectionDate !== '') {
+          details.inspection_status = "requested";
+        }
+      }
 
       var data = null;
       if (isNew) {
         data = JSON.stringify({
-          "title": "test vehicle 2",
-          "color": "grey",
-          "brand": "Toyota",
-          "model": "corolla",
-          "yom": "2015",
-          "condition": "new",
-          "transmission": "auto",
-          "body_type": "sedan",
-          "fuel_type": "petrol",
-          "mileage": "5",
-          "description": "test description 1",
-          "price": "50000",
-          "seller_id": "66e1688736c5741cc47aac03",
-          "inspection_status": "requested",
-          "address": "5, Cun Place, Chadstone",
-          "state": "VIC",
-          "postal_code": "50000"
+          "title": details.title,
+          "color": details.color,
+          "brand": details.brand,
+          "model": details.model,
+          "yom": details.yom,
+          "condition": details.condition,
+          "transmission": details.transmission,
+          "body_type": details.body_type,
+          "fuel_type": details.fuel_type,
+          "mileage": details.mileage,
+          "description": details.description,
+          "price": details.price,
+          "seller_id": details.seller_id,
+          "inspection_status": details.inspection_status,
+          "address": details.address,
+          "state": details.state,
+          "postal_code": details.postal_code
         });
+        console.log("Data to be sent:", data);
       } else {
         data = createDataIfDifferent(details, vehicleData);
         if (data) {
@@ -125,7 +135,6 @@ const ProductDetailView = () => {
         }
       }
 
-      const axios = require('axios');
       let config = {
         method: isNew ? 'POST' : 'PUT',
         maxBodyLength: Infinity,
@@ -139,13 +148,25 @@ const ProductDetailView = () => {
 
       axios.request(config)
         .then((response) => {
-          console.log(JSON.stringify(response.data));
+          if (response.data.status) {
+            if (id === "new") {
+              alert("Ad posted successfully.");
+            } else {
+              alert("Ad updated successfully.");
+            }
+            window.location.href = "/listing/" + response.data.data._id;
+          } else {
+            alert("An error occurred. Please try again.");
+            console.log(JSON.stringify(response.data));
+          }
         })
         .catch((error) => {
+          alert("An error occurred. Please try again.");
           console.log(error);
         });
-
     }
+
+    setIsEditMode(false);
   };
 
   const handleCancelClick = () => {
@@ -154,6 +175,11 @@ const ProductDetailView = () => {
     if (id === "new") {
       window.location.href = "/listing";
     }
+  };
+
+  const handleDeleteClick = () => {
+    alert('Deleting ad...');
+    setIsEditMode(false);
   };
 
   const createDataIfDifferent = (newData, savedData) => {
@@ -167,6 +193,7 @@ const ProductDetailView = () => {
       }
     }
     data["_id"] = id;
+    // data['inspection_status'] = "not_requested";
 
     return Object.keys(data).length ? JSON.stringify(data) : null;
   };
@@ -204,7 +231,7 @@ const ProductDetailView = () => {
               </div>
               <div className="col-md-7">
                 <br></br>
-                <h1 className="h5 d-inline me-2">{isEditMode ? <input type="text" ref={detailsTitle} defaultValue={vehicleData !== null ? vehicleData.title : ''} Placeholder="Title" /> : vehicleData.title}</h1>
+                <h1 className="h5 d-inline me-2">{isEditMode ? <input type="text" ref={detailsTitle} defaultValue={vehicleData !== null ? vehicleData.title : ''} placeholder="Title" /> : toTitleCase(vehicleData.title)}</h1>
                 {!isEditMode && (
                   <>
                     <span className="badge bg-success me-2">New</span>
@@ -213,15 +240,16 @@ const ProductDetailView = () => {
                 )}
                 {sessionData && (isNew || sessionData.user_id === vehicleData.seller_id._id) && <>
                   {isEditMode && <span className="badge bg-dark me-2 float-right" onClick={handleCancelClick}>Cancel</span>}
+                  {!isEditMode && <span className="badge bg-dark me-2 float-right" onClick={handleDeleteClick}>Delete</span>}
                   <span className="badge bg-primary me-2 float-right" onClick={isEditMode ? handleSaveClick : handleEditClick}>{isEditMode ? 'Save' : 'Edit'}</span>
                 </>}
                 <div className="mb-3">
                   <br></br>
-                  <span className="fw-bold h5 me-2">${isEditMode ? <input type="text" ref={detailsPrice} defaultValue={vehicleData !== null ? vehicleData.price : ''} Placeholder="Price" /> : vehicleData.price}</span>
-                  {!isEditMode && <> <i className="bi bi-patch-check-fill text-success me-1" /> AutoAssured </>}
+                  <span className="fw-bold h5 me-2">${isEditMode ? <input type="text" ref={detailsPrice} defaultValue={vehicleData !== null ? vehicleData.price : ''} placeholder="Price" /> : vehicleData.price}</span>
+                  {!isEditMode && (vehicleData.inspection_status === "completed") && <> <i className="bi bi-patch-check-fill text-success me-1" /> AutoAssured </>}
                 </div>
                 <div>
-                  <p>{isEditMode ? <textarea ref={detailsDescription} defaultValue={vehicleData !== null ? vehicleData.description : ''} Placeholder="Description" /> : vehicleData.description}</p>
+                  <p>{isEditMode ? <textarea ref={detailsDescription} defaultValue={vehicleData !== null ? vehicleData.description : ''} placeholder="Description" /> : vehicleData.description}</p>
                   {!isEditMode ? <>
                     <p className="fw-bold mb-2 small">Vehicle Highlights</p>
                     <ul className="small">
@@ -232,24 +260,24 @@ const ProductDetailView = () => {
                     <details>
                       <summary className="fw-bold mb-2 small">Contact Details</summary>
                       <ul className="small">
-                        <li><b>Seller Name:</b> {vehicleData.seller_id.name}</li>
-                        <li><b>Email:</b> {vehicleData.seller_id.email}</li>
-                        <li><b>Address:</b> N/A</li>
+                        <li><b>Seller Name:</b> {toTitleCase(vehicleData.seller_id.name)}</li>
+                        <li><b>Email:</b> {(vehicleData.seller_id.email).toLowerCase()}</li>
+                        <li><b>Address:</b> {toTitleCase(vehicleData.address)}</li>
                       </ul>
                     </details>
                   </> : <>
                     <div className="row col-md-12">
                       <div className="col-md-3">
                         <label htmlFor="postalCode">Address</label><br></br>
-                        <input type="text" ref={detailsAddress} id="detailsAddress" placeholder="Address" />
+                        <input type="text" ref={detailsAddress} defaultValue={vehicleData !== null ? vehicleData.address : ''} id="detailsAddress" placeholder="Address" />
                       </div>
                       <div className="col-md-3">
                         <label htmlFor="inspectionDate">State</label><br></br>
-                        <input type="text" ref={detailsState} id="detailsState" placeholder="State" />
+                        <input type="text" ref={detailsState} defaultValue={vehicleData !== null ? vehicleData.state : ''} id="detailsState" placeholder="State" />
                       </div>
                       <div className="col-md-3">
                         <label htmlFor="vehicleRego">Postal Code</label><br></br>
-                        <input type="text" ref={detailsPostalCode} id="detailsPostalCode" placeholder="Postal Code" />
+                        <input type="text" ref={detailsPostalCode} defaultValue={vehicleData !== null ? vehicleData.postal_code : ''} id="detailsPostalCode" placeholder="Postal Code" />
                       </div>
                     </div>
                   </>}
@@ -326,7 +354,7 @@ const ProductDetailView = () => {
                       aria-controls="nav-ship-returns"
                       aria-selected="false"
                     >
-                      {isEditMode ? "Book Inspection" : "Our Assurance"}
+                      {isEditMode ? (vehicleData && (vehicleData.inspection_status === 'completed' || vehicleData.inspection_status === 'accepted') ? "Our Assurance" : "Book Inspection") : ("Our Assurance")}
                     </a>
                     {!isEditMode ? <>
                       <a
@@ -362,7 +390,7 @@ const ProductDetailView = () => {
                     role="tabpanel"
                     aria-labelledby="nav-details-tab"
                   >
-                    <Details isEditMode={isEditMode} vehicleData={vehicleData} ref={detailsRef} />
+                    <Details isEditMode={isEditMode ? (vehicleData && (vehicleData.inspection_status === 'completed' || vehicleData.inspection_status === 'accepted') ? false : isEditMode) : (isEditMode)} vehicleData={vehicleData} ref={detailsRef} />
                   </div>
                   {isEditMode ? <>
                     <div
@@ -393,7 +421,7 @@ const ProductDetailView = () => {
                     role="tabpanel"
                     aria-labelledby="nav-ship-returns-tab"
                   >
-                    <OurAssurance isEditMode={isEditMode} id={id} vehicleData={vehicleData} />
+                    <OurAssurance isEditMode={isEditMode ? (vehicleData && (vehicleData.inspection_status === 'completed' || vehicleData.inspection_status === 'accepted') ? false : isEditMode) : (isEditMode)} id={id} vehicleData={vehicleData} ref={inspectionRef} />
                   </div>
                   <div
                     className="tab-pane fade"
