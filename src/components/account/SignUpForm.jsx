@@ -5,7 +5,6 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import renderFormGroupField from "../../helpers/renderFormGroupField";
 import renderFormField from "../../helpers/renderFormField";
-import { setSession } from "../../actions/session";
 import { required, maxLength20, minLength8, email, name } from "../../helpers/validation";
 import { ReactComponent as IconEmail } from "bootstrap-icons/icons/envelope.svg";
 import { ReactComponent as IconShieldLock } from "bootstrap-icons/icons/shield-lock.svg";
@@ -24,7 +23,6 @@ const SignUpForm = (props) => {
       method: 'post',
       maxBodyLength: Infinity,
       url: `${process.env.REACT_APP_API_URL}/api/users`,
-      // url: 'https://jsonplaceholder.typicode.com/posts', // Dummy API endpoint
       headers: { 
         'Content-Type': 'application/json'
       },
@@ -36,9 +34,9 @@ const SignUpForm = (props) => {
       const response = await axios.request(config);
       if (response.data.status) {
         console.log(response.data.data);
-        setSession(response.data.data);
-        // alert("Sign up successful!\nPlease sign in to continue.");
-        window.location.href = "/account/profile";
+        // setSession(response.data.data);
+        alert("Sign up successful!\nPlease sign in to continue.");
+        window.location.href = "/account/signin";
       } else {
         alert("Sign up failed. Please check your details.");
         console.log("User registration failed: "+response.data.msg);

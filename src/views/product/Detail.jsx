@@ -15,18 +15,25 @@ const ProductDetailView = () => {
   const [sessionData, setSessionData] = useState(null);
   const [vehicleData, setVehicleData] = useState(null);
   const [isEditMode, setIsEditMode] = useState(false);
+  const [isNew, setIsNew] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const { id } = useParams();
   const detailsRef = useRef(null);
-  
+  const detailsTitle = useRef(null);
+  const detailsPrice = useRef(null);
+  const detailsDescription = useRef(null);
+  const detailsAddress = useRef(null);
+  const detailsState = useRef(null);
+  const detailsPostalCode = useRef(null);
+
   useEffect(() => {
     const session = getSession();
     if (session) {
       setSessionData(session);
-      console.log(session._id);
     }
 
     if (id !== "") {
+      setVehicleData(null);
       if (id !== "new") {
         setIsEditMode(false);
         let config = {
@@ -53,6 +60,7 @@ const ProductDetailView = () => {
           });
       } else {
         if (session) {
+          setIsNew(true);
           setIsEditMode(true);
           setIsLoading(false);
         } else {
@@ -67,18 +75,100 @@ const ProductDetailView = () => {
     setIsEditMode(true);
   };
 
-  const handleSaveClick = (details) => {
+  const handleSaveClick = () => {
     alert('Saving changes...');
     setIsEditMode(false);
     if (detailsRef.current) {
       const details = detailsRef.current.getDetails();
-      alert(`Brand: ${details.brand}`); // Check if brand is defined
+      details.title = detailsTitle.current.value;
+      details.price = detailsPrice.current.value;
+      details.description = detailsDescription.current.value;
+      details.address = detailsAddress.current.value;
+      details.state = detailsState.current.value;
+      details.postal_code = detailsPostalCode.current.value;
+      details.seller_id = sessionData.user_id;
+      details.inspection_status = "None";
+
+      return; // Chek the axios and modify once the backend is ready
+
+      var data = null;
+      if (isNew) {
+        data = JSON.stringify({
+          "title": "test vehicle 2",
+          "color": "grey",
+          "brand": "Toyota",
+          "model": "corolla",
+          "yom": "2015",
+          "condition": "new",
+          "transmission": "auto",
+          "body_type": "sedan",
+          "fuel_type": "petrol",
+          "mileage": "5",
+          "description": "test description 1",
+          "price": "50000",
+          "seller_id": "66e1688736c5741cc47aac03",
+          "inspection_status": "requested",
+          "address": "5, Cun Place, Chadstone",
+          "state": "VIC",
+          "postal_code": "50000"
+        });
+      } else {
+        data = createDataIfDifferent(details, vehicleData);
+        if (data) {
+          console.log("Data to be sent:", data);
+          console.log("-------------------");
+          console.log("Saved Data:", JSON.stringify(vehicleData));
+          console.log("-------------------");
+          console.log("New Data:", JSON.stringify(details));
+        } else {
+          console.log("No differences found.");
+        }
+      }
+
+      const axios = require('axios');
+      let config = {
+        method: isNew ? 'POST' : 'PUT',
+        maxBodyLength: Infinity,
+        url: `${process.env.REACT_APP_API_URL}/api/vehicle/`,
+        headers: {
+          'Authorization': `Token ${sessionData.token}`,
+          'Content-Type': 'application/json'
+        },
+        data: data
+      };
+
+      axios.request(config)
+        .then((response) => {
+          console.log(JSON.stringify(response.data));
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+
     }
   };
 
   const handleCancelClick = () => {
     alert('Cancelling edit mode...');
     setIsEditMode(false);
+    if (id === "new") {
+      window.location.href = "/listing";
+    }
+  };
+
+  const createDataIfDifferent = (newData, savedData) => {
+    const data = {};
+
+    for (let key in newData) {
+      if (newData[key] === null || newData[key] === '') {
+        data[key] = savedData[key];
+      } else if (newData[key] !== savedData[key]) {
+        data[key] = newData[key];
+      }
+    }
+    data["_id"] = id;
+
+    return Object.keys(data).length ? JSON.stringify(data) : null;
   };
 
   return (
@@ -114,25 +204,25 @@ const ProductDetailView = () => {
               </div>
               <div className="col-md-7">
                 <br></br>
-                <h1 className="h5 d-inline me-2">{isEditMode ? <input type="text" defaultValue={vehicleData !== null ? vehicleData.title : ''} /> : vehicleData.title}</h1>
+                <h1 className="h5 d-inline me-2">{isEditMode ? <input type="text" ref={detailsTitle} defaultValue={vehicleData !== null ? vehicleData.title : ''} Placeholder="Title" /> : vehicleData.title}</h1>
                 {!isEditMode && (
                   <>
                     <span className="badge bg-success me-2">New</span>
                     <span className="badge bg-danger me-2">Hot</span>
                   </>
                 )}
-                {sessionData && sessionData._id === vehicleData.seller_id._id && <>
+                {sessionData && (isNew || sessionData.user_id === vehicleData.seller_id._id) && <>
                   {isEditMode && <span className="badge bg-dark me-2 float-right" onClick={handleCancelClick}>Cancel</span>}
                   <span className="badge bg-primary me-2 float-right" onClick={isEditMode ? handleSaveClick : handleEditClick}>{isEditMode ? 'Save' : 'Edit'}</span>
                 </>}
                 <div className="mb-3">
                   <br></br>
-                  <span className="fw-bold h5 me-2">${isEditMode ? <input type="text" defaultValue={vehicleData !== null ? vehicleData.price : ''} Placeholder="Price" /> : vehicleData.price}</span>
+                  <span className="fw-bold h5 me-2">${isEditMode ? <input type="text" ref={detailsPrice} defaultValue={vehicleData !== null ? vehicleData.price : ''} Placeholder="Price" /> : vehicleData.price}</span>
                   {!isEditMode && <> <i className="bi bi-patch-check-fill text-success me-1" /> AutoAssured </>}
                 </div>
                 <div>
-                  <p>{isEditMode ? <textarea defaultValue={vehicleData !== null ? vehicleData.description : ''} Placeholder="Description" /> : vehicleData.description}</p>
-                  {!isEditMode && <>
+                  <p>{isEditMode ? <textarea ref={detailsDescription} defaultValue={vehicleData !== null ? vehicleData.description : ''} Placeholder="Description" /> : vehicleData.description}</p>
+                  {!isEditMode ? <>
                     <p className="fw-bold mb-2 small">Vehicle Highlights</p>
                     <ul className="small">
                       <li><b>Brand:</b> {vehicleData.brand}</li>
@@ -147,6 +237,21 @@ const ProductDetailView = () => {
                         <li><b>Address:</b> N/A</li>
                       </ul>
                     </details>
+                  </> : <>
+                    <div className="row col-md-12">
+                      <div className="col-md-3">
+                        <label htmlFor="postalCode">Address</label><br></br>
+                        <input type="text" ref={detailsAddress} id="detailsAddress" placeholder="Address" />
+                      </div>
+                      <div className="col-md-3">
+                        <label htmlFor="inspectionDate">State</label><br></br>
+                        <input type="text" ref={detailsState} id="detailsState" placeholder="State" />
+                      </div>
+                      <div className="col-md-3">
+                        <label htmlFor="vehicleRego">Postal Code</label><br></br>
+                        <input type="text" ref={detailsPostalCode} id="detailsPostalCode" placeholder="Postal Code" />
+                      </div>
+                    </div>
                   </>}
                 </div>
 
