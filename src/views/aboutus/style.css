@@ -1,0 +1,222 @@
+.header {
+    background-color: #28559A;
+    color: white;
+    padding: 60px 20px;
+    text-align: center;
+}
+
+.about-section {
+    padding: 40px 20px;
+    display: flex;
+    align-items: center;
+    text-align: center;
+}
+
+.about-img {
+    width: 50%;
+    height: auto;
+    margin-right: 20px;
+}
+
+.about-content {
+    max-width: 800px;
+    text-align: left;
+}
+
+.about-content h2 {
+    font-size: 32px;
+    margin-bottom: 20px;
+}
+
+
+.services-section {
+    padding: 40px 20px;
+    text-align: center;
+    background-color: #e0e0e0;
+}
+
+.services-container {
+    max-width: 1200px;
+    margin: auto;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.services-text {
+    flex: 1;
+    text-align: left;
+    padding: 20px;
+}
+
+.services-text h2 {
+    font-size: 28px;
+    color: #28559A;
+}
+
+.services-text ul {
+    text-align: left;
+    list-style-type: disc;
+    padding-left: 20px;
+}
+
+.services-image {
+    flex: 1;
+}
+
+.services-image img {
+    width: 100%;
+    border-radius: 10px;
+}
+
+
+.section-container {
+    padding: 40px 20px;
+    display: flex;
+    align-items: center;
+    text-align: center;
+}
+
+.section-image {
+    width: 50%;
+    height: auto;
+    margin-right: 20px;
+}
+
+.text-content {
+    max-width: 800px;
+    text-align: justify;
+    margin-right: 30px;
+}
+
+.text-content h2 {
+    font-size: 32px;
+    margin-bottom: 20px;
+}
+
+
+.section-container {
+    padding: 40px 20px;
+    display: flex;
+    align-items: flex-start;
+}
+
+.text-content-wrapper {
+    max-width: 800px;
+    padding-right: 20px;
+}
+
+.section-title {
+    font-size: 32px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.text-block {
+    max-width: 800px;
+    margin-left: 40px;
+    padding-right: 60px;
+    text-align: left;
+}
+
+.section-image {
+    width: 50%;
+    height: auto;
+}
+.features-section {
+    padding: 40px 20px;
+    text-align: center;
+    background-color: #e0e0e0;
+}
+
+.section-title {
+    font-size: 32px;
+    margin-bottom: 20px;
+}
+
+.features-content {
+    margin-left: 60px;
+    margin-right: 60px;
+    margin: auto;
+    text-align: left;
+}
+
+.features-content h5 {
+    font-weight: normal;
+}
+
+.features-content ul {
+    list-style-type: disc;
+    margin-left: 20px;
+}
+.vision-section {
+    padding: 40px 20px;
+    display: flex;
+    align-items: flex-start;
+}
+
+.vision-image {
+    width: 600px;
+    height: 300px;
+    margin-left: 60px;
+    margin-right: 60px;
+}
+
+.vision-content {
+    max-width: 800px;
+}
+
+.section-title-left {
+    font-size: 32px;
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+.vision-content p {
+    text-align: justify;
+    margin-right: 45px;
+}
+
+.glance-section {
+    padding: 40px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.section-title {
+    font-size: 32px;
+    margin-bottom: 20px;
+}
+
+.glance-stats {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 40px;
+    flex-wrap: wrap;
+}
+
+.glance-item {
+    margin: 20px;
+    text-align: center;
+}
+
+.glance-item h3 {
+    font-size: 36px;
+    color: #1F75FE;
+}
+
+.glance-item p {
+    font-size: 18px;
+}
+
+.footer {
+    background-color: #D3D3D3;
+    padding: 20px;
+    text-align: center;
+}
+
+.footer p {
+    margin: 0; /* Ensure no extra margin is added by default */
+}
