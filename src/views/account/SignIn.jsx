@@ -6,7 +6,7 @@ const SignInView = () => {
   useEffect(() => {
     const session = getSession();
     if (session) {
-      alert("You'are already logged in using '"+session+"'.\nPlease logout to sign in as a different user.");
+      alert("You'are already logged in as '"+session.name+"'.\nPlease logout to sign in as a different user.");
       window.location.href = "/account/profile";
     }
   }, []);

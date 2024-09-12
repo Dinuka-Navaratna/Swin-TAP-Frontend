@@ -1,5 +1,5 @@
 import React, { lazy, Component } from "react";
-import { data } from "../../data";
+import axios from "axios";
 const Paging = lazy(() => import("../../components/Paging"));
 const Breadcrumb = lazy(() => import("../../components/Breadcrumb"));
 const FilterCategory = lazy(() => import("../../components/filter/Category"));
@@ -32,8 +32,8 @@ class ProductListView extends Component {
   }
 
   onPageChanged = (page) => {
-    let products = this.getProducts();
     const { currentPage, totalPages, pageLimit } = page;
+    let products = this.getProducts(currentPage, '');
     const offset = (currentPage - 1) * pageLimit;
     const currentProducts = products.slice(offset, offset + pageLimit);
     this.setState({ currentPage, currentProducts, totalPages });
@@ -43,14 +43,91 @@ class ProductListView extends Component {
     this.setState({ view });
   };
 
-  getProducts = () => {
-    let products = data.products;
-    products = products.concat(products);
-    products = products.concat(products);
-    products = products.concat(products);
-    products = products.concat(products);
-    products = products.concat(products);
-    return products;
+  getProducts = (page, brand) => {
+    let config = {
+      method: 'get',
+      maxBodyLength: Infinity,
+      url: `${process.env.REACT_APP_API_URL}/api/vehicle?page=${page}&limit=9&brand=${brand}`
+    };
+    
+    axios.request(config)
+    .then((response) => {
+      console.log(JSON.stringify(response.data));
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+    // return products;
+    return [
+      {
+        id: 1,
+        sku: "FAS-01",
+        link: "/listing/v4r",
+        name: "Advertisement Title",
+        img: "../../images/products/vehicle.jpg",
+        price: 1800,
+        originPrice: 0,
+        discountPrice: 0,
+        discountPercentage: 0,
+        isNew: true,
+        isHot: false,
+        star: 1,
+        isFreeShipping: false,
+        description:
+          "Ad Description. Ad Description. Ad Description. Ad Description. Ad Description. Ad Description.",
+      },
+      {
+        id: 2,
+        sku: "FAS-02",
+        link: "/listing/3vf34",
+        name: "Advertisement Title",
+        img: "../../images/products/vehicle.jpg",
+        price: 4750,
+        originPrice: 0,
+        discountPrice: 0,
+        discountPercentage: 0,
+        isNew: false,
+        isHot: true,
+        star: 1,
+        isFreeShipping: false,
+        description:
+          "Ad Description. Ad Description. Ad Description. Ad Description. Ad Description. Ad Description.",
+      },
+      {
+        id: 3,
+        sku: "FAS-03",
+        link: "/listing/3vqf4",
+        name: "Advertisement Title",
+        img: "../../images/products/vehicle.jpg",
+        price: 1900,
+        originPrice: 0,
+        discountPrice: 0,
+        discountPercentage: 0,
+        isNew: true,
+        isHot: true,
+        star: 1,
+        isFreeShipping: false,
+        description:
+          "Ad Description. Ad Description. Ad Description. Ad Description. Ad Description. Ad Description.",
+      },
+      {
+        id: 4,
+        sku: "FAS-04",
+        link: "/listing/243t34qts",
+        name: "Advertisement Title",
+        img: "../../images/products/vehicle.jpg",
+        price: 5000,
+        originPrice: 0,
+        discountPrice: 0,
+        discountPercentage: 0,
+        isNew: false,
+        isHot: false,
+        star: 1,
+        isFreeShipping: false,
+        description:
+          "Ad Description. Ad Description. Ad Description. Ad Description. Ad Description. Ad Description.",
+      },
+    ]
   };
 
   render() {

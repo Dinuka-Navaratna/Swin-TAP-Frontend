@@ -3,6 +3,7 @@ import { Field, reduxForm } from "redux-form";
 import { compose } from "redux";
 import { Link } from "react-router-dom";
 import axios from "axios";
+import jwtDecode from 'jwt-decode';
 import renderFormGroupField from "../../helpers/renderFormGroupField";
 import { setSession } from "../../actions/session";
 import { required, email, maxLength20, minLength8 } from "../../helpers/validation";
@@ -19,7 +20,6 @@ const SignInForm = (props) => {
       method: 'post',
       maxBodyLength: Infinity,
       url: `${process.env.REACT_APP_API_URL}/api/users/login`,
-      // url: 'https://jsonplaceholder.typicode.com/posts', // Dummy API endpoint
       headers: {
         'Content-Type': 'application/json'
       },
@@ -30,7 +30,12 @@ const SignInForm = (props) => {
       const response = await axios.request(config);
       console.log('Response:', response.data);
       if (response.data.status) {
-        setSession(response.data.data);
+        const decoded = jwtDecode(response.data.data);
+        const sessionData = {
+          ...decoded,
+          token: response.data.data
+        };
+        setSession(sessionData);
         alert("Login successful!");
         window.location.href = "/account/profile";
       } else {

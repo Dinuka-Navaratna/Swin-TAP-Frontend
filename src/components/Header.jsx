@@ -122,7 +122,7 @@ const Header = () => {
                   </Link>
                 </li>
                 <li className="nav-item">
-                  <Link className="nav-link" to="/category">
+                  <Link className="nav-link" to="/listing/">
                     Vehicle Listing
                   </Link>
                 </li>
@@ -175,36 +175,42 @@ const Header = () => {
                       </Link>
                     </li>
                     <li>
-                      <Link className="dropdown-item" to="/star/zone">
+                      <Link className="dropdown-item" to="/account/inspections">
                         <i className="bi bi-star-fill text-warning"></i>&nbsp;
-                        Star Zone
+                        My Ads
                       </Link>
                     </li>
                     <li>
-                      <Link className="dropdown-item" to="/account/orders">
+                      <Link className="dropdown-item" to="/account/inspections">
                         <i className="bi bi-list-check text-primary"></i>&nbsp;
-                        Orders
+                        My Inspections
                       </Link>
                     </li>
-                    <li>
+                    {/* <li>
                       <Link className="dropdown-item" to="/account/wishlist">
                         <i className="bi bi-heart-fill text-danger"></i>&nbsp;
                         Wishlist
                       </Link>
-                    </li>
+                    </li> */}
                     <li>
                       <hr className="dropdown-divider" />
                     </li>
-                    <li>
+                    {/* <li>
                       <Link className="dropdown-item" to="/account/notification">
                         <i className="bi bi-bell-fill text-primary"></i>&nbsp;
                         Notification
                       </Link>
-                    </li>
+                    </li> */}
                     <li>
                       <Link className="dropdown-item" to="/support">
                         <i className="bi bi-info-circle-fill text-success"></i>&nbsp;
                         Support
+                      </Link>
+                    </li>
+                    <li>
+                      <Link className="dropdown-item" to="/listing/new">
+                        <i className="bi bi-plus-circle-fill text-primary"></i>&nbsp;
+                        Post Ad
                       </Link>
                     </li>
                     <li>
