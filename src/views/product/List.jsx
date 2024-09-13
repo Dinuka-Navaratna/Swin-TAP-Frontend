@@ -26,108 +26,36 @@ class ProductListView extends Component {
     view: "grid",
   };
 
-  UNSAFE_componentWillMount() {
-    const totalItems = this.getProducts().length;
-    this.setState({ totalItems });
-  }
-
-  onPageChanged = (page) => {
-    const { currentPage, totalPages, pageLimit } = page;
-    let products = this.getProducts(currentPage, '');
-    const offset = (currentPage - 1) * pageLimit;
-    const currentProducts = products.slice(offset, offset + pageLimit);
-    this.setState({ currentPage, currentProducts, totalPages });
+  onPageChanged = async (page) => {
+    const { currentPage, totalPages } = page;
+    let products = await this.getProducts(currentPage, '');
+    if (!products) {
+      products = [];
+    }
+    this.setState({ currentPage, currentProducts: products, totalPages });
   };
 
   onChangeView = (view) => {
     this.setState({ view });
   };
 
-  getProducts = (page, brand) => {
+  getProducts = async (page, brand) => {
     let config = {
       method: 'get',
       maxBodyLength: Infinity,
-      url: `${process.env.REACT_APP_API_URL}/api/vehicle?page=${page}&limit=9&brand=${brand}`
+      url: `${process.env.REACT_APP_API_URL}/api/vehicle?page=${page !== null ? page : ''}&limit=9&brand=${brand !== null ? brand : ''}`
     };
-    
-    axios.request(config)
-    .then((response) => {
-      console.log(JSON.stringify(response.data));
-    })
-    .catch((error) => {
+
+    try {
+      const response = await axios.request(config);
+      const ads = response.data.data;
+      const totalItems = response.data.totalItems; // Assuming the total number of items is returned by the backend
+      this.setState({ totalItems });
+      return ads;
+    } catch (error) {
       console.log(error);
-    });
-    // return products;
-    return [
-      {
-        id: 1,
-        sku: "FAS-01",
-        link: "/listing/v4r",
-        name: "Advertisement Title",
-        img: "../../images/products/vehicle.jpg",
-        price: 1800,
-        originPrice: 0,
-        discountPrice: 0,
-        discountPercentage: 0,
-        isNew: true,
-        isHot: false,
-        star: 1,
-        isFreeShipping: false,
-        description:
-          "Ad Description. Ad Description. Ad Description. Ad Description. Ad Description. Ad Description.",
-      },
-      {
-        id: 2,
-        sku: "FAS-02",
-        link: "/listing/3vf34",
-        name: "Advertisement Title",
-        img: "../../images/products/vehicle.jpg",
-        price: 4750,
-        originPrice: 0,
-        discountPrice: 0,
-        discountPercentage: 0,
-        isNew: false,
-        isHot: true,
-        star: 1,
-        isFreeShipping: false,
-        description:
-          "Ad Description. Ad Description. Ad Description. Ad Description. Ad Description. Ad Description.",
-      },
-      {
-        id: 3,
-        sku: "FAS-03",
-        link: "/listing/3vqf4",
-        name: "Advertisement Title",
-        img: "../../images/products/vehicle.jpg",
-        price: 1900,
-        originPrice: 0,
-        discountPrice: 0,
-        discountPercentage: 0,
-        isNew: true,
-        isHot: true,
-        star: 1,
-        isFreeShipping: false,
-        description:
-          "Ad Description. Ad Description. Ad Description. Ad Description. Ad Description. Ad Description.",
-      },
-      {
-        id: 4,
-        sku: "FAS-04",
-        link: "/listing/243t34qts",
-        name: "Advertisement Title",
-        img: "../../images/products/vehicle.jpg",
-        price: 5000,
-        originPrice: 0,
-        discountPrice: 0,
-        discountPercentage: 0,
-        isNew: false,
-        isHot: false,
-        star: 1,
-        isFreeShipping: false,
-        description:
-          "Ad Description. Ad Description. Ad Description. Ad Description. Ad Description. Ad Description.",
-      },
-    ]
+      return [];
+    }
   };
 
   render() {
@@ -151,10 +79,7 @@ class ProductListView extends Component {
             <div className="col-md-3">
               <FilterCategory />
               <FilterPrice />
-              {/* <FilterSize /> */}
-              {/* <FilterStar /> */}
               <FilterColor />
-              {/* <FilterClear /> */}
               <FilterTag />
               <CardServices />
             </div>
@@ -182,11 +107,10 @@ class ProductListView extends Component {
                       aria-label="Grid"
                       type="button"
                       onClick={() => this.onChangeView("grid")}
-                      className={`btn ${
-                        this.state.view === "grid"
-                          ? "btn-primary"
-                          : "btn-outline-primary"
-                      }`}
+                      className={`btn ${this.state.view === "grid"
+                        ? "btn-primary"
+                        : "btn-outline-primary"
+                        }`}
                     >
                       <i className="bi bi-grid" />
                     </button>
@@ -194,11 +118,10 @@ class ProductListView extends Component {
                       aria-label="List"
                       type="button"
                       onClick={() => this.onChangeView("list")}
-                      className={`btn ${
-                        this.state.view === "list"
-                          ? "btn-primary"
-                          : "btn-outline-primary"
-                      }`}
+                      className={`btn ${this.state.view === "list"
+                        ? "btn-primary"
+                        : "btn-outline-primary"
+                        }`}
                     >
                       <i className="bi bi-list" />
                     </button>
