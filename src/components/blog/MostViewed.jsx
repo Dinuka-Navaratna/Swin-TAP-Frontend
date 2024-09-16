@@ -16,7 +16,7 @@ const MostViewed = (props) => {
           />
           <div className="card-img-overlay">
             <h5 className="card-title position-absolute bottom-0 mb-3">
-            Count on our certified mobile mechanics for reliable checks.
+            Count on our certified mobile mechanics for reliable checks
             </h5>
           </div>
         </Link>
