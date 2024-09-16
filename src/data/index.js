@@ -21,7 +21,7 @@ export const data = {
   ],
   iconProducts: [
     {
-      to: "/product/detail",
+      to: "/listing/details",
       img: "IconLaptop",
       title: "Laptop",
       text: " Upto 20% off",
@@ -29,7 +29,7 @@ export const data = {
       cssClass: "text-primary",
     },
     {
-      to: "/product/detail",
+      to: "/listing/details",
       img: "IconHeadset",
       title: "Headset",
       text: " Upto 50% off",
@@ -37,7 +37,7 @@ export const data = {
       cssClass: "text-secondary",
     },
     {
-      to: "/product/detail",
+      to: "/listing/details",
       img: "IconPhone",
       title: "Phone",
       text: " Upto 20% off",
@@ -45,7 +45,7 @@ export const data = {
       cssClass: "text-danger",
     },
     {
-      to: "/product/detail",
+      to: "/listing/details",
       img: "IconTv",
       title: "TV",
       text: " Upto 25% off",
@@ -53,7 +53,7 @@ export const data = {
       cssClass: "text-warning",
     },
     {
-      to: "/product/detail",
+      to: "/listing/details",
       img: "IconDisplay",
       title: "Display",
       text: " Upto 30% off",
@@ -61,7 +61,7 @@ export const data = {
       cssClass: "text-info",
     },
     {
-      to: "/product/detail",
+      to: "/listing/details",
       img: "IconHdd",
       title: "HDD",
       text: " Upto 15% off",
@@ -69,7 +69,7 @@ export const data = {
       cssClass: "text-success",
     },
     {
-      to: "/product/detail",
+      to: "/listing/details",
       img: "IconUpcScan",
       title: "UPC Scan",
       text: " Upto 45% off",
@@ -77,7 +77,7 @@ export const data = {
       cssClass: "text-muted",
     },
     {
-      to: "/product/detail",
+      to: "/listing/details",
       img: "IconTools",
       title: "Tools",
       text: " Upto 50% off",
@@ -89,7 +89,7 @@ export const data = {
     {
       id: 1,
       sku: "FAS-01",
-      link: "/product/detail",
+      link: "/listing/v4r",
       name: "Advertisement Title",
       img: "../../images/products/vehicle.jpg",
       price: 1800,
@@ -106,7 +106,7 @@ export const data = {
     {
       id: 2,
       sku: "FAS-02",
-      link: "/product/detail",
+      link: "/listing/3vf34",
       name: "Advertisement Title",
       img: "../../images/products/vehicle.jpg",
       price: 4750,
@@ -123,7 +123,7 @@ export const data = {
     {
       id: 3,
       sku: "FAS-03",
-      link: "/product/detail",
+      link: "/listing/3vqf4",
       name: "Advertisement Title",
       img: "../../images/products/vehicle.jpg",
       price: 1900,
@@ -140,7 +140,7 @@ export const data = {
     {
       id: 4,
       sku: "FAS-04",
-      link: "/product/detail",
+      link: "/listing/243t34qts",
       name: "Advertisement Title",
       img: "../../images/products/vehicle.jpg",
       price: 5000,
