@@ -1,0 +1,13 @@
+.carousel-inner {
+    height: 25vh;
+}
+
+.test {
+    font-weight: bold;
+    color: red;
+}
+
+.container {
+    width: 100%;
+    max-width: 100%;
+}
