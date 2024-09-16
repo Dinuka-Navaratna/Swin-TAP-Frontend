@@ -9,7 +9,7 @@ const Widgets = (props) => {
   return (
     <React.Fragment>
       <About title="About Us" />
-      <Follow title="Follow us" />
+      <Follow title="Follow Us" />
       <MostViewed title="Most Viewed" />
       <Tags title="Tags" />
       <Archives title="Archives" />
