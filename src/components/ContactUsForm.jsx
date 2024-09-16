@@ -47,11 +47,11 @@ const ContactUsForm = (props) => {
         </div>
         <div className="col-md-6">
           <Field
-            name="company"
+            name="subject"
             type="text"
-            label="Company"
+            label="Subject"
             component={renderFormGroupField}
-            placeholder="Your company name"
+            placeholder="Your Subject"
             icon={IconBuilding}
             required={true}
             validate={[required, maxLength50]}
@@ -92,6 +92,7 @@ const ContactUsForm = (props) => {
           />
         </div>
       </div>
+
       <div className="row g-3">
         <div className="col-md-12">
           <Field

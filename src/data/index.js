@@ -156,57 +156,58 @@ export const data = {
     },
   ],
   blogBanner: [
+    
     {
       to: "/blog/detail",
-      img: "../../images/blog/nature-1.webp",
-      title: "First slide label",
-      description: "Nulla vitae elit libero, a pharetra augue mollis interdum",
+      img: "../../images/assurance/sellCar.jpg",
+      title: "Sell your vehicle on AutoAssure",
+      description: "Experience the ease and efficiency of selling your car with AutoAssure, where you'll reach thousands of potential buyers instantly.",
     },
     {
       to: "/blog/detail",
-      img: "../../images/blog/nature-2.webp",
-      title: "Second slide label",
-      description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+      img: "../../images/assurance/mobileMechanic.jpg",
+      title: "AutoAssure vehicle inspections",
+      description: "Get peace of mind with our mobile mechanic pre inspection detailed reports, transparent results, and ready-to-sell confidence.",
     },
     {
       to: "/blog/detail",
-      img: "../../images/blog/nature-3.webp",
-      title: "Third slide label",
-      description: "Praesent commodo cursus magna, vel scelerisque nisl.",
+      img: "../../images/assurance/buyCar.jpg",
+      title: "Buy vehicle through AutoAssure",
+      description: "Find your perfect car with AutoAssurance, for transparent pricing, and total convenience.",
     },
   ],
   blogList: [
     {
       to: "/blog/detail",
-      img: "../../images/blog/nature-1.webp",
+      img: "../../images/assurance/buy.jfif",
       title:
-        "It is a long established fact that a reader will be distracted by the readable content",
+        "Ready to sell your car? Our platform makes it easy, fast, and stress-free.",
       description:
-        "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s.",
+        "We understand that selling a car in today’s market can be challenging, with fluctuating demand and complex processes. That’s why we’ve streamlined everything for you—just list your car with AutoAssure, and we’ll connect you with serious buyers quickly. Plus, our expert resources guide you through every step, from setting the right price to handling paperwork. Selling your car has never been this simple or rewarding.",
       publishDate: "Jul 05, 2020",
       tags: ["Branding", "Design"],
-      commentCount: 2,
+      commentCount: 80,
     },
     {
       to: "/blog/detail",
-      img: "../../images/blog/nature-2.webp",
+      img: "../../images/assurance/sell.jfif",
       title:
-        "Contrary to popular belief, Lorem Ipsum is not simply random text",
+        "Looking for your next car? Our platform offers a wide range of quality vehicles, making it easy to find exactly what you need.",
       description:
-        "There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour",
+        "We know that buying a car can be overwhelming, especially with today’s supply challenges and long wait times. That’s why we’ve curated a seamless shopping experience—browse our extensive listings, compare options, and get expert advice to make the right choice. Buying a car has never been this straightforward or satisfying.",
       publishDate: "Aug 05, 2020",
       tags: ["Branding", "Design"],
-      commentCount: 3,
+      commentCount: 75,
     },
     {
       to: "/",
-      img: "../../images/blog/nature-3.webp",
-      title: "The standard chunk of Lorem Ipsum used since the 1500s",
+      img: "../../images/assurance/inspect.jfif",
+      title: "Get your car ready to sell with our mobile mechanic pre-inspection service.",
       description:
-        "It uses a dictionary of over 200 Latin words, combined with a handful of model sentence structures, to generate Lorem Ipsum which looks reasonable.",
+        "We bring the inspection to you, ensuring your vehicle is in top shape before hitting the market. With a detailed report in hand, you can attract serious buyers and secure the best price, all while selling with confidence. Make your sale smoother and faster by letting us take care of the inspection—right at your doorstep.",
       publishDate: "Sep 05, 2020",
       tags: ["Branding", "Design"],
-      commentCount: 4,
+      commentCount: 100,
     },
   ],
 };
