@@ -57,13 +57,13 @@ class ProductListView extends Component {
       let config = {
         method: 'get',
         maxBodyLength: Infinity,
-        url: `${process.env.REACT_APP_API_URL}/api/vehicle?&postalCode=${finalSuburb !== null ? finalSuburb : ''}&page=${page !== null ? page : ''}&limit=15&brand=${finalBrand !== null ? finalBrand : ''}`
+        url: `${process.env.REACT_APP_API_URL}/api/vehicle?&postalCode=${finalSuburb !== null ? finalSuburb : ''}&page=${page !== null ? page : ''}&limit=9&brand=${finalBrand !== null ? finalBrand : ''}`
       };
 
       try {
         const response = await axios.request(config);
         const ads = response.data.data;
-        const totalItems = ads.length; // Assuming the total number of items is returned by the backend
+        const totalItems = 15; // Assuming the total number of items is returned by the backend
         console.log("Total items:", totalItems); // Add logging
         this.setState({ currentProducts: ads, totalItems, loading: false });
         return ads;
