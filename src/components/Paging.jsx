@@ -18,7 +18,7 @@ const range = (from, to, step = 1) => {
 
 class Paging extends Component {
   constructor(props) {
-    super();
+    super(props);
     const {
       totalRecords = null,
       pageLimit = 30,
@@ -128,6 +128,9 @@ class Paging extends Component {
     const { currentPage } = this.state;
     const pages = this.fetchPageNumbers();
 
+    console.log("Paging component props:", this.props); // Add logging
+    console.log("Paging component state:", this.state); // Add logging
+
     return (
       <nav aria-label="Page navigation">
         <ul className={`pagination ${this.sizing} ${this.alignment}`}>
@@ -140,7 +143,7 @@ class Paging extends Component {
                     aria-label="Previous"
                     onClick={this.handleMoveLeft}
                   >
-                    <span aria-hidden="true">&laquo;</span>
+                    <span aria-hidden="true">«</span>
                     <span className="sr-only">Previous</span>
                   </button>
                 </li>
@@ -155,7 +158,7 @@ class Paging extends Component {
                     aria-label="Next"
                     onClick={this.handleMoveRight}
                   >
-                    <span aria-hidden="true">&raquo;</span>
+                    <span aria-hidden="true">»</span>
                     <span className="sr-only">Next</span>
                   </a>
                 </li>
@@ -188,6 +191,7 @@ Paging.propTypes = {
   pageNeighbours: PropTypes.number,
   onPageChanged: PropTypes.func,
   sizing: PropTypes.string,
+  alignment: PropTypes.string,
 };
 
 export default Paging;
