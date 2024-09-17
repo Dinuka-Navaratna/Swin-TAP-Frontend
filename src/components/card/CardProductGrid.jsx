@@ -37,13 +37,13 @@ const CardProductGrid = (props) => {
         )}
         <div className="card-body">
           <h6 className="card-subtitle mb-2">
-            <Link to={"/listing/" + ads._id} className="text-decoration-none">
+            <p className="text-decoration-none" style={{color: "#0d6efd"}}>
               {ads.title}
-            </Link>
+            </p>
           </h6>
           <div className="my-2">
             <span className="fw-bold h5">${ads.price}</span>
-            {ads.price > 0 && (
+            {ads.price > ads.price && (
               <del className="small text-muted ms-2">${ads.price}</del>
             )}
             <span className="ms-2">
@@ -59,6 +59,8 @@ const CardProductGrid = (props) => {
               )}
             </span>
             <p className="small mt-2">{ads.description}</p>
+            <p className="small mt-2">{ads.brand}</p>
+            <p className="small mt-2">{ads.postal_code}</p>
           </div>
           {/* <div className="btn-group  d-flex" role="group">
           <button
