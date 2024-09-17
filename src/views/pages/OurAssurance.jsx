@@ -5,7 +5,7 @@ const Banner = lazy(() => import("../../components/carousel/Banner"));
 const CardList = lazy(() => import("../../components/blog/CardList"));
 const Widgets = lazy(() => import("../../components/blog/Widgets"));
 
-const BlogView = () => {
+const OurAssurance = () => {
   const imgStyle = {
     width: '100%',
     height: '200px', // Adjust height as needed
@@ -111,4 +111,4 @@ const BlogView = () => {
 
 
 
-export default BlogView;
+export default OurAssurance;

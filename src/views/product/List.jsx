@@ -1,21 +1,15 @@
 import React, { lazy, Component } from "react";
 import axios from "axios";
+import { suburbs } from '../../data/suburbs';
+import SuburbAutocomplete from '../../components/others/LocationFilter';
 const Paging = lazy(() => import("../../components/Paging"));
 const Breadcrumb = lazy(() => import("../../components/Breadcrumb"));
 const FilterCategory = lazy(() => import("../../components/filter/Category"));
-const FilterPrice = lazy(() => import("../../components/filter/Price"));
-// const FilterSize = lazy(() => import("../../components/filter/Size"));
-// const FilterStar = lazy(() => import("../../components/filter/Star"));
 const FilterColor = lazy(() => import("../../components/filter/Color"));
 const FilterTag = lazy(() => import("../../components/filter/Tag"));
-// const FilterClear = lazy(() => import("../../components/filter/Clear"));
 const CardServices = lazy(() => import("../../components/card/CardServices"));
-const CardProductGrid = lazy(() =>
-  import("../../components/card/CardProductGrid")
-);
-const CardProductList = lazy(() =>
-  import("../../components/card/CardProductList")
-);
+const CardProductGrid = lazy(() => import("../../components/card/CardProductGrid"));
+const CardProductList = lazy(() => import("../../components/card/CardProductList"));
 
 class ProductListView extends Component {
   state = {
@@ -24,110 +18,60 @@ class ProductListView extends Component {
     totalPages: null,
     totalItems: 0,
     view: "grid",
+    selectedSuburb: '',
+    selectedBrand: '',
+    selectedType: '',
+    selectedColor: '',
+    loading: false
   };
 
-  UNSAFE_componentWillMount() {
-    const totalItems = this.getProducts().length;
-    this.setState({ totalItems });
-  }
-
-  onPageChanged = (page) => {
-    const { currentPage, totalPages, pageLimit } = page;
-    let products = this.getProducts(currentPage, '');
-    const offset = (currentPage - 1) * pageLimit;
-    const currentProducts = products.slice(offset, offset + pageLimit);
-    this.setState({ currentPage, currentProducts, totalPages });
+  onPageChanged = async (page) => {
+    const { currentPage, totalPages } = page;
+    console.log("Page changed:", page); // Add logging
+    let products = await this.getProducts(currentPage, '');
+    if (!products) {
+      products = [];
+    }
+    this.setState({ currentPage, currentProducts: products, totalPages });
   };
 
   onChangeView = (view) => {
     this.setState({ view });
   };
 
-  getProducts = (page, brand) => {
-    let config = {
-      method: 'get',
-      maxBodyLength: Infinity,
-      url: `${process.env.REACT_APP_API_URL}/api/vehicle?page=${page}&limit=9&brand=${brand}`
-    };
-    
-    axios.request(config)
-    .then((response) => {
-      console.log(JSON.stringify(response.data));
-    })
-    .catch((error) => {
-      console.log(error);
+  getProducts = async (page, brand, type, color, suburb) => {
+    this.setState({
+      selectedBrand: brand === "clear" ? "" : (brand !== "" ? brand : this.state.selectedBrand),
+      selectedType: type !== "" ? type : this.state.selectedType,
+      selectedColor: color !== "" ? color : this.state.selectedColor,
+      selectedSuburb: suburb === "clear" ? "" : (suburb !== "" ? suburb : this.state.selectedSuburb),
+      loading: true
+    }, async () => {
+      const { selectedBrand, selectedType, selectedColor, selectedSuburb } = this.state;
+
+      const finalBrand = brand === "clear" ? "" : (brand || selectedBrand);
+      const finalType = type || selectedType;
+      const finalColor = color || selectedColor;
+      const finalSuburb = suburb === "clear" ? "" : (suburb && suburb.postcode ? suburb.postcode : (selectedSuburb && selectedSuburb.postcode ? selectedSuburb.postcode : ""));
+
+      let config = {
+        method: 'get',
+        maxBodyLength: Infinity,
+        url: `${process.env.REACT_APP_API_URL}/api/vehicle?&postalCode=${finalSuburb !== null ? finalSuburb : ''}&page=${page !== null ? page : ''}&limit=9&brand=${finalBrand !== null ? finalBrand : ''}`
+      };
+
+      try {
+        const response = await axios.request(config);
+        const ads = response.data.data;
+        const totalItems = 15; // Assuming the total number of items is returned by the backend
+        console.log("Total items:", totalItems); // Add logging
+        this.setState({ currentProducts: ads, totalItems, loading: false });
+        return ads;
+      } catch (error) {
+        console.log(error);
+        this.setState({ currentProducts: [], totalItems: 0, loading: false });
+      }
     });
-    // return products;
-    return [
-      {
-        id: 1,
-        sku: "FAS-01",
-        link: "/listing/v4r",
-        name: "Advertisement Title",
-        img: "../../images/products/vehicle.jpg",
-        price: 1800,
-        originPrice: 0,
-        discountPrice: 0,
-        discountPercentage: 0,
-        isNew: true,
-        isHot: false,
-        star: 1,
-        isFreeShipping: false,
-        description:
-          "Ad Description. Ad Description. Ad Description. Ad Description. Ad Description. Ad Description.",
-      },
-      {
-        id: 2,
-        sku: "FAS-02",
-        link: "/listing/3vf34",
-        name: "Advertisement Title",
-        img: "../../images/products/vehicle.jpg",
-        price: 4750,
-        originPrice: 0,
-        discountPrice: 0,
-        discountPercentage: 0,
-        isNew: false,
-        isHot: true,
-        star: 1,
-        isFreeShipping: false,
-        description:
-          "Ad Description. Ad Description. Ad Description. Ad Description. Ad Description. Ad Description.",
-      },
-      {
-        id: 3,
-        sku: "FAS-03",
-        link: "/listing/3vqf4",
-        name: "Advertisement Title",
-        img: "../../images/products/vehicle.jpg",
-        price: 1900,
-        originPrice: 0,
-        discountPrice: 0,
-        discountPercentage: 0,
-        isNew: true,
-        isHot: true,
-        star: 1,
-        isFreeShipping: false,
-        description:
-          "Ad Description. Ad Description. Ad Description. Ad Description. Ad Description. Ad Description.",
-      },
-      {
-        id: 4,
-        sku: "FAS-04",
-        link: "/listing/243t34qts",
-        name: "Advertisement Title",
-        img: "../../images/products/vehicle.jpg",
-        price: 5000,
-        originPrice: 0,
-        discountPrice: 0,
-        discountPercentage: 0,
-        isNew: false,
-        isHot: false,
-        star: 1,
-        isFreeShipping: false,
-        description:
-          "Ad Description. Ad Description. Ad Description. Ad Description. Ad Description. Ad Description.",
-      },
-    ]
   };
 
   render() {
@@ -148,45 +92,38 @@ class ProductListView extends Component {
         <Breadcrumb />
         <div className="container-fluid mb-3">
           <div className="row">
-            <div className="col-md-3">
-              <FilterCategory />
-              <FilterPrice />
-              {/* <FilterSize /> */}
-              {/* <FilterStar /> */}
-              <FilterColor />
-              {/* <FilterClear /> */}
-              <FilterTag />
+            <div className="col-md-3 d-none d-md-block">
+              {/* <FilterPrice /> */}
+              <FilterTag getProducts={this.getProducts} selectedBrand={this.state.selectedBrand} />
+              {/* <FilterCategory getProducts={this.getProducts} selectedType={this.state.selectedType} />
+              <FilterColor getProducts={this.getProducts} selectedColor={this.state.selectedColor} /> */}
               <CardServices />
             </div>
             <div className="col-md-9">
               <div className="row">
-                <div className="col-7">
-                  <span className="align-middle fw-bold">
-                    {this.state.totalItems} results for{" "}
-                    <span className="text-warning">"testing"</span>
-                  </span>
+                <div className="col-6">
+                  <SuburbAutocomplete suburbs={suburbs} getProducts={this.getProducts} selectedSuburb={this.state.selectedSuburb || ''} />
                 </div>
-                <div className="col-5 d-flex justify-content-end">
+                <div className="col-6 d-flex justify-content-end">
                   <select
                     className="form-select mw-180 float-start"
                     aria-label="Default select"
                   >
-                    <option value={1}>Most Popular</option>
-                    <option value={2}>Latest items</option>
-                    <option value={3}>Trending</option>
-                    <option value={4}>Price low to high</option>
-                    <option value={4}>Price high to low</option>
+                    <option value={1}>Latest</option>
+                    <option value={2}>Oldest</option>
+                    <option value={3}>AutoAssured</option>
+                    <option value={4}>Price low - high</option>
+                    <option value={5}>Price high - low</option>
                   </select>
-                  <div className="btn-group ms-3" role="group">
+                  <div className="btn-group ms-3" role="group" id="viewChanger">
                     <button
                       aria-label="Grid"
                       type="button"
                       onClick={() => this.onChangeView("grid")}
-                      className={`btn ${
-                        this.state.view === "grid"
-                          ? "btn-primary"
-                          : "btn-outline-primary"
-                      }`}
+                      className={`btn ${this.state.view === "grid"
+                        ? "btn-primary"
+                        : "btn-outline-primary"
+                        }`}
                     >
                       <i className="bi bi-grid" />
                     </button>
@@ -194,36 +131,51 @@ class ProductListView extends Component {
                       aria-label="List"
                       type="button"
                       onClick={() => this.onChangeView("list")}
-                      className={`btn ${
-                        this.state.view === "list"
-                          ? "btn-primary"
-                          : "btn-outline-primary"
-                      }`}
+                      className={`btn ${this.state.view === "list"
+                        ? "btn-primary"
+                        : "btn-outline-primary"
+                        }`}
                     >
                       <i className="bi bi-list" />
                     </button>
                   </div>
                 </div>
               </div>
-              <hr />
-              <div className="row g-3">
-                {this.state.view === "grid" &&
-                  this.state.currentProducts.map((product, idx) => {
-                    return (
-                      <div key={idx} className="col-md-4">
-                        <CardProductGrid data={product} />
-                      </div>
-                    );
-                  })}
-                {this.state.view === "list" &&
-                  this.state.currentProducts.map((product, idx) => {
-                    return (
-                      <div key={idx} className="col-md-12">
-                        <CardProductList data={product} />
-                      </div>
-                    );
-                  })}
+              <br />
+              <div className="d-block d-md-none">
+                <FilterTag getProducts={this.getProducts} selectedBrand={this.state.selectedBrand} />
               </div>
+              <hr />
+              {this.state.loading ? (
+                <div className="text-center">
+                  <div className="spinner-border" role="status">
+                    <span className="visually-hidden">Loading...</span>
+                  </div>
+                </div>
+              ) : (
+                <div className="row g-3">
+                  {this.state.currentProducts.length === 0 ? (
+                    <div className="col-12">
+                      <p>No results found</p>
+                    </div>
+                  ) : (
+                    <>
+                      {this.state.view === "grid" &&
+                        this.state.currentProducts.map((product, idx) => (
+                          <div key={idx} className="col-md-4">
+                            <CardProductGrid data={product} />
+                          </div>
+                        ))}
+                      {this.state.view === "list" &&
+                        this.state.currentProducts.map((product, idx) => (
+                          <div key={idx} className="col-md-12">
+                            <CardProductList data={product} />
+                          </div>
+                        ))}
+                    </>
+                  )}
+                </div>
+              )}
               <hr />
               <Paging
                 totalRecords={this.state.totalItems}
@@ -233,6 +185,9 @@ class ProductListView extends Component {
                 sizing=""
                 alignment="justify-content-center"
               />
+              <div className="d-block d-md-none">
+                <CardServices />
+              </div>
             </div>
           </div>
         </div>
