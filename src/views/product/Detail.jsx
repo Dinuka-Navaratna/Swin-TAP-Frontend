@@ -260,8 +260,8 @@ const ProductDetailView = () => {
                     <details>
                       <summary className="fw-bold mb-2 small">Contact Details</summary>
                       <ul className="small">
-                        <li><b>Seller Name:</b> {toTitleCase(vehicleData.seller_id.name)}</li>
-                        <li><b>Email:</b> {(vehicleData.seller_id.email).toLowerCase()}</li>
+                        <li><b>Seller Name:</b> {vehicleData.seller_id && vehicleData.seller_id.name ? toTitleCase(vehicleData.seller_id.name) : "N/A"}</li>
+                        <li><b>Email:</b> {vehicleData.seller_id && vehicleData.seller_id.email ? (vehicleData.seller_id.email).toLowerCase() : "N/A"}</li>
                         <li><b>Address:</b> {toTitleCase(vehicleData.address)}</li>
                       </ul>
                     </details>
