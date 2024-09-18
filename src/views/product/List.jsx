@@ -4,12 +4,13 @@ import { suburbs } from '../../data/suburbs';
 import SuburbAutocomplete from '../../components/others/LocationFilter';
 const Paging = lazy(() => import("../../components/Paging"));
 const Breadcrumb = lazy(() => import("../../components/Breadcrumb"));
-const FilterCategory = lazy(() => import("../../components/filter/Category"));
-const FilterColor = lazy(() => import("../../components/filter/Color"));
+// const FilterCategory = lazy(() => import("../../components/filter/Category"));
+// const FilterColor = lazy(() => import("../../components/filter/Color"));
 const FilterTag = lazy(() => import("../../components/filter/Tag"));
 const CardServices = lazy(() => import("../../components/card/CardServices"));
 const CardProductGrid = lazy(() => import("../../components/card/CardProductGrid"));
 const CardProductList = lazy(() => import("../../components/card/CardProductList"));
+
 
 class ProductListView extends Component {
   state = {
@@ -22,17 +23,42 @@ class ProductListView extends Component {
     selectedBrand: '',
     selectedType: '',
     selectedColor: '',
-    loading: false
+    sortDate: '',
+    sortPrice: '',
+    sortInspection: '',
+    loading: false,
+  };
+
+  handleSortChange = (event) => {
+    var sortDate = '';
+    var sortPrice = '';
+    var sortInspection = '';
+    const selectedSort = event.target.value;
+    if (selectedSort === "1") {
+      sortDate = '-1';
+    } else if (selectedSort === "2") {
+      sortDate = '1';
+    } else if (selectedSort === "3") {
+      sortInspection = "true";
+    } else if (selectedSort === "4") {
+      sortPrice = '1';
+    } else if (selectedSort === "5") {
+      sortPrice = '-1';
+    }
+    this.setState({ sortDate, sortPrice, sortInspection, currentPage: 1 }, () => {
+      this.getProducts(1, '', '', '', '');
+    });
   };
 
   onPageChanged = async (page) => {
     const { currentPage, totalPages } = page;
-    console.log("Page changed:", page); // Add logging
-    let products = await this.getProducts(currentPage, '');
-    if (!products) {
-      products = [];
+    if (currentPage !== this.state.currentPage) {
+      let products = await this.getProducts(currentPage, '', '', '', '');
+      if (!products) {
+        products = [];
+      }
+      this.setState({ currentPage, currentProducts: products, totalPages });
     }
-    this.setState({ currentPage, currentProducts: products, totalPages });
   };
 
   onChangeView = (view) => {
@@ -42,30 +68,35 @@ class ProductListView extends Component {
   getProducts = async (page, brand, type, color, suburb) => {
     this.setState({
       selectedBrand: brand === "clear" ? "" : (brand !== "" ? brand : this.state.selectedBrand),
-      selectedType: type !== "" ? type : this.state.selectedType,
-      selectedColor: color !== "" ? color : this.state.selectedColor,
+      // selectedType: type !== "" ? type : this.state.selectedType,
+      // selectedColor: color !== "" ? color : this.state.selectedColor,
       selectedSuburb: suburb === "clear" ? "" : (suburb !== "" ? suburb : this.state.selectedSuburb),
       loading: true
     }, async () => {
-      const { selectedBrand, selectedType, selectedColor, selectedSuburb } = this.state;
+      const { selectedBrand, selectedSuburb } = this.state;
 
       const finalBrand = brand === "clear" ? "" : (brand || selectedBrand);
-      const finalType = type || selectedType;
-      const finalColor = color || selectedColor;
+      // const finalType = type || selectedType;
+      // const finalColor = color || selectedColor;
       const finalSuburb = suburb === "clear" ? "" : (suburb && suburb.postcode ? suburb.postcode : (selectedSuburb && selectedSuburb.postcode ? selectedSuburb.postcode : ""));
 
       let config = {
         method: 'get',
         maxBodyLength: Infinity,
-        url: `${process.env.REACT_APP_API_URL}/api/vehicle?&postalCode=${finalSuburb !== null ? finalSuburb : ''}&page=${page !== null ? page : ''}&limit=9&brand=${finalBrand !== null ? finalBrand : ''}`
+        url: `${process.env.REACT_APP_API_URL}/api/vehicle?&postalCode=${finalSuburb !== null ? finalSuburb : ''}&page=${page !== null ? page : ''}&limit=9&brand=${finalBrand !== null ? finalBrand : ''}&sortDate=${this.state.sortDate}&sortPrice=${this.state.sortPrice}&inspection=${this.state.sortInspection}`
       };
 
       try {
         const response = await axios.request(config);
-        const ads = response.data.data;
-        const totalItems = 15; // Assuming the total number of items is returned by the backend
-        console.log("Total items:", totalItems); // Add logging
-        this.setState({ currentProducts: ads, totalItems, loading: false });
+        const ads = response.data.data.data;
+        const totalItems = response.data.data.totalCount;
+        const totalPages = Math.ceil(totalItems / 9);
+        this.setState({ currentProducts: ads, totalItems, totalPages, loading: false });
+
+        if (page === 1) {
+          this.setState({ currentPage: 1 });
+        }
+
         return ads;
       } catch (error) {
         console.log(error);
@@ -108,6 +139,7 @@ class ProductListView extends Component {
                   <select
                     className="form-select mw-180 float-start"
                     aria-label="Default select"
+                    onChange={this.handleSortChange}
                   >
                     <option value={1}>Latest</option>
                     <option value={2}>Oldest</option>
@@ -142,6 +174,7 @@ class ProductListView extends Component {
                 </div>
               </div>
               <br />
+              <p><b>Total Ads: </b>{this.state.totalItems}</p>
               <div className="d-block d-md-none">
                 <FilterTag getProducts={this.getProducts} selectedBrand={this.state.selectedBrand} />
               </div>
@@ -182,6 +215,7 @@ class ProductListView extends Component {
                 pageLimit={9}
                 pageNeighbours={3}
                 onPageChanged={this.onPageChanged}
+                currentPage={this.state.currentPage}
                 sizing=""
                 alignment="justify-content-center"
               />
