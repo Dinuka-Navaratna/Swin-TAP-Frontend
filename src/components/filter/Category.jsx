@@ -1,7 +1,11 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-const FilterCategory = (props) => {
+const FilterCategory = ({ getProducts, selectedBrand }) => {
+  const handleTypeClick = (type) => {
+    getProducts(1, '', type, '', '');
+  };
+
   return (
     <div className="card mb-3 accordion">
       <div
@@ -11,42 +15,23 @@ const FilterCategory = (props) => {
         aria-expanded="true"
         aria-controls="filterCategory"
       >
-        Categories
+        Vehicle Type
       </div>
       <ul
         className="list-group list-group-flush show"
         id="filterCategory"
       >
-        <li className="list-group-item">
-          <Link to="/" className="text-decoration-none stretched-link">
-            Sedans
-          </Link>
-        </li>
-        <li className="list-group-item">
-          <Link to="/" className="text-decoration-none stretched-link">
-            SUVs
-          </Link>
-        </li>
-        <li className="list-group-item">
-          <Link to="/" className="text-decoration-none stretched-link">
-            Trucks
-          </Link>
-        </li>
-        <li className="list-group-item">
-          <Link to="/" className="text-decoration-none stretched-link">
-            Motorcycles
-          </Link>
-        </li>
-        <li className="list-group-item">
-          <Link to="/" className="text-decoration-none stretched-link">
-            Electric Vehicles
-          </Link>
-        </li>
-        <li className="list-group-item">
-          <Link to="/" className="text-decoration-none stretched-link">
-            Convertibles
-          </Link>
-        </li>
+        {['Sedans', 'SUVs', 'Trucks', 'Motorcycles', 'Electric Vehicles', 'Convertibles'].map((type, index) => (
+          <li
+            key={index}
+            className={`list-group-item ${selectedBrand === type ? 'active fw-bold' : ''}`}
+            onClick={() => handleTypeClick(type)}
+          >
+            <Link className="text-decoration-none stretched-link">
+              {type}
+            </Link>
+          </li>
+        ))}
       </ul>
     </div>
   );
