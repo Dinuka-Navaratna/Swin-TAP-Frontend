@@ -45,6 +45,16 @@ class Paging extends Component {
     this.gotoPage(1);
   }
 
+  componentDidUpdate(prevProps) {
+    if (prevProps.totalRecords !== this.props.totalRecords) {
+      this.totalPages = Math.ceil(this.props.totalRecords / this.pageLimit);
+      this.gotoPage(1);
+    }
+    if (prevProps.currentPage !== this.props.currentPage) {
+      this.setState({ currentPage: this.props.currentPage });
+    }
+  }
+
   gotoPage = (page) => {
     const { onPageChanged = (f) => f } = this.props;
 
@@ -121,15 +131,11 @@ class Paging extends Component {
   };
 
   render() {
-    if (!this.totalRecords) return null;
-
-    if (this.totalPages === 1) return null;
+    // alert(this.totalRecords);
+    // if (!this.totalRecords) return null;
 
     const { currentPage } = this.state;
     const pages = this.fetchPageNumbers();
-
-    console.log("Paging component props:", this.props); // Add logging
-    console.log("Paging component state:", this.state); // Add logging
 
     return (
       <nav aria-label="Page navigation">
@@ -192,6 +198,7 @@ Paging.propTypes = {
   onPageChanged: PropTypes.func,
   sizing: PropTypes.string,
   alignment: PropTypes.string,
+  currentPage: PropTypes.number, // Add currentPage prop type
 };
 
 export default Paging;

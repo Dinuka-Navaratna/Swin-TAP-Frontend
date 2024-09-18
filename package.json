@@ -1,6 +1,6 @@
 {
   "name": "AutoAssure",
-  "version": "0.0.1",
+  "version": "0.0.5",
   "private": true,
   "dependencies": {
     "@babel/runtime": "^7.23.1",
