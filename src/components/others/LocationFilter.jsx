@@ -11,7 +11,7 @@ const SuburbAutocomplete = ({ suburbs, getProducts, selectedSuburb }) => {
         } else if (selectedSuburb === '') {
             setInputValue('');
         }
-    }, [selectedSuburb.suburb]);
+    }, [selectedSuburb.suburb, selectedSuburb]);
 
     const handleInputChange = (e) => {
         const value = e.target.value;
