@@ -27,6 +27,9 @@ const ProductDetailView = () => {
   const detailsAddress = useRef(null);
   const detailsState = useRef(null);
   const detailsPostalCode = useRef(null);
+  const inspectionDate = useRef(null);
+  const inspectionPostCode = useRef(null);
+  const inspectionRego = useRef(null);
 
   useEffect(() => {
     const session = getSession();
@@ -62,6 +65,10 @@ const ProductDetailView = () => {
           });
       } else {
         if (session) {
+          if (session.role !== "seller") {
+            alert("You are not a seller bro!");
+            window.location.href = "/listing";
+          }
           setIsNew(true);
           setIsEditMode(true);
           setIsLoading(false);
@@ -80,6 +87,15 @@ const ProductDetailView = () => {
     }
   };
 
+  const checkInspectionDate = (inspectionDate) => {
+    const today = new Date();
+    if (inspectionDate > today) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   const handleSaveClick = () => {
     alert('Saving changes...');
     if (detailsRef.current) {
@@ -94,9 +110,18 @@ const ProductDetailView = () => {
 
       details.inspection_status = "not_requested";
       const inspection = inspectionRef.current.getDetails();
-      if (vehicleData && vehicleData.inspection_status !== 'completed') {
-        if (inspection.inspectionPostCode !== '' && inspection.inspectionDate !== '') {
+      if (inspection.inspectionPostCode !== '' && inspection.inspectionDate !== '') {
+        if (checkInspectionDate(new Date(inspection.inspectionDate))) {
           details.inspection_status = "requested";
+          details.inspection_report = {
+            "status": details.inspection_status,
+            "vehicle_rego": inspection.inspectionRego,
+            "postal_code": inspection.inspectionPostCode,
+            "inspection_time": (inspection.inspectionDate).replace(/-/g, '/')
+          }
+        } else {
+          alert("Inspection date cannot be today or before. Please try again with a future date.");
+          return;
         }
       }
 
@@ -119,7 +144,13 @@ const ProductDetailView = () => {
           "inspection_status": details.inspection_status,
           "address": details.address,
           "state": details.state,
-          "postal_code": details.postal_code
+          "postal_code": details.postal_code,
+          "inspection_report": {
+            "status": details.inspection_status,
+            "vehicle_rego": inspection.inspectionRego,
+            "postal_code": inspection.inspectionPostCode,
+            "inspection_time": (inspection.inspectionDate).replace(/-/g, '/')
+          }
         });
         console.log("Data to be sent:", data);
       } else {
@@ -421,7 +452,7 @@ const ProductDetailView = () => {
                     role="tabpanel"
                     aria-labelledby="nav-ship-returns-tab"
                   >
-                    <OurAssurance isEditMode={isEditMode ? (vehicleData && (vehicleData.inspection_status === 'completed' || vehicleData.inspection_status === 'accepted') ? false : isEditMode) : (isEditMode)} id={id} vehicleData={vehicleData} ref={inspectionRef} />
+                    <OurAssurance isEditMode={isEditMode ? (vehicleData && (vehicleData.inspection_status === 'completed' || vehicleData.inspection_status === 'accepted') ? false : isEditMode) : (isEditMode)} vehicleData={vehicleData} ref={inspectionRef} />
                   </div>
                   <div
                     className="tab-pane fade"
