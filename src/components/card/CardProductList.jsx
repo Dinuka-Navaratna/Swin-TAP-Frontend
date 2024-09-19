@@ -32,9 +32,9 @@ const CardProductList = (props) => {
 
             <div>
               <span className="fw-bold h5">${ads.price}</span>
-              {0 > 0 && (
+              {/* {0 > 0 && (
                 <del className="small text-muted ms-2">${0}</del>
-              )}
+              )} */}
               <span className="ms-2">
                 {ads.inspection_status === "completed" ? (
                   <>
