@@ -27,9 +27,6 @@ const ProductDetailView = () => {
   const detailsAddress = useRef(null);
   const detailsState = useRef(null);
   const detailsPostalCode = useRef(null);
-  const inspectionDate = useRef(null);
-  const inspectionPostCode = useRef(null);
-  const inspectionRego = useRef(null);
 
   useEffect(() => {
     const session = getSession();
@@ -262,25 +259,24 @@ const ProductDetailView = () => {
               </div>
               <div className="col-md-7">
                 <br></br>
-                <h1 className="h5 d-inline me-2">{isEditMode ? <input type="text" ref={detailsTitle} defaultValue={vehicleData !== null ? vehicleData.title : ''} placeholder="Title" /> : toTitleCase(vehicleData.title)}</h1>
+                {sessionData && (isNew || sessionData.user_id === vehicleData.seller_id._id) && <>
+                  {isEditMode && <span className="badge bg-dark me-2 float-right" onClick={handleCancelClick}>Cancel</span>}
+                  {!isEditMode && <span className="badge bg-dark me-2 float-right" onClick={handleDeleteClick}>Delete</span>}
+                  <span className="badge bg-primary me-2 float-right" onClick={isEditMode ? handleSaveClick : handleEditClick}>{isEditMode ? 'Save' : 'Edit'}</span>
+                </>}
+                <h1 className="fw-bold h5 d-inline me-2">{isEditMode ? <input type="text" className="form-control mw-180" ref={detailsTitle} defaultValue={vehicleData !== null ? vehicleData.title : ''} placeholder="Title" /> : toTitleCase(vehicleData.title)}</h1>
                 {!isEditMode && (
                   <>
                     <span className="badge bg-success me-2">New</span>
                     <span className="badge bg-danger me-2">Hot</span>
                   </>
                 )}
-                {sessionData && (isNew || sessionData.user_id === vehicleData.seller_id._id) && <>
-                  {isEditMode && <span className="badge bg-dark me-2 float-right" onClick={handleCancelClick}>Cancel</span>}
-                  {!isEditMode && <span className="badge bg-dark me-2 float-right" onClick={handleDeleteClick}>Delete</span>}
-                  <span className="badge bg-primary me-2 float-right" onClick={isEditMode ? handleSaveClick : handleEditClick}>{isEditMode ? 'Save' : 'Edit'}</span>
-                </>}
-                <div className="mb-3">
-                  <br></br>
-                  <span className="fw-bold h5 me-2">${isEditMode ? <input type="text" ref={detailsPrice} defaultValue={vehicleData !== null ? vehicleData.price : ''} placeholder="Price" /> : vehicleData.price}</span>
+                <div className="">
+                  <span className="h5 me-2">{isEditMode ? <input type="text" className="form-control mw-180" ref={detailsPrice} defaultValue={vehicleData !== null ? vehicleData.price : ''} placeholder="Price" /> : '$ '+vehicleData.price}</span>
                   {!isEditMode && (vehicleData.inspection_status === "completed") && <> <i className="bi bi-patch-check-fill text-success me-1" /> AutoAssured </>}
                 </div>
                 <div>
-                  <p>{isEditMode ? <textarea ref={detailsDescription} defaultValue={vehicleData !== null ? vehicleData.description : ''} placeholder="Description" /> : vehicleData.description}</p>
+                  <p>{isEditMode ? <textarea className="form-control" ref={detailsDescription} defaultValue={vehicleData !== null ? vehicleData.description : ''} placeholder="Description" /> : vehicleData.description}</p>
                   {!isEditMode ? <>
                     <p className="fw-bold mb-2 small">Vehicle Highlights</p>
                     <ul className="small">
@@ -293,22 +289,22 @@ const ProductDetailView = () => {
                       <ul className="small">
                         <li><b>Seller Name:</b> {vehicleData.seller_id && vehicleData.seller_id.name ? toTitleCase(vehicleData.seller_id.name) : "N/A"}</li>
                         <li><b>Email:</b> {vehicleData.seller_id && vehicleData.seller_id.email ? (vehicleData.seller_id.email).toLowerCase() : "N/A"}</li>
-                        <li><b>Address:</b> {toTitleCase(vehicleData.address)}</li>
+                        <li><b>Address:</b> {toTitleCase(vehicleData.address)}{vehicleData !== null && ", "+vehicleData.state+" ("+vehicleData.postal_code+")"}</li>
                       </ul>
                     </details>
                   </> : <>
                     <div className="row col-md-12">
-                      <div className="col-md-3">
+                      <div className="col-md-4">
                         <label htmlFor="postalCode">Address</label><br></br>
-                        <input type="text" ref={detailsAddress} defaultValue={vehicleData !== null ? vehicleData.address : ''} id="detailsAddress" placeholder="Address" />
+                        <input className="form-control mw-180" type="text" ref={detailsAddress} defaultValue={vehicleData !== null ? vehicleData.address : ''} id="detailsAddress" placeholder="Address" />
                       </div>
-                      <div className="col-md-3">
+                      <div className="col-md-4">
                         <label htmlFor="inspectionDate">State</label><br></br>
-                        <input type="text" ref={detailsState} defaultValue={vehicleData !== null ? vehicleData.state : ''} id="detailsState" placeholder="State" />
+                        <input className="form-control mw-180" type="text" ref={detailsState} defaultValue={vehicleData !== null ? vehicleData.state : ''} id="detailsState" placeholder="State" />
                       </div>
-                      <div className="col-md-3">
+                      <div className="col-md-4">
                         <label htmlFor="vehicleRego">Postal Code</label><br></br>
-                        <input type="text" ref={detailsPostalCode} defaultValue={vehicleData !== null ? vehicleData.postal_code : ''} id="detailsPostalCode" placeholder="Postal Code" />
+                        <input className="form-control mw-180" type="text" ref={detailsPostalCode} defaultValue={vehicleData !== null ? vehicleData.postal_code : ''} id="detailsPostalCode" placeholder="Postal Code" />
                       </div>
                     </div>
                   </>}

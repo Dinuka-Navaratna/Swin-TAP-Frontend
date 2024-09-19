@@ -24,7 +24,7 @@ const CardProductGrid = (props) => {
             Hot
           </span>
         )}
-        {(0 > 0 || 0 > 0) && (
+        {/* {(0 > 0 || 0 > 0) && (
           <span
             className={`rounded position-absolute p-2 bg-warning  ms-2 small ${isNewHot(ads.created_at, 5) ? "mt-5" : "mt-2"
               }`}
@@ -34,7 +34,7 @@ const CardProductGrid = (props) => {
               ? 0 + "%"
               : "$" + 0}
           </span>
-        )}
+        )} */}
         <div className="card-body">
           <h6 className="card-subtitle mb-2">
             <p className="text-decoration-none" style={{color: "#0d6efd"}}>
@@ -43,9 +43,9 @@ const CardProductGrid = (props) => {
           </h6>
           <div className="my-2">
             <span className="fw-bold h5">${ads.price}</span>
-            {ads.price > ads.price && (
+            {/* {ads.price > ads.price && (
               <del className="small text-muted ms-2">${ads.price}</del>
-            )}
+            )} */}
             <span className="ms-2">
               {ads.inspection_status === "completed" ? (
                 <>

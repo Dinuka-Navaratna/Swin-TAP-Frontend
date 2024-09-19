@@ -38,7 +38,7 @@ const AboutUsDetailView = () => {
 
                 <section className="about-section">
                 
-                    <img src="../../images/blog/aboutus.jpg" className="about-img" />
+                    <img src="../../images/blog/aboutus.jpg" className="about-img" alt=""/>
                    
                     <div className="about-content">
                     <br></br>
@@ -111,7 +111,7 @@ const AboutUsDetailView = () => {
                                 </div>
                                 {/* Right Content */}
                                 <div className="services-image">
-                                    <img src="../../images/blog/imageus.jpg" alt="Team working together" />
+                                    <img src="../../images/blog/imageus.jpg" alt="" />
                                 </div>
                             </div>
                         </section>
@@ -138,7 +138,7 @@ const AboutUsDetailView = () => {
             </section> */}
 
                     <section className="section-container">
-                        <img src="../../images/blog/person1.jpeg" className="section-image" />
+                        <img src="../../images/blog/person1.jpeg" className="section-image" alt="" />
                         <div className="text-content">
                         <br></br><br></br>
                             <h2>Our Mission</h2>
@@ -203,7 +203,7 @@ const AboutUsDetailView = () => {
                     </div>
                     <br></br>
 
-                    <img src="../../images/blog/whyus1.avif" className="section-image" alt="Why Us" />
+                    <img src="../../images/blog/whyus1.avif" className="section-image" alt="" />
                 </section>
 
 
@@ -275,7 +275,7 @@ const AboutUsDetailView = () => {
 
 
                 <section className="vision-section">
-                    <img src="../../images/blog/vision.avif" className="vision-image" />
+                    <img src="../../images/blog/vision.avif" className="vision-image" alt="" />
                     <div className="vision-content">
                         <h2 className="section-title-left">Our Vision</h2>
                         <p>
