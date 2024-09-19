@@ -176,7 +176,7 @@ const Header = () => {
                     </li>
                     {session.role === "seller" ? (
                       <li>
-                        <Link className="dropdown-item" to="/account/inspections">
+                        <Link className="dropdown-item" to="/account/ads">
                           <i className="bi bi-star-fill text-warning"></i>&nbsp;
                           My Ads
                         </Link>
