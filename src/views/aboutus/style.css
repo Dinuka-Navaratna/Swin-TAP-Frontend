@@ -28,7 +28,6 @@
     margin-bottom: 20px;
 }
 
-
 .services-section {
     padding: 40px 20px;
     text-align: center;
@@ -69,7 +68,6 @@
     border-radius: 10px;
 }
 
-
 .section-container {
     padding: 40px 20px;
     display: flex;
@@ -93,7 +91,6 @@
     font-size: 32px;
     margin-bottom: 20px;
 }
-
 
 .section-container {
     padding: 40px 20px;
@@ -123,6 +120,7 @@
     width: 50%;
     height: auto;
 }
+
 .features-section {
     padding: 40px 20px;
     text-align: center;
@@ -149,6 +147,7 @@
     list-style-type: disc;
     margin-left: 20px;
 }
+
 .vision-section {
     padding: 40px 20px;
     display: flex;
@@ -219,4 +218,41 @@
 
 .footer p {
     margin: 0; /* Ensure no extra margin is added by default */
+}
+
+/* MOBILE-RESPONSIVE STYLES */
+@media (max-width: 768px) {
+    .about-section, .section-container, .services-container, .vision-section {
+        flex-direction: column; /* Stack elements vertically on mobile */
+        text-align: center; /* Ensure content is centered */
+    }
+
+    .about-img, .section-image, .vision-image {
+        width: 100%; /* Full-width images on mobile */
+        margin-right: 0; /* Remove margin on mobile */
+    }
+
+    .text-content, .about-content, .text-content-wrapper, .text-block, .features-content {
+        max-width: 100%; /* Full width on mobile */
+        margin: 0; /* Remove margins for mobile */
+        padding: 0 10px; /* Add slight padding for readability */
+    }
+
+    .services-text ul {
+        padding-left: 10px; /* Reduce padding on mobile */
+    }
+
+    .vision-image {
+        width: 100%;
+        height: auto; /* Auto height for images on mobile */
+        margin: 0; 
+    }
+
+    .glance-stats {
+        flex-direction: column; /* Stack stats vertically on mobile */
+    }
+
+    .glance-item {
+        margin: 10px 0; /* Adjusted margins for mobile */
+    }
 }
