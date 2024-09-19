@@ -28,7 +28,9 @@ const InternalServerErrorView = lazy(() => import("./views/pages/500"));
 const ContactUsView = lazy(() => import("./views/pages/ContactUs"));
 const SupportView = lazy(() => import("./views/pages/Support"));
 const BlogView = lazy(() => import("./views/blog/Blog"));
+const OurAssurance = lazy(() => import("./views/pages/OurAssurance"));
 const AboutUsDetailView = lazy(() => import("./views/aboutus/Detail"));
+
 
 function App() {
   return (
@@ -70,6 +72,7 @@ function App() {
             <Route exact path="/blog" element={<BlogView/>} />
             <Route exact path="/about-us" element={<AboutUsDetailView/>} />
             <Route exact path="/500" element={<InternalServerErrorView/>} />
+            <Route exact path="/assurance" element={<OurAssurance/>} />
             <Route path="*" element={<NotFoundView/>} />
           </Routes>
         </Suspense>
