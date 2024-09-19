@@ -1,5 +1,7 @@
 .carousel-inner {
-    height: 25vh;
+    height: 80vh;
+    width: 100%;
+    position: centre;
 }
 
 .test {
