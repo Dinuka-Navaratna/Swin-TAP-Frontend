@@ -13,3 +13,69 @@
     width: 100%;
     max-width: 100%;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.about-section {
+    display: flex;
+    align-items: center; /* Vertically centers the content */
+    justify-content: space-between; /* Spaces the image and content */
+    background-color: #ffffff; /* Background color for the section */
+    padding: 2rem 3rem; /* Adds padding to the section */
+    margin-bottom: 2rem; /* Space below the section */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Light shadow for depth */
+    border-radius: 8px; /* Rounded corners */
+  }
+  
+  /* Styles for the image */
+  .about-img {
+    width: 50%; /* Image takes up half the section */
+    height: auto;
+    border-radius: 8px; /* Matches section rounding */
+    object-fit: cover; /* Ensures image fits nicely */
+  }
+  
+  /* Styles for the content */
+  .about-content {
+    width: 45%; /* Content takes up the other half with some space */
+    padding-left: 2rem; /* Space between image and content */
+  }
+  
+  /* Styles for the headings and paragraphs */
+  .about-content h2 {
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+  }
+  
+  .about-content p {
+    font-size: 1rem;
+    line-height: 1.6; /* Improves readability */
+    color: #333; /* Slightly darker text */
+    margin-bottom: 1rem;
+  }
+
+
+
+
+
+
+
+
+
+  
