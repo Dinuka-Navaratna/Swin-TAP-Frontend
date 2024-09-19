@@ -1,6 +1,4 @@
 import React, { forwardRef, useRef, useImperativeHandle } from "react";
-import { suburbs } from '../../data/suburbs';
-import SuburbAutocomplete from '../../components/others/LocationFilter';
 
 const ShippingReturns = forwardRef((props, ref) => {
   const { isEditMode } = props;
@@ -44,15 +42,15 @@ const ShippingReturns = forwardRef((props, ref) => {
         <div className="row col-md-12">
           <div className="col-md-3">
             <label htmlFor="postalCode">Postal Code*</label><br></br>
-            <SuburbAutocomplete ref={inspectionPostCode} suburbs={suburbs} selectedSuburb={''} id="postalCode" placeholder="Postal Code" />
+            <input type="text" ref={inspectionPostCode} id="postalCode" placeholder="Postal Code" />
           </div>
           <div className="col-md-3">
             <label htmlFor="inspectionDate">Inspection Date*</label><br></br>
-            <input type="date" className="form-control mw-180" ref={inspectionDate} id="inspectionDate" placeholder="Inspection Date" />
+            <input type="date" ref={inspectionDate} id="inspectionDate" placeholder="Inspection Date" />
           </div>
           <div className="col-md-3">
             <label htmlFor="vehicleRego">Vehicle Rego</label><br></br>
-            <input type="text" className="form-control mw-180" ref={inspectionRego} id="vehicleRego" placeholder="Vehicle Rego" />
+            <input type="text" ref={inspectionRego} id="vehicleRego" placeholder="Vehicle Rego" />
           </div>
         </div>
         <br />
