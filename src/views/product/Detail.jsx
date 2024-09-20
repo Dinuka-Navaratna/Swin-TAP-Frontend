@@ -107,15 +107,20 @@ const ProductDetailView = () => {
       details.postal_code = detailsPostalCode.current.value;
       details.seller_id = sessionData.user_id;
 
+      if (detailsDescription.current.value.length < 250) {
+        alert('Please enter a description with atleast 250 characters!');
+        return;
+      }
+
       details.inspection_status = "not_requested";
       const inspection = inspectionRef.current.getDetails();
-      if (inspection.inspectionPostCode !== '' && inspection.inspectionDate !== '') {
+      if (details.postal_code !== '' && inspection.inspectionDate !== '') {
         if (checkInspectionDate(new Date(inspection.inspectionDate))) {
           details.inspection_status = "requested";
           details.inspection_report = {
             "status": details.inspection_status,
             "vehicle_rego": inspection.inspectionRego,
-            "postal_code": inspection.inspectionPostCode,
+            "postal_code": details.postal_code,
             "inspection_time": (inspection.inspectionDate).replace(/-/g, '/')
           }
         } else {
@@ -147,7 +152,7 @@ const ProductDetailView = () => {
           "inspection_report": {
             "status": details.inspection_status,
             "vehicle_rego": inspection.inspectionRego,
-            "postal_code": inspection.inspectionPostCode,
+            "postal_code": details.postal_code,
             "inspection_time": (inspection.inspectionDate).replace(/-/g, '/')
           }
         });
@@ -298,7 +303,7 @@ const ProductDetailView = () => {
                   </>
                 )}
                 <div className="">
-                  <span className="h5 me-2">{isEditMode ? <input type="text" className="form-control mw-180" ref={detailsPrice} defaultValue={vehicleData !== null ? vehicleData.price : ''} placeholder="Price" /> : <>$ +{vehicleData !== null ? toTitleCase(vehicleData.price) : 'N/A'}</>}</span>
+                  <span className="h5 me-2">{isEditMode ? <input type="text" className="form-control mw-180" ref={detailsPrice} defaultValue={vehicleData !== null ? vehicleData.price : ''} placeholder="Price" /> : <>$ {vehicleData !== null ? vehicleData.price : 'N/A'}</>}</span>
                   {!isEditMode && (vehicleData.inspection_status === "completed") && <> <i className="bi bi-patch-check-fill text-success me-1" /> AutoAssured </>}
                 </div>
                 <div>

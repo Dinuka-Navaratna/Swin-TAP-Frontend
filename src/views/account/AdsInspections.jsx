@@ -54,7 +54,8 @@ const AdsInspectionsView = () => {
 
   const formatDate = (isoDate) => {
     const date = new Date(isoDate);
-    return `${date.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}, ${date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true })}`;
+    // return `${date.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}, ${date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true })}`;
+    return `${date.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}`;
   };
 
   return (
@@ -120,11 +121,11 @@ const AdsInspectionsView = () => {
                     </div>
                     <div className="card-footer d-flex justify-content-between">
                       <div>
-                        <span className="me-2">Inspection Status:</span>
+                        <span className="me-2">Inspection:</span>
                         {ad.inspection_status === "not_requested" ? (
-                          <span className="text-success">
-                            <i className="bi bi-check-circle-fill me-1"></i>
-                            Completed
+                          <span className="text-warning">
+                            <i className="bi bi-backspace-reverse-fill me-1"></i>
+                            Not Requested
                           </span>
                         ) : ad.inspection_status === "requested" ? (
                           <span className="text-dark">
