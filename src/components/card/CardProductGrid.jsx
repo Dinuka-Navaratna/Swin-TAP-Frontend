@@ -8,6 +8,14 @@ const isNewHot = (dateString, daysGap) => {
   return dayDifference < daysGap && dayDifference >= 0;
 };
 
+function trimText(text, maxLength) {
+  if (text.length > maxLength) {
+    return text.substring(0, maxLength) + '...';
+  } else {
+    return text;
+  }
+}
+
 const CardProductGrid = (props) => {
   const ads = props.data;
   return (
@@ -37,8 +45,8 @@ const CardProductGrid = (props) => {
         )} */}
         <div className="card-body">
           <h6 className="card-subtitle mb-2">
-            <p className="text-decoration-none" style={{color: "#0d6efd"}}>
-              {ads.title}
+            <p className="text-decoration-none" style={{ color: "#0d6efd" }}>
+              {trimText(ads.title, 30)}
             </p>
           </h6>
           <div className="my-2">
@@ -58,7 +66,7 @@ const CardProductGrid = (props) => {
                 ))
               )}
             </span>
-            <p className="small mt-2">{ads.description}</p>
+            <p className="small mt-2">{trimText(ads.description, 250)}</p>
             <p className="small mt-2">{ads.brand}</p>
             <p className="small mt-2">{ads.postal_code}</p>
           </div>
