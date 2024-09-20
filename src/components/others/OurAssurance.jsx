@@ -1,6 +1,4 @@
-import React, { forwardRef, useRef, useImperativeHandle } from "react";
-import { suburbs } from '../../data/suburbs';
-import SuburbAutocomplete from '../../components/others/LocationFilter';
+import React, { forwardRef, useRef, useImperativeHandle, useReducer } from "react";
 
 const ShippingReturns = forwardRef((props, ref) => {
   const { isEditMode } = props;
@@ -8,6 +6,8 @@ const ShippingReturns = forwardRef((props, ref) => {
   const inspectionPostCode = useRef(null);
   const inspectionDate = useRef(null);
   const inspectionRego = useRef(null);
+  var additionalServices = useRef([]);
+  const [, forceUpdate] = useReducer(x => x + 1, 0);
 
   const getInspectionStatusMessage = (status) => {
     if (status === 'completed') {
@@ -37,25 +37,42 @@ const ShippingReturns = forwardRef((props, ref) => {
     }
   }));
 
+  const addAdditionalServices = (serviceID) => {
+    const index = additionalServices.current.indexOf(serviceID);
+    if (index > -1) {
+      additionalServices.current.splice(index, 1);
+    } else {
+      additionalServices.current.push(serviceID);
+    }
+    forceUpdate();
+    console.log(additionalServices.current);
+  };
+
   return (
     <React.Fragment>
       {isEditMode ? <>
         <br></br>
         <div className="row col-md-12">
-          <div className="col-md-3">
+          {/* <div className="col-md-3">
             <label htmlFor="postalCode">Postal Code*</label><br></br>
-            <SuburbAutocomplete ref={inspectionPostCode} suburbs={suburbs} selectedSuburb={''} id="postalCode" placeholder="Postal Code" />
-          </div>
+            <input type="text" ref={inspectionPostCode} id="postalCode" placeholder="Postal Code" />
+          </div> */}
           <div className="col-md-3">
             <label htmlFor="inspectionDate">Inspection Date*</label><br></br>
-            <input type="date" className="form-control mw-180" ref={inspectionDate} id="inspectionDate" placeholder="Inspection Date" />
+            <input type="date" ref={inspectionDate} id="inspectionDate" placeholder="Inspection Date" />
           </div>
           <div className="col-md-3">
             <label htmlFor="vehicleRego">Vehicle Rego</label><br></br>
-            <input type="text" className="form-control mw-180" ref={inspectionRego} id="vehicleRego" placeholder="Vehicle Rego" />
+            <input type="text" ref={inspectionRego} id="vehicleRego" placeholder="Vehicle Rego" />
           </div>
         </div>
         <br />
+        <hr />
+        <p className="fw-bold mb-2">Additional Services +</p>
+        <ul>
+          <li>RWC Certification <span className="badge bg-dark me-2" onClick={() => addAdditionalServices(1)}>{additionalServices.current.includes(1) ? 'Added' : 'Add'}</span></li>
+          <li>Rego Renewal <span className="badge bg-dark me-2" onClick={() => addAdditionalServices(2)}>{additionalServices.current.includes(2) ? 'Added' : 'Add'}</span></li>
+        </ul>
       </> : <><b>Inspection status:</b> {getInspectionStatusMessage(vehicleData.inspection_status)}<br /></>}
       <hr />
       <p>! What are the benefits of being AutoAssured?</p>
