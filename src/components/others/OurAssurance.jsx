@@ -6,7 +6,7 @@ const ShippingReturns = forwardRef((props, ref) => {
   const inspectionPostCode = useRef(null);
   const inspectionDate = useRef(null);
   const inspectionRego = useRef(null);
-  var additionalServices = useRef([]);
+  const additionalServices = useRef([]);
   const [, forceUpdate] = useReducer(x => x + 1, 0);
 
   const getInspectionStatusMessage = (status) => {
