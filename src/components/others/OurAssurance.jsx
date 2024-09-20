@@ -51,6 +51,7 @@ const ShippingReturns = forwardRef((props, ref) => {
   return (
     <React.Fragment>
       {isEditMode ? <>
+        <p className="fw-bold mb-2">Pick a date to book for an inspection +</p>
         <br></br>
         <div className="row col-md-12">
           {/* <div className="col-md-3">
