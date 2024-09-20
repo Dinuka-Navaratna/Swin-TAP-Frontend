@@ -4,6 +4,7 @@ import { data } from "../../data";
 const Banner = lazy(() => import("../../components/carousel/Banner"));
 const CardList = lazy(() => import("../../components/blog/CardList"));
 const Widgets = lazy(() => import("../../components/blog/Widgets"));
+import './OurAssurance.css';
 
 const OurAssurance = () => {
   const imgStyle = {
@@ -29,12 +30,6 @@ const OurAssurance = () => {
     marginTop: 'auto',
   };
 
-
-  
-
-
-
-
   return (
     <div className="container my-3">
       <Banner className="mb-3" id="carouselBlogBanner" data={data.blogBanner} />
@@ -52,7 +47,7 @@ const OurAssurance = () => {
               <h4 className="card-title">Advertise on AutoAssure</h4>
               <p className="card-text mb-auto">
                 <ul>
-                  <li>Convenience</li>
+                  <li class="test">Convenience</li>
                   <li>Quick and Easy Listings</li>
                   <li>Flexibility in Communication</li>
                   <li>Reach millions of potential buyers, until sold</li>
