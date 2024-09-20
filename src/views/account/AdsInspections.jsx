@@ -159,7 +159,7 @@ const AdsInspectionsView = () => {
                           <>
                             <span className="me-2">Report:</span>
                             <span className="text-success">
-                              <Link to="/Report">
+                              <Link to="https://api.autoassure.me/uploads/" target="_blank" rel="noopener noreferrer">
                                 <i className="bi bi-receipt-cutoff me-1"></i>
                                 Download
                               </Link>
