@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { trimText } from '../../helpers/trimText'
 
 const isNewHot = (dateString, daysGap) => {
   const givenDate = new Date(dateString);
@@ -7,14 +8,6 @@ const isNewHot = (dateString, daysGap) => {
   const dayDifference = Math.abs(timeDifference / (1000 * 3600 * 24));
   return dayDifference < daysGap && dayDifference >= 0;
 };
-
-function trimText(text, maxLength) {
-  if (text.length > maxLength) {
-    return text.substring(0, maxLength) + '...';
-  } else {
-    return text;
-  }
-}
 
 const CardProductGrid = (props) => {
   const ads = props.data;

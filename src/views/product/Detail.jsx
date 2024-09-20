@@ -4,6 +4,7 @@ import { data } from "../../data";
 import { getSession } from "../../actions/session";
 import { toTitleCase } from '../../helpers/letterCaseChange'
 import axios from "axios";
+import { trimText } from '../../helpers/trimText'
 import './style.css';
 const CardFeaturedProduct = lazy(() => import("../../components/card/CardFeaturedProduct"));
 const CardServices = lazy(() => import("../../components/card/CardServices"));
@@ -302,12 +303,12 @@ const ProductDetailView = () => {
                     <span className="badge bg-danger me-2">Hot</span>
                   </>
                 )}
-                <div className="">
+                <div className="mt-2">
                   <span className="h5 me-2">{isEditMode ? <input type="text" className="form-control mw-180" ref={detailsPrice} defaultValue={vehicleData !== null ? vehicleData.price : ''} placeholder="Price" /> : <>$ {vehicleData !== null ? vehicleData.price : 'N/A'}</>}</span>
                   {!isEditMode && (vehicleData.inspection_status === "completed") && <> <i className="bi bi-patch-check-fill text-success me-1" /> AutoAssured </>}
                 </div>
-                <div>
-                  <p>{isEditMode ? <textarea className="form-control" ref={detailsDescription} defaultValue={vehicleData !== null ? vehicleData.description : ''} placeholder="Description" /> : <>{vehicleData !== null ? toTitleCase(vehicleData.description) : ''}</>}</p>
+                <div className="mt-2">
+                  <p className="small">{isEditMode ? <textarea className="form-control" ref={detailsDescription} defaultValue={vehicleData !== null ? vehicleData.description : ''} placeholder="Description" /> : <>{vehicleData !== null ? toTitleCase(trimText(vehicleData.description, 250)) : ''}</>}</p>
                   {!isEditMode ? <>
                     <p className="fw-bold mb-2 small">Vehicle Highlights</p>
                     <ul className="small">
