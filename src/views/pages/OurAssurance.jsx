@@ -131,41 +131,41 @@ const OurAssurance = () => {
           </div>
         </div>
 
-        {/* Removed Blog List Section */}
         
-        {/* About Sections */}
-        <section className="about-section">
-          <img src="/images/assurance/sellCar.jpg" className="about-img" alt="About Us" />
-          <div className="about-content">
-            <h2>Ready to sell your car? Our platform makes it easy, fast, and stress-free.</h2>
-            <p>
-            We understand that selling a car in today’s market can be challenging, with fluctuating demand and complex processes. That’s why we’ve streamlined everything for you—just list your car with AutoAssure, and we’ll connect you with serious buyers quickly. Plus, our expert resources guide you through every step, from setting the right price to handling paperwork. Selling your car has never been this simple or rewarding.
-            </p>
-            
-          </div>
-        </section>
+        
+        {/* SellCar Section */}
+<section className="sellcar-section">
+  <img src="/images/assurance/sellCar.jpg" className="sellcar-img" alt="Sell Your Car with AutoAssure" />
+  <div className="sellcar-content">
+    <h2>Ready to sell your car? Our platform makes it easy, fast, and stress-free.</h2>
+    <p>
+      We understand that selling a car in today’s market can be challenging, with fluctuating demand and complex processes. That’s why we’ve streamlined everything for you—just list your car with AutoAssure, and we’ll connect you with serious buyers quickly. Plus, our expert resources guide you through every step, from setting the right price to handling paperwork. Selling your car has never been this simple or rewarding.
+    </p>
+  </div>
+</section>
 
-        <section className="about-section">
-          <img src="/images/assurance/buycar.jpg" className="about-img" alt="About Us" />
-          <div className="about-content">
-            <h2>Looking for your next car? Our platform offers a wide range of quality vehicles, making it easy to find exactly what you need.</h2>
-            <p>
-            We know that buying a car can be overwhelming, especially with today’s supply challenges and long wait times. That’s why we’ve curated a seamless shopping experience—browse our extensive listings, compare options, and get expert advice to make the right choice. Buying a car has never been this straightforward or satisfying.
-            </p>
-            
-          </div>
-        </section>
+{/* BuyCar Section */}
+<section className="buycar-section">
+  <img src="/images/assurance/buycar.jpg" className="buycar-img" alt="Find Your Next Car with AutoAssure" />
+  <div className="buycar-content">
+    <h2>Looking for your next car? Our platform offers a wide range of quality vehicles, making it easy to find exactly what you need.</h2>
+    <p>
+      We know that buying a car can be overwhelming, especially with today’s supply challenges and long wait times. That’s why we’ve curated a seamless shopping experience—browse our extensive listings, compare options, and get expert advice to make the right choice. Buying a car has never been this straightforward or satisfying.
+    </p>
+  </div>
+</section>
 
-        <section className="about-section">
-          <img src="/images/assurance/mobileMechanic.jpg" className="about-img" alt="About Us" />
-          <div className="about-content">
-            <h2>Get your car ready to sell with our mobile mechanic pre-inspection service.</h2>
-            <p>
-            We bring the inspection to you, ensuring your vehicle is in top shape before hitting the market. With a detailed report in hand, you can attract serious buyers and secure the best price, all while selling with confidence. Make your sale smoother and faster by letting us take care of the inspection—right at your doorstep.
-            </p>
-            
-          </div>
-        </section>
+{/* MobileMechanic Section */}
+<section className="mobilemechanic-section">
+  <img src="/images/assurance/mobileMechanic.jpg" className="mobilemechanic-img" alt="Mobile Mechanic Pre-Inspection Service by AutoAssure" />
+  <div className="mobilemechanic-content">
+    <h2>Get your car ready to sell with our mobile mechanic pre-inspection service.</h2>
+    <p>
+      We bring the inspection to you, ensuring your vehicle is in top shape before hitting the market. With a detailed report in hand, you can attract serious buyers and secure the best price, all while selling with confidence. Make your sale smoother and faster by letting us take care of the inspection—right at your doorstep.
+    </p>
+  </div>
+</section>
+
       </div>
     </div>
   );
