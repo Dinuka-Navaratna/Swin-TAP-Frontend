@@ -6,8 +6,8 @@ import "bootstrap-icons/font/bootstrap-icons.css";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import "./App.css";
-//const Header = lazy(() => import("./components/Header"));
-//const TopMenu = lazy(() => import("./components/TopMenu"));
+
+// Lazy loading of other views and components
 const HomeView = lazy(() => import("./views/Home/Home"));
 const SignInView = lazy(() => import("./views/account/SignIn"));
 const SignUpView = lazy(() => import("./views/account/SignUp"));
@@ -30,6 +30,7 @@ const SupportView = lazy(() => import("./views/pages/Support"));
 const BlogView = lazy(() => import("./views/blog/Blog"));
 const OurAssurance = lazy(() => import("./views/pages/OurAssurance"));
 const AboutUsDetailView = lazy(() => import("./views/aboutus/Detail"));
+const AlertButtons = lazy(() => import("./components/AlertButtons")); // New component for alert buttons
 
 function App() {
   return (
@@ -81,6 +82,7 @@ function App() {
             <Route exact path="/about-us" element={<AboutUsDetailView />} />
             <Route exact path="/500" element={<InternalServerErrorView />} />
             <Route exact path="/assurance" element={<OurAssurance />} />
+            <Route exact path="/alerts" element={<AlertButtons />} /> {/* New route for Alert Buttons */}
             <Route path="*" element={<NotFoundView />} />
           </Routes>
         </Suspense>
