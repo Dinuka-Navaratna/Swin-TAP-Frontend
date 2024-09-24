@@ -4,10 +4,7 @@ import { data } from "../../data";
 import { getSession } from "../../actions/session";
 import { toTitleCase } from '../../helpers/letterCaseChange'
 import axios from "axios";
-import { trimText } from '../../helpers/trimText'
 import './style.css';
-import StripeContainer from '../../components/stripe/StripeContainer';
-import PaymentForm from '../../components/stripe/PaymentForm';
 const CardFeaturedProduct = lazy(() => import("../../components/card/CardFeaturedProduct"));
 const CardServices = lazy(() => import("../../components/card/CardServices"));
 const Details = lazy(() => import("../../components/others/Details"));
@@ -23,7 +20,6 @@ const ProductDetailView = () => {
   const [isNew, setIsNew] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [suggestions, setSuggestions] = useState([]);
-  const [showPaymentForm, setShowPaymentForm] = useState(false);
   const { id } = useParams();
   const detailsRef = useRef(null);
   const inspectionRef = useRef(null);
@@ -221,7 +217,6 @@ const ProductDetailView = () => {
   const handleDeleteClick = () => {
     alert('Deleting ad...');
     setIsEditMode(false);
-    setShowPaymentForm(true);
   };
 
   const createDataIfDifferent = (newData, savedData) => {
@@ -312,7 +307,7 @@ const ProductDetailView = () => {
                   {!isEditMode && (vehicleData.inspection_status === "completed") && <> <i className="bi bi-patch-check-fill text-success me-1" /> AutoAssured </>}
                 </div>
                 <div className="mt-2">
-                  <p className="small">{isEditMode ? <textarea className="form-control" ref={detailsDescription} defaultValue={vehicleData !== null ? vehicleData.description : ''} placeholder="Description" /> : <>{vehicleData !== null ? toTitleCase(trimText(vehicleData.description, 250)) : ''}</>}</p>
+                  <p className="small">{isEditMode && <textarea className="form-control" ref={detailsDescription} defaultValue={vehicleData !== null ? vehicleData.description : ''} placeholder="Description" />}</p>
                   {!isEditMode ? <>
                     <p className="fw-bold mb-2 small">Vehicle Highlights</p>
                     <ul className="small">
@@ -513,11 +508,6 @@ const ProductDetailView = () => {
           </div>
         </div>
       </>}
-      {showPaymentForm && (
-        <StripeContainer>
-          <PaymentForm />
-        </StripeContainer>
-      )}
     </div>
   );
 };
