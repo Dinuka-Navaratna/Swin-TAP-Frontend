@@ -30,7 +30,7 @@ const ShippingReturns = forwardRef((props, ref) => {
   useImperativeHandle(ref, () => ({
     getDetails: () => {
       return {
-        inspectionPostCode: inspectionPostCode.current.value,
+        // inspectionPostCode: inspectionPostCode.current.value,
         inspectionDate: inspectionDate.current.value,
         inspectionRego: inspectionRego.current.value,
       };
