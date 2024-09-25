@@ -2,6 +2,8 @@ import { Link, useLocation } from "react-router-dom";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { getSession } from "../../actions/session";
+import { toTitleCase } from '../../helpers/letterCaseChange'
+import { trimText } from '../../helpers/trimText'
 import './style.css';
 
 const AdsInspectionsView = () => {
@@ -165,10 +167,10 @@ const AdsInspectionsView = () => {
                         <div className="card-body">
                           <h6>
                             <Link to={"/listing/" + (whatPage() === "inspections" ? ad.vehicle._id : ad._id)} className="text-decoration-none">
-                              {whatPage() === "inspections" ? ad.vehicle.title : ad.title}
+                              {whatPage() === "inspections" ? toTitleCase(ad.vehicle.title) : toTitleCase(ad.title)}
                             </Link>
                           </h6>
-                          <span className="me-3">${whatPage() === "inspections" ? ad.vehicle.price : ad.price}</span>
+                          <span className="me-3 small">{whatPage() === "inspections" ? trimText(ad.vehicle.description, 30) : trimText(ad.description, 30)}</span>
                           {
                             /* <div className="small">
                           <span className="text-muted me-2">Size:</span>
