@@ -163,10 +163,6 @@ const ProductDetailView = () => {
         data = createDataIfDifferent(details, vehicleData);
         if (data) {
           console.log("Data to be sent:", data);
-          // console.log("-------------------");
-          // console.log("Saved Data:", JSON.stringify(vehicleData));
-          // console.log("-------------------");
-          // console.log("New Data:", JSON.stringify(details));
         } else {
           console.log("No differences found.");
         }
@@ -222,8 +218,45 @@ const ProductDetailView = () => {
     setIsEditMode(false);
   };
 
-  const handleAcceptInspection = () => {
-    alert('Accepting Inspection');
+  const handleAssignInspection = (state) => {
+    alert('Inspection ' + state + 'ing...');
+
+    let data = {
+      _id: vehicleData.inspection_report._id
+    };
+
+    if (state === "assign") {
+      data.mechanic = sessionData.user_id;
+      data.status = "assigned";
+    }
+
+    data = JSON.stringify(data);
+
+    let config = {
+      method: 'put',
+      maxBodyLength: Infinity,
+      url: `${process.env.REACT_APP_API_URL}/api/inspection-report${state === "unassign" ? '/unassign' : ''}`,
+      headers: {
+        'Authorization': `Token ${sessionData ? sessionData.token : ''}`,
+        'Content-Type': 'application/json'
+      },
+      data: data
+    };
+
+    axios.request(config)
+      .then((response) => {
+        if (response.data.status) {
+          alert("Inspection " + state + "ed successfully!");
+        } else {
+          alert("Error! Please try again.");
+        }
+        console.log(JSON.stringify(response.data));
+      })
+      .catch((error) => {
+        alert("Error! Please try again.");
+        console.log(error);
+      });
+
   };
 
   const createDataIfDifferent = (newData, savedData) => {
@@ -302,8 +335,11 @@ const ProductDetailView = () => {
                   {!isEditMode && <span className="badge bg-dark me-2 float-right" onClick={handleDeleteClick}>Delete</span>}
                   <span className="badge bg-primary me-2 float-right" onClick={isEditMode ? handleSaveClick : handleEditClick}>{isEditMode ? 'Save' : 'Edit'}</span>
                 </>}
-                {sessionData && (!isNew && vehicleData.inspection_status === "requested" && sessionData.role === "mechanic") && <>
-                  <span className="badge bg-primary me-2 float-right" onClick={handleAcceptInspection}>Accept Inspection</span>
+                {sessionData && (!isNew && vehicleData.inspection_report && vehicleData.inspection_report.status === "requested" && sessionData.role === "mechanic") && <>
+                  <span className="badge bg-primary me-2 float-right" onClick={() => handleAssignInspection("assign")}>Assign Inspection</span>
+                </>}
+                {sessionData && (!isNew && vehicleData.inspection_report && vehicleData.inspection_report.status === "assigned" && vehicleData.inspection_report.mechanic === sessionData.user_id) && <>
+                  <span className="badge bg-dark me-2 float-right" onClick={() => handleAssignInspection("unassign")}>Unassign Inspection</span>
                 </>}
                 <h1 className="fw-bold h5 d-inline me-2">{isEditMode ? <input type="text" className="form-control mw-180" ref={detailsTitle} defaultValue={vehicleData !== null ? vehicleData.title : ''} placeholder="Title" /> : <>{vehicleData !== null ? toTitleCase(vehicleData.title) : ''}</>}</h1>
                 {!isEditMode && (
@@ -498,7 +534,7 @@ const ProductDetailView = () => {
                     role="tabpanel"
                     aria-labelledby="nav-ship-returns-tab"
                   >
-                    <OurAssurance isEditMode={isEditMode ? (vehicleData && (vehicleData.inspection_status === 'completed' || vehicleData.inspection_status === 'accepted') ? false : isEditMode) : (isEditMode)} vehicleData={vehicleData} ref={inspectionRef} />
+                    <OurAssurance isEditMode={isEditMode ? (vehicleData && (vehicleData.inspection_status === 'completed' || vehicleData.inspection_status === 'accepted') ? false : isEditMode) : (isEditMode)} vehicleData={vehicleData} ref={inspectionRef} userRole={sessionData ? sessionData.role : ''} />
                   </div>
                   <div
                     className="tab-pane fade"
