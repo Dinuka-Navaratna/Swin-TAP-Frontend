@@ -247,6 +247,7 @@ const ProductDetailView = () => {
       .then((response) => {
         if (response.data.status) {
           alert("Inspection " + state + "ed successfully!");
+          window.location.reload();
         } else {
           alert("Error! Please try again.");
         }
