@@ -1,5 +1,6 @@
 import React, { lazy, Component } from "react";
 import axios from "axios";
+import { getSession } from "../../actions/session";
 import { suburbs } from '../../data/suburbs';
 import SuburbAutocomplete from '../../components/others/LocationFilter';
 const Paging = lazy(() => import("../../components/Paging"));
@@ -27,6 +28,8 @@ class ProductListView extends Component {
     sortPrice: '',
     sortInspection: '',
     loading: false,
+    inspectionRequestedAds: false,
+    session: getSession()
   };
 
   handleSortChange = (event) => {
@@ -49,6 +52,13 @@ class ProductListView extends Component {
       this.getProducts(1, '', '', '', '');
     });
   };
+
+  handleInspectionRequestedAds = () => {
+    var inspectionRequestedAds = this.state.inspectionRequestedAds;
+    this.setState({ inspectionRequestedAds: !inspectionRequestedAds }, () => {
+      this.getProducts(1, '', '', '', '');
+    });
+  }
 
   onPageChanged = async (page) => {
     const { currentPage, totalPages } = page;
@@ -83,7 +93,10 @@ class ProductListView extends Component {
       let config = {
         method: 'get',
         maxBodyLength: Infinity,
-        url: `${process.env.REACT_APP_API_URL}/api/vehicle?&postalCode=${finalSuburb !== null ? finalSuburb : ''}&page=${page !== null ? page : ''}&limit=9&brand=${finalBrand !== null ? finalBrand : ''}&sortDate=${this.state.sortDate}&sortPrice=${this.state.sortPrice}&inspection=${this.state.sortInspection}`
+        url: `${process.env.REACT_APP_API_URL}/api/vehicle${this.state.inspectionRequestedAds ? '/inspections' : ''}?&postalCode=${finalSuburb !== null ? finalSuburb : ''}&page=${page !== null ? page : ''}&limit=9&brand=${finalBrand !== null ? finalBrand : ''}&sortDate=${this.state.sortDate}&sortPrice=${this.state.sortPrice}&inspection=${this.state.sortInspection}`,
+        headers: { 
+          'Authorization': `Token ${this.state.session ? this.state.session.token : ''}`
+        },
       };
 
       try {
@@ -173,8 +186,25 @@ class ProductListView extends Component {
                   </div>
                 </div>
               </div>
-              <br />
-              <p><b>Total Ads: </b>{this.state.totalItems}</p>
+              <br></br>
+              <div className="row">
+                <div className="col-4">
+                  <p><b>Total Ads: </b>{this.state.totalItems}</p>
+                </div>
+                {this.state.session &&
+                  this.state.session.role === "mechanic" &&
+                  <>
+                    <div className="col-8 d-flex justify-content-end">
+                      <div>
+                        <label>
+                          <input type="checkbox" onChange={this.handleInspectionRequestedAds} style={{ marginRight: '10px' }} />
+                          Inspection Requested Ads
+                        </label>
+                      </div>
+                    </div>
+                  </>
+                }
+              </div>
               <div className="d-block d-md-none">
                 <FilterTag getProducts={this.getProducts} selectedBrand={this.state.selectedBrand} />
               </div>
@@ -196,13 +226,13 @@ class ProductListView extends Component {
                       {this.state.view === "grid" &&
                         this.state.currentProducts.map((product, idx) => (
                           <div key={idx} className="col-md-4">
-                            <CardProductGrid data={product} />
+                            <CardProductGrid data={product} role={this.state.session ? this.state.session.role : ''} />
                           </div>
                         ))}
                       {this.state.view === "list" &&
                         this.state.currentProducts.map((product, idx) => (
                           <div key={idx} className="col-md-12">
-                            <CardProductList data={product} />
+                            <CardProductList data={product} role={this.state.session ? this.state.session.role : ''} />
                           </div>
                         ))}
                     </>
