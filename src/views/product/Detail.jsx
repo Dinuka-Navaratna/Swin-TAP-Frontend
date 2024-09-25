@@ -233,7 +233,7 @@ const ProductDetailView = () => {
     data = JSON.stringify(data);
 
     let config = {
-      method: 'put',
+      method: state === "assign" ? 'PUT' : 'POST',
       maxBodyLength: Infinity,
       url: `${process.env.REACT_APP_API_URL}/api/inspection-report${state === "unassign" ? '/unassign' : ''}`,
       headers: {
