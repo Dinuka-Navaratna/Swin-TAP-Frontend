@@ -37,7 +37,6 @@ const ProductDetailView = () => {
     }
 
     if (id !== "") {
-      setVehicleData(null);
       if (id !== "new") {
         setIsEditMode(false);
         let config = {
@@ -67,6 +66,9 @@ const ProductDetailView = () => {
           if (session.role !== "seller") {
             alert("You are not a seller bro!");
             window.location.href = "/listing";
+          }
+          if (vehicleData) {
+            window.location.reload();
           }
           setIsNew(true);
           setIsEditMode(true);
@@ -192,9 +194,10 @@ const ProductDetailView = () => {
             window.location.href = "/listing/" + response.data.data._id;
           } else {
             console.log(JSON.stringify(response.data));
-            if (response.data.msg.includes('not allowed to be empty')) {
+            if (typeof response.data.msg === 'string' && response.data.msg.includes('not allowed to be empty')) {
               alert("All fields must be filled. Please try again.")
             } else {
+              console.log(response);
               alert("An error occurred. Please try again.");
             }
           }
@@ -217,6 +220,10 @@ const ProductDetailView = () => {
   const handleDeleteClick = () => {
     alert('Deleting ad...');
     setIsEditMode(false);
+  };
+
+  const handleAcceptInspection = () => {
+    alert('Accepting Inspection');
   };
 
   const createDataIfDifferent = (newData, savedData) => {
@@ -260,7 +267,7 @@ const ProductDetailView = () => {
 
   return (
     <div className="container-fluid mt-3">
-      {!isLoading && <>
+      {!isLoading ? <>
         <div className="row">
           <div className="col-md-8">
             <div className="row mb-3">
@@ -294,6 +301,9 @@ const ProductDetailView = () => {
                   {isEditMode && <span className="badge bg-dark me-2 float-right" onClick={handleCancelClick}>Cancel</span>}
                   {!isEditMode && <span className="badge bg-dark me-2 float-right" onClick={handleDeleteClick}>Delete</span>}
                   <span className="badge bg-primary me-2 float-right" onClick={isEditMode ? handleSaveClick : handleEditClick}>{isEditMode ? 'Save' : 'Edit'}</span>
+                </>}
+                {sessionData && (!isNew && vehicleData.inspection_status === "requested" && sessionData.role === "mechanic") && <>
+                  <span className="badge bg-primary me-2 float-right" onClick={handleAcceptInspection}>Accept Inspection</span>
                 </>}
                 <h1 className="fw-bold h5 d-inline me-2">{isEditMode ? <input type="text" className="form-control mw-180" ref={detailsTitle} defaultValue={vehicleData !== null ? vehicleData.title : ''} placeholder="Title" /> : <>{vehicleData !== null ? toTitleCase(vehicleData.title) : ''}</>}</h1>
                 {!isEditMode && (
@@ -507,7 +517,14 @@ const ProductDetailView = () => {
             <CardServices />
           </div>
         </div>
-      </>}
+      </> : <>
+        <div className="text-center">
+          <div className="spinner-border" role="status">
+            <span className="visually-hidden">Loading...</span>
+          </div>
+        </div>
+      </>
+      }
     </div>
   );
 };
