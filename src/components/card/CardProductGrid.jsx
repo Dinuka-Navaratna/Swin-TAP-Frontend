@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { trimText } from '../../helpers/trimText'
+import { toTitleCase } from '../../helpers/letterCaseChange'
 
 const isNewHot = (dateString, daysGap) => {
   const givenDate = new Date(dateString);
@@ -11,6 +12,7 @@ const isNewHot = (dateString, daysGap) => {
 
 const CardProductGrid = (props) => {
   const ads = props.data;
+  const role = props.role;
   return (
     <Link to={"/listing/" + ads._id} className="text-decoration-none">
       <div className="card">
@@ -20,11 +22,18 @@ const CardProductGrid = (props) => {
             New
           </span>
         )}
-        {isNewHot(ads.created_at, 1) && (
+        {/* {isNewHot(ads.created_at, 1) && (
           <span className="badge bg-danger position-absolute r-0 mt-2 me-2">
             Hot
           </span>
-        )}
+        )} */}
+        {role === "mechanic" && ads.inspection_status === "requested" &&
+          <>
+            <span className="badge bg-danger position-absolute r-0 mt-2 me-2">
+              Inspection Requested
+            </span>
+          </>
+        }
         {/* {(0 > 0 || 0 > 0) && (
           <span
             className={`rounded position-absolute p-2 bg-warning  ms-2 small ${isNewHot(ads.created_at, 5) ? "mt-5" : "mt-2"
@@ -39,7 +48,7 @@ const CardProductGrid = (props) => {
         <div className="card-body">
           <h6 className="card-subtitle mb-2">
             <p className="text-decoration-none" style={{ color: "#0d6efd" }}>
-              {trimText(ads.title, 30)}
+              {trimText(toTitleCase(ads.title), 30)}
             </p>
           </h6>
           <div className="my-2">
@@ -59,9 +68,13 @@ const CardProductGrid = (props) => {
                 ))
               )}
             </span>
-            <p className="small mt-2">{trimText(ads.description, 250)}</p>
-            <p className="small mt-2">{ads.brand}</p>
-            <p className="small mt-2">{ads.postal_code}</p>
+            {/* <p className="small mt-2">{trimText(ads.description, 250)}</p> */}
+            <p className="small mt-2">
+              <b>Brand:</b> {ads.brand} <br></br>
+              <b>Model:</b> {toTitleCase(ads.model)} <br></br>
+              <b>Year:</b> {ads.yom} <br></br>
+              <b>Postal Code:</b> {ads.postal_code}
+            </p>
           </div>
           {/* <div className="btn-group  d-flex" role="group">
           <button
