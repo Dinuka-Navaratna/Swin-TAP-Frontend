@@ -26,7 +26,7 @@ const AdsInspectionsView = () => {
     if (session) {
       setSessionData(session);
     } else {
-      alert("Log in to view "+whatPage());
+      alert("Log in to view " + whatPage());
       window.location.href = "/account/signin";
     }
 
@@ -40,8 +40,13 @@ const AdsInspectionsView = () => {
 
       try {
         const response = await axios.request(config);
-        console.log(response.data.data.data);
-        setAds(response.data.data.data);
+        if (whatPage() === "ads") {
+          console.log(response.data.data.data);
+          setAds(response.data.data.data);
+        } else if (whatPage() === "inspections") {
+          console.log(response.data.data);
+          setAds(response.data.data);
+        }
         setLoading(false);
       } catch (error) {
         console.log(error);
@@ -64,6 +69,53 @@ const AdsInspectionsView = () => {
     return `${date.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}`;
   };
 
+  const getStatusElement = (status) => {
+    switch (status) {
+      case "not_requested":
+        return (
+          <span className="text-warning">
+            <i className="bi bi-backspace-reverse-fill me-1"></i>
+            Not Requested
+          </span>
+        );
+      case "requested":
+        return (
+          <span className="text-dark">
+            <i className="bi bi-hand-thumbs-up-fill me-1"></i>
+            Requested
+          </span>
+        );
+      case "accepted":
+        return (
+          <span className="text-primary">
+            <i className="bi bi-clock-history me-1"></i>
+            Upcoming
+          </span>
+        );
+      case "completed":
+        return (
+          <span className="text-success">
+            <i className="bi bi-check-circle-fill me-1"></i>
+            Completed
+          </span>
+        );
+      case "cancelled":
+        return (
+          <span className="text-danger">
+            <i className="bi bi-x-circle-fill me-1"></i>
+            Cancelled
+          </span>
+        );
+      default:
+        return (
+          <span className="text-warning">
+            <i className="bi bi-exclamation-triangle-fill me-1"></i>
+            N/A
+          </span>
+        );
+    }
+  }
+
   return (
     <div className="container mb-3">
       <br></br>
@@ -80,7 +132,7 @@ const AdsInspectionsView = () => {
           <>
             {ads && ads.length > 0 ? (
               ads.map(ad => (
-                <div className="col-md-6">
+                <div className="col-md-6" key={ad._id}>
                   <div className="card">
                     <div className="row g-0">
                       <div className="col-md-3 text-center">
@@ -103,20 +155,20 @@ const AdsInspectionsView = () => {
                               Advertised on:
                             </span>
                             <span className="border bg-white rounded-right px-2">
-                              {formatDate(ad.created_at)}
+                              {formatDate(whatPage() === "inspections" ? ad.vehicle.created_at : ad.created_at)}
                             </span>
                             <span className="float-right px-2">
-                              <Link to={"/listing/" + ad._id} className="text-decoration-none">More Details &gt;&gt;</Link>
+                              <Link to={"/listing/" + (whatPage() === "inspections" ? ad.vehicle._id : ad._id)} className="text-decoration-none">More Details &gt;&gt;</Link>
                             </span>
                           </div>
                         </div>
                         <div className="card-body">
                           <h6>
-                            <Link to={"/listing/" + ad._id} className="text-decoration-none">
-                              {ad.title}
+                            <Link to={"/listing/" + (whatPage() === "inspections" ? ad.vehicle._id : ad._id)} className="text-decoration-none">
+                              {whatPage() === "inspections" ? ad.vehicle.title : ad.title}
                             </Link>
                           </h6>
-                          <span className="me-3">${ad.price}</span>
+                          <span className="me-3">${whatPage() === "inspections" ? ad.vehicle.price : ad.price}</span>
                           {
                             /* <div className="small">
                           <span className="text-muted me-2">Size:</span>
@@ -135,49 +187,23 @@ const AdsInspectionsView = () => {
                         </div>
                         <div className="card-footer d-flex justify-content-between">
                           <div>
-                            <span className="me-2">Inspection:</span>
-                            {ad.inspection_status === "not_requested" ? (
-                              <span className="text-warning">
-                                <i className="bi bi-backspace-reverse-fill me-1"></i>
-                                Not Requested
-                              </span>
-                            ) : ad.inspection_status === "requested" ? (
-                              <span className="text-dark">
-                                <i className="bi bi-hand-thumbs-up-fill me-1"></i>
-                                Requested
-                              </span>
-                            ) : ad.inspection_status === "accepted" ? (
-                              <span className="text-primary">
-                                <i className="bi bi-clock-history me-1"></i>
-                                Upcoming
-                              </span>
-                            ) : ad.inspection_status === "completed" ? (
-                              <span className="text-success">
-                                <i className="bi bi-check-circle-fill me-1"></i>
-                                Completed
-                              </span>
-                            ) : ad.inspection_status === "cancelled" ? (
-                              <span className="text-danger">
-                                <i className="bi bi-x-circle-fill me-1"></i>
-                                Cancelled
-                              </span>
-                            ) : (
-                              <span className="text-warning">
-                                <i className="bi bi-exclamation-triangle-fill me-1"></i>
-                                N/A
-                              </span>
-                            )}
+                            <span className="me-2"><b>Inspection:</b></span>
+                            {getStatusElement(whatPage() === "inspections" ? ad.vehicle.inspection_status : ad.inspection_status)}
                           </div>
                           <div>
-                            {ad.inspection_status === "completed" && (
+                            {ad.inspection_status === "completed" ? (
                               <>
                                 <span className="me-2">Report:</span>
                                 <span className="text-success">
-                                  <Link to="https://api.autoassure.me/uploads/" target="_blank" rel="noopener noreferrer">
+                                  <Link to={`${process.env.REACT_APP_API_URL} + /uploads/`} target="_blank" rel="noopener noreferrer">
                                     <i className="bi bi-receipt-cutoff me-1"></i>
                                     Download
                                   </Link>
                                 </span>
+                              </>
+                            ) : (whatPage() === "inspections" &&
+                              <>
+                                <span className="me-2 small">Date: {ad.inspection_time}</span>
                               </>
                             )}
                           </div>
