@@ -1,35 +1,9 @@
-.carousel-inner {
-    height: 80vh;
-    width: 100%;
-    position: centre;
-}
 
-.test {
-    font-weight: bold;
-    color: red;
-}
 
 .container {
     width: 100%;
     max-width: 100%;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 /* General Styles for Sections */
 .sellcar-section, .buycar-section, .mobilemechanic-section {
