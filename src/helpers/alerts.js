@@ -1,8 +1,7 @@
-// src/helpers/alerts.js
 import Swal from 'sweetalert2';
 
 // Alert Dialog
-export var alertDialog = (message) => {
+export const alertDialog = (message) => {
   Swal.fire({
     title: 'Alert',
     text: message,
@@ -12,7 +11,7 @@ export var alertDialog = (message) => {
 };
 
 // Confirm Dialog
-export const confirmDialog = (message = 'Are you sure you want to proceed?') => {
+export const confirmDialog = (message) => {
   return Swal.fire({
     title: 'Confirm',
     text: message,
@@ -36,7 +35,7 @@ export const promptDialog = () => {
 };
 
 // Success Dialog
-export const successDialog = (message = 'Operation completed successfully!') => {
+export const successDialog = (message) => {
   Swal.fire({
     title: 'Success',
     text: message,
@@ -46,7 +45,7 @@ export const successDialog = (message = 'Operation completed successfully!') => 
 };
 
 // Error Dialog
-export const errorDialog = (message = 'An error occurred!') => {
+export const errorDialog = (message) => {
   Swal.fire({
     title: 'Error',
     text: message,
@@ -56,7 +55,7 @@ export const errorDialog = (message = 'An error occurred!') => {
 };
 
 // Warning Dialog
-export const warningDialog = (message = 'This is a warning message!') => {
+export const warningDialog = (message) => {
   Swal.fire({
     title: 'Warning',
     text: message,
@@ -66,7 +65,7 @@ export const warningDialog = (message = 'This is a warning message!') => {
 };
 
 // Info Dialog
-export const infoDialog = (message = 'This is an information message!') => {
+export const infoDialog = (message) => {
   Swal.fire({
     title: 'Info',
     text: message,
@@ -76,7 +75,7 @@ export const infoDialog = (message = 'This is an information message!') => {
 };
 
 // Question Dialog
-export const questionDialog = (message = 'Do you have any questions?') => {
+export const questionDialog = (message) => {
   Swal.fire({
     title: 'Question',
     text: message,

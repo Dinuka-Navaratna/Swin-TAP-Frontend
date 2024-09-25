@@ -7,6 +7,7 @@ import renderFormGroupField from "../../helpers/renderFormGroupField";
 // import { setSession } from "../../actions/session";
 import { required, email } from "../../helpers/validation";
 import { ReactComponent as IconEmail } from "bootstrap-icons/icons/envelope.svg";
+import {alertDialog, confirmDialog, promptDialog, successDialog, errorDialog, warningDialog, infoDialog, questionDialog} from "../../helpers/alerts.js";
 
 const ForgotPasswordForm = (props) => {
   const { handleSubmit, submitting, submitFailed } = props;
@@ -29,14 +30,14 @@ const ForgotPasswordForm = (props) => {
       const response = await axios.request(config);
       console.log('Response:', response.data);
       if (response.data.status) {
-        alert("An email has been sent!");
+        successDialog("An email has been sent!");
         window.location.href = "/account/signin";
       } else {
-        alert(response.data.msg);
+        errorDialog(response.data.msg);
       }
     } catch (error) {
       console.error("Error during password reset:", error);
-      alert("An error occurred. Please try again later.");
+      errorDialog("An error occurred. Please try again later.");
     }
   };
 

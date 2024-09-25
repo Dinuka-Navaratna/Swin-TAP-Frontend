@@ -1,4 +1,5 @@
 import React from "react";
+import {warningDialog} from "./alerts.js";
 
 const handleChange = (event, input, onImageChange) => {
   event.preventDefault();
@@ -7,11 +8,11 @@ const handleChange = (event, input, onImageChange) => {
     if (/\.(jpe?g|png)$/i.test(imageFile?.name) === false) {
       input.onChange(null);
       onImageChange(null);
-      alert("Please select image file only!");
+      warningDialog("Please select image file only!");
     } else {
       var fileSize = imageFile.size / 1024 / 1024; // in MB
       if (fileSize > 5) {
-        alert(
+        warningDialog(
           `Photo size must be less or equal to 5MB. Your photo size is ${fileSize}`
         );
       } else {

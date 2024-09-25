@@ -3,6 +3,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { getSession } from "../../actions/session";
 import './style.css';
+import {warningDialog, errorDialog} from "../../helpers/alerts.js";
 
 const AdsInspectionsView = () => {
   const [sessionData, setSessionData] = useState(null);
@@ -26,7 +27,7 @@ const AdsInspectionsView = () => {
     if (session) {
       setSessionData(session);
     } else {
-      alert("Log in to view "+whatPage());
+      warningDialog("Log in to view "+whatPage());
       window.location.href = "/account/signin";
     }
 
@@ -53,7 +54,7 @@ const AdsInspectionsView = () => {
     if (whatPage() === "ads" || whatPage() === "inspections") {
       whatPage() === "ads" ? fetchAds(`/api/vehicle?sellerId=` + (session.user_id)) : fetchAds(`/api/inspection-report?mechanic=` + (session.user_id));
     } else {
-      alert("Requested page not found!");
+      errorDialog("Requested page not found!");
       window.location.href = "/listing";
     }
   }, [webPath]);
