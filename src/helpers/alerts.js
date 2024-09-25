@@ -2,7 +2,7 @@
 import Swal from 'sweetalert2';
 
 // Alert Dialog
-export const alertDialog = (message = 'This is a basic alert!') => {
+export var alertDialog = (message) => {
   Swal.fire({
     title: 'Alert',
     text: message,
