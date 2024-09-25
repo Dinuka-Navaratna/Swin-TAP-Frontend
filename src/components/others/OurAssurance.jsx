@@ -3,6 +3,7 @@ import React, { forwardRef, useRef, useImperativeHandle, useReducer } from "reac
 const ShippingReturns = forwardRef((props, ref) => {
   const { isEditMode } = props;
   const { vehicleData } = props;
+  const { userRole } = props;
   const inspectionPostCode = useRef(null);
   const inspectionDate = useRef(null);
   const inspectionRego = useRef(null);
@@ -17,13 +18,13 @@ const ShippingReturns = forwardRef((props, ref) => {
         </>
       );
     } else if (status === 'requested') {
-      return 'An inspection has been requested by the seller and awaiting mechanic response.';
+      return ('An inspection has been requested by the seller and awaiting mechanic response.')
     } else if (status === 'not_requested') {
       return 'The seller has not requested for an inspection.';
-    } else if (status === 'accepted') {
+    } else if (status === 'assigned') {
       return 'The inspection has been scheduled with a mechanic.';
     } else {
-      return 'Inspection not available.';
+      return 'Inspection details not available.';
     }
   };
 
@@ -74,7 +75,27 @@ const ShippingReturns = forwardRef((props, ref) => {
           <li>RWC Certification <span className="badge bg-dark me-2" onClick={() => addAdditionalServices(1)}>{additionalServices.current.includes(1) ? 'Added' : 'Add'}</span></li>
           <li>Rego Renewal <span className="badge bg-dark me-2" onClick={() => addAdditionalServices(2)}>{additionalServices.current.includes(2) ? 'Added' : 'Add'}</span></li>
         </ul>
-      </> : <><b>Inspection status:</b> {getInspectionStatusMessage(vehicleData.inspection_status)}<br /></>}
+      </> : <>
+        <b>Inspection status:</b> {getInspectionStatusMessage(vehicleData.inspection_report && vehicleData.inspection_report.status ? vehicleData.inspection_report.status : vehicleData.inspection_status)}<br />
+        {userRole === "mechanic" &&
+          <ul className="small mt-2">
+            <li><b>Date:</b> {vehicleData.inspection_report.inspection_time}</li>
+            <li><b>Rego:</b> {vehicleData.inspection_report.vehicle_rego}</li>
+            {(vehicleData.inspection_report.additional_requests).length !== 0 &&
+              <>
+                <details>
+                  <summary className="fw-bold mb-2 small">Additional Services:</summary>
+                  <ul className="small">
+                    {vehicleData.inspection_report.additional_requests.map((value, index) => (
+                      <li key={index}>{value}</li>
+                    ))}
+                  </ul>
+                </details>
+              </>
+            }
+          </ul>
+        }
+      </>}
       <hr />
       <p>! What are the benefits of being AutoAssured?</p>
       <ul>
