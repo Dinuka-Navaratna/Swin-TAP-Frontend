@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './LocationFilter.css';
+import {warningDialog} from "../../helpers/alerts.js";
 
 const SuburbAutocomplete = ({ suburbs, getProducts, selectedSuburb }) => {
     const [inputValue, setInputValue] = useState('');
@@ -39,7 +40,7 @@ const SuburbAutocomplete = ({ suburbs, getProducts, selectedSuburb }) => {
             if (inputValue === '') {
                 getProducts(1, '', '', '', 'clear');
             } else if (!filteredSuburbs.some(suburb => `${suburb.suburb} - ${suburb.postcode}` === inputValue)) {
-                alert('Please select a suburb from the dropdown.');
+                warningDialog('Please select a suburb from the dropdown.');
             }
         }
     };

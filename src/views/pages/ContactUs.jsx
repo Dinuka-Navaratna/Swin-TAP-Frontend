@@ -1,13 +1,14 @@
 import { lazy } from "react";
 import React from "react";
 import axios from "axios";
+import { successDialog, errorDialog } from "../../helpers/alerts.js";
 
 // Lazy loading the ContactUsForm component
 const ContactUsForm = lazy(() => import("../../components/ContactUsForm"));
 
 const ContactUsView = () => {
   const onSubmit = async (values, dispatch, props) => {
-    alert(JSON.stringify(values.name));  // Test alert
+    successDialog(JSON.stringify(values.name));  // Test alert
 
     // Create the data structure required by the API
     const data = JSON.stringify({
@@ -36,9 +37,9 @@ const ContactUsView = () => {
 
       // Check if the submission was successful
       if (response.data.status === "false") {
-        alert("Error submitting the form!");
+        errorDialog("Error submitting the form!");
       } else {
-        alert("Form submitted successfully!");
+        successDialog("Form submitted successfully!");
         // Reset the form fields after a successful submission
         props.reset();  // Call reset
       }

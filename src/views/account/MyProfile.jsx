@@ -1,5 +1,6 @@
 import { lazy, Component } from "react";
 import { getSession } from "../../actions/session";
+import { infoDialog } from "../../helpers/alerts.js";
 const ProfileForm = lazy(() => import("../../components/account/ProfileForm"));
 const ChangePasswordForm = lazy(() => import("../../components/account/ChangePasswordForm"));
 const SettingForm = lazy(() => import("../../components/account/SettingForm"));
@@ -17,11 +18,11 @@ class MyProfileView extends Component {
   state = { imagePreview: "", isDeleting: false };
 
   onSubmitProfile = async (values) => {
-    alert(JSON.stringify(values));
+    infoDialog(JSON.stringify(values));
   };
 
   onSubmitChangePassword = async (values) => {
-    alert(JSON.stringify(values));
+    infoDialog(JSON.stringify(values));
   };
 
   onImageChange = async (obj) => {

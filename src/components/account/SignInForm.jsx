@@ -9,7 +9,7 @@ import { setSession } from "../../actions/session";
 import { required, email, maxLength20, minLength8 } from "../../helpers/validation";
 import { ReactComponent as IconEmail } from "bootstrap-icons/icons/envelope.svg";
 import { ReactComponent as IconShieldLock } from "bootstrap-icons/icons/shield-lock.svg";
-import {alertDialog} from "../../helpers/alerts.js";
+import {alertDialog, confirmDialog, promptDialog, successDialog, errorDialog, warningDialog, infoDialog, questionDialog} from "../../helpers/alerts.js";
 
 const SignInForm = (props) => {
   const { handleSubmit, submitting, submitFailed } = props;
@@ -37,10 +37,10 @@ const SignInForm = (props) => {
           token: response.data.data
         };
         setSession(sessionData);
-        alertDialog("Login successful!");
+        successDialog("Login successful!");
         window.location.href = "/account/profile";
       } else {
-        alertDialog("Login failed. Please check your credentials.");
+        warningDialog("Login failed. Please check your credentials.");
         console.log("Login failed: "+response.data.msg);
       }
     } catch (error) {
@@ -49,7 +49,7 @@ const SignInForm = (props) => {
         console.error("Server response:", error.response.data);
         alertDialog(`Login failed: ${error.response.data.message}`);
       } else {
-        alertDialog("An error occurred. Please try again later.");
+        errorDialog("An error occurred. Please try again later.");
       }
     }
   };
