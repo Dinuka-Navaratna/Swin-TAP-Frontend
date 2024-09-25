@@ -27,4 +27,6 @@ debug.log*
 .vscode/
 .history/
 
+# Python Script - Create Users & Ads
 *.py
+users.txt
