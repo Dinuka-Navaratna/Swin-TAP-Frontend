@@ -146,7 +146,7 @@ const Header = () => {
                     T & C
                   </Link>
                 </li>
-                
+
                 {/* <li className="nav-item">
                   <Link className="nav-link" to="/documentation">
                     Documentation
@@ -170,22 +170,25 @@ const Header = () => {
                   <>
                     <li>
                       <Link className="dropdown-item" to="/account/profile">
-                        <i className="bi bi-person-square"></i>&nbsp;
-                        My Profile
+                        <i className="bi bi-person-square"></i>&nbsp;&nbsp;
+                        {session.name}
                       </Link>
                     </li>
-                    <li>
-                      <Link className="dropdown-item" to="/account/inspections">
-                        <i className="bi bi-star-fill text-warning"></i>&nbsp;
-                        My Ads
-                      </Link>
-                    </li>
-                    <li>
-                      <Link className="dropdown-item" to="/account/inspections">
-                        <i className="bi bi-list-check text-primary"></i>&nbsp;
-                        My Inspections
-                      </Link>
-                    </li>
+                    {session.role === "seller" ? (
+                      <li>
+                        <Link className="dropdown-item" to="/account/ads">
+                          <i className="bi bi-star-fill text-warning"></i>&nbsp;
+                          My Ads
+                        </Link>
+                      </li>
+                    ) : (
+                      <li>
+                        <Link className="dropdown-item" to="/account/inspections">
+                          <i className="bi bi-list-check text-primary"></i>&nbsp;
+                          My Inspections
+                        </Link>
+                      </li>
+                    )}
                     {/* <li>
                       <Link className="dropdown-item" to="/account/wishlist">
                         <i className="bi bi-heart-fill text-danger"></i>&nbsp;
@@ -207,12 +210,14 @@ const Header = () => {
                         Support
                       </Link>
                     </li>
-                    <li>
-                      <Link className="dropdown-item" to="/listing/new">
-                        <i className="bi bi-plus-circle-fill text-primary"></i>&nbsp;
-                        Post Ad
-                      </Link>
-                    </li>
+                    {session.role === "seller" && (
+                      <li>
+                        <Link className="dropdown-item" to="/listing/new">
+                          <i className="bi bi-plus-circle-fill text-primary"></i>&nbsp;
+                          Post Ad
+                        </Link>
+                      </li>
+                    )}
                     <li>
                       <hr className="dropdown-divider" />
                     </li>
@@ -227,13 +232,13 @@ const Header = () => {
                   <>
                     <li>
                       <Link className="dropdown-item" to="/account/signin">
-                      <i className="bi bi-box-arrow-in-right text-primary"></i>&nbsp;
+                        <i className="bi bi-box-arrow-in-right text-primary"></i>&nbsp;
                         Sign In
                       </Link>
                     </li>
                     <li>
                       <Link className="dropdown-item" to="/account/signup">
-                      <i className="bi bi-person-check text-success"></i>&nbsp;
+                        <i className="bi bi-person-check text-success"></i>&nbsp;
                         Sign Up
                       </Link>
                     </li>

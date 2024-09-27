@@ -1,6 +1,7 @@
 import React, { lazy, Component } from "react";
+import './home.css';
 import { Link } from "react-router-dom";
-import { data } from "../data";
+import { data } from "../../data";
 import { ReactComponent as IconLaptop } from "bootstrap-icons/icons/laptop.svg";
 import { ReactComponent as IconHeadset } from "bootstrap-icons/icons/headset.svg";
 import { ReactComponent as IconPhone } from "bootstrap-icons/icons/phone.svg";
@@ -10,27 +11,18 @@ import { ReactComponent as IconHdd } from "bootstrap-icons/icons/hdd.svg";
 import { ReactComponent as IconUpcScan } from "bootstrap-icons/icons/upc-scan.svg";
 import { ReactComponent as IconTools } from "bootstrap-icons/icons/tools.svg";
 
-const Support = lazy(() => import("../components/Support"));
-const Banner = lazy(() => import("../components/carousel/Banner"));
-const Carousel = lazy(() => import("../components/carousel/Carousel"));
-const CardIcon = lazy(() => import("../components/card/CardIcon"));
+const Support = lazy(() => import("../../components/Support"));
+const Banner = lazy(() => import("../../components/carousel/Banner"));
+const Carousel = lazy(() => import("../../components/carousel/Carousel"));
+const CardIcon = lazy(() => import("../../components/card/CardIcon"));
 // const CardLogin = lazy(() => import("../components/card/CardLogin"));
-const CardImage = lazy(() => import("../components/card/CardImage"));
+const CardImage = lazy(() => import("../../components/card/CardImage"));
 const CardDealsOfTheDay = lazy(() =>
-  import("../components/card/CardDealsOfTheDay")
+  import("../../components/card/CardDealsOfTheDay")
 );
 
 class HomeView extends Component {
-  components = {
-    IconLaptop: IconLaptop,
-    IconHeadset: IconHeadset,
-    IconPhone: IconPhone,
-    IconTv: IconTv,
-    IconDisplay: IconDisplay,
-    IconHdd: IconHdd,
-    IconUpcScan: IconUpcScan,
-    IconTools: IconTools,
-  };
+
 
   render() {
     const iconProducts = data.iconProducts;
@@ -44,7 +36,6 @@ class HomeView extends Component {
       <div className={`carousel-item ${idx === 0 ? "active" : ""}`} key={idx}>
         <div className="row g-3">
           {row.map((product, idx) => {
-            const ProductImage = this.components[product.img];
             return (
               <div key={idx} className="col-md-3">
                 <CardIcon
@@ -53,7 +44,7 @@ class HomeView extends Component {
                   tips={product.tips}
                   to={product.to}
                 >
-                  <ProductImage className={product.cssClass} width="80" height="80" />
+                  <img src={product.img} className="logo-size" />
                 </CardIcon>
               </div>
             );
@@ -64,21 +55,8 @@ class HomeView extends Component {
 
     return (
       <React.Fragment>
-        <Banner className="mb-3" id="carouselHomeBanner" data={data.banner} />
-        <div className="container-fluid bg-light mb-3">
-          <div className="row g-3">
-            <div className="col-md-9">
-              <Carousel id="elect-product-category" className="mb-3">
-                {carouselContent}
-              </Carousel>
-              <Support />
-            </div>
-            <div className="col-md-3">
-              {/* <CardLogin className="mb-3" /> */}
-              <CardImage src="../../images/banner/Watches.webp" to="promo" />
-            </div>
-          </div>
-        </div>
+        <Banner className="mb-3" id="carouselHomeBanner" data={data.banner}  interval={1000}/>
+       
         <div className="container-fluid bg-light mb-3">
           <div className="row">
             <div className="col-md-12">
@@ -96,50 +74,61 @@ class HomeView extends Component {
         </div>
 
         <div className="bg-info bg-gradient p-3 text-center mb-3">
-          <h4 className="m-0">Explore Fashion Collection</h4>
+          <h4 className="m-0">Our Brand Partners</h4>
         </div>
-        <div className="container">
+        <div className="container py-3">
           <div className="row">
-            <div className="col-md-3">
+            <div className="col-md-2  mx-3">
               <Link to="/" className="text-decoration-none">
                 <img
-                  src="../../images/category/male.webp"
+                  src="../../images/category/carsales.jpg"
                   className="img-fluid rounded-circle"
                   alt="..."
                 />
-                <div className="text-center h6">Men's Clothing</div>
+                <div className="text-center mt-2">CarSales.com.au</div>
               </Link>
             </div>
-            <div className="col-md-3">
+            <div className="col-md-2  mx-3">
               <Link to="/" className="text-decoration-none">
                 <img
-                  src="../../images/category/female.webp"
+                  src="../../images/category/carsales2.jpg"
                   className="img-fluid rounded-circle"
                   alt="..."
                 />
-                <div className="text-center h6">Women's Clothing</div>
+                <div className="text-center mt-2">Autocars</div>
               </Link>
             </div>
-            <div className="col-md-3">
+            <div className="col-md-2  mx-3">
               <Link to="/" className="text-decoration-none">
                 <img
-                  src="../../images/category/smartwatch.webp"
+                  src="../../images/category/carsales3.jpg"
                   className="img-fluid rounded-circle"
                   alt="..."
                 />
-                <div className="text-center h6">Smartwatch</div>
+                <div className="text-center mt-2">UsedCars.com</div>
               </Link>
             </div>
-            <div className="col-md-3">
+            <div className="col-md-2  mx-3">
               <Link to="/" className="text-decoration-none">
                 <img
-                  src="../../images/category/footwear.webp"
+                  src="../../images/category/carsales4.jpg"
                   className="img-fluid rounded-circle"
                   alt="..."
                 />
-                <div className="text-center h6">Footwear</div>
+                <div className="text-center mt-2">Gumtree</div>
               </Link>
             </div>
+            <div className="col-md-2  mx-3">
+              <Link to="/" className="text-decoration-none">
+                <img
+                  src="../../images/category/carsales5.jpg"
+                  className="img-fluid rounded-circle"
+                  alt="..."
+                />
+                <div className="text-center mt-2">Michels Cars</div>
+              </Link>
+            </div>
+            
           </div>
         </div>
       </React.Fragment>

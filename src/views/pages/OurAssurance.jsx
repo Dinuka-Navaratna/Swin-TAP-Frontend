@@ -1,10 +1,6 @@
-import React, { lazy, Suspense } from 'react';
 import { Link } from 'react-router-dom';
 import { data } from '../../data';
 import './OurAssurance.css';
-
-// Lazy loading components
-const CardList = lazy(() => import('../../components/blog/CardList'));
 
 const OurAssurance = () => {
   // Inline styles for different elements

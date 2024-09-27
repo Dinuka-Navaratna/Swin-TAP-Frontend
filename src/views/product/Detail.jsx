@@ -4,6 +4,7 @@ import { data } from "../../data";
 import { getSession } from "../../actions/session";
 import { toTitleCase } from '../../helpers/letterCaseChange'
 import axios from "axios";
+import './style.css';
 const CardFeaturedProduct = lazy(() => import("../../components/card/CardFeaturedProduct"));
 const CardServices = lazy(() => import("../../components/card/CardServices"));
 const Details = lazy(() => import("../../components/others/Details"));
@@ -18,6 +19,7 @@ const ProductDetailView = () => {
   const [isEditMode, setIsEditMode] = useState(false);
   const [isNew, setIsNew] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [suggestions, setSuggestions] = useState([]);
   const { id } = useParams();
   const detailsRef = useRef(null);
   const inspectionRef = useRef(null);
@@ -35,7 +37,6 @@ const ProductDetailView = () => {
     }
 
     if (id !== "") {
-      setVehicleData(null);
       if (id !== "new") {
         setIsEditMode(false);
         let config = {
@@ -62,6 +63,13 @@ const ProductDetailView = () => {
           });
       } else {
         if (session) {
+          if (session.role !== "seller") {
+            alert("You are not a seller bro!");
+            window.location.href = "/listing";
+          }
+          if (vehicleData) {
+            window.location.reload();
+          }
           setIsNew(true);
           setIsEditMode(true);
           setIsLoading(false);
@@ -80,6 +88,15 @@ const ProductDetailView = () => {
     }
   };
 
+  const checkInspectionDate = (inspectionDate) => {
+    const today = new Date();
+    if (inspectionDate > today) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   const handleSaveClick = () => {
     alert('Saving changes...');
     if (detailsRef.current) {
@@ -92,11 +109,25 @@ const ProductDetailView = () => {
       details.postal_code = detailsPostalCode.current.value;
       details.seller_id = sessionData.user_id;
 
+      if (detailsDescription.current.value.length < 250) {
+        alert('Please enter a description with atleast 250 characters!');
+        return;
+      }
+
       details.inspection_status = "not_requested";
       const inspection = inspectionRef.current.getDetails();
-      if (vehicleData && vehicleData.inspection_status !== 'completed') {
-        if (inspection.inspectionPostCode !== '' && inspection.inspectionDate !== '') {
+      if (details.postal_code !== '' && inspection.inspectionDate !== '') {
+        if (checkInspectionDate(new Date(inspection.inspectionDate))) {
           details.inspection_status = "requested";
+          details.inspection_report = {
+            "status": details.inspection_status,
+            "vehicle_rego": inspection.inspectionRego,
+            "postal_code": details.postal_code,
+            "inspection_time": (inspection.inspectionDate).replace(/-/g, '/')
+          }
+        } else {
+          alert("Inspection date cannot be today or before. Please try again with a future date.");
+          return;
         }
       }
 
@@ -119,17 +150,19 @@ const ProductDetailView = () => {
           "inspection_status": details.inspection_status,
           "address": details.address,
           "state": details.state,
-          "postal_code": details.postal_code
+          "postal_code": details.postal_code,
+          "inspection_report": {
+            "status": details.inspection_status,
+            "vehicle_rego": inspection.inspectionRego,
+            "postal_code": details.postal_code,
+            "inspection_time": (inspection.inspectionDate).replace(/-/g, '/')
+          }
         });
         console.log("Data to be sent:", data);
       } else {
         data = createDataIfDifferent(details, vehicleData);
         if (data) {
           console.log("Data to be sent:", data);
-          console.log("-------------------");
-          console.log("Saved Data:", JSON.stringify(vehicleData));
-          console.log("-------------------");
-          console.log("New Data:", JSON.stringify(details));
         } else {
           console.log("No differences found.");
         }
@@ -156,8 +189,13 @@ const ProductDetailView = () => {
             }
             window.location.href = "/listing/" + response.data.data._id;
           } else {
-            alert("An error occurred. Please try again.");
             console.log(JSON.stringify(response.data));
+            if (typeof response.data.msg === 'string' && response.data.msg.includes('not allowed to be empty')) {
+              alert("All fields must be filled. Please try again.")
+            } else {
+              console.log(response);
+              alert("An error occurred. Please try again.");
+            }
           }
         })
         .catch((error) => {
@@ -165,8 +203,6 @@ const ProductDetailView = () => {
           console.log(error);
         });
     }
-
-    setIsEditMode(false);
   };
 
   const handleCancelClick = () => {
@@ -180,6 +216,48 @@ const ProductDetailView = () => {
   const handleDeleteClick = () => {
     alert('Deleting ad...');
     setIsEditMode(false);
+  };
+
+  const handleAssignInspection = (state) => {
+    alert('Inspection ' + state + 'ing...');
+
+    let data = {
+      _id: vehicleData.inspection_report._id
+    };
+
+    if (state === "assign") {
+      data.mechanic = sessionData.user_id;
+      data.status = "assigned";
+    }
+
+    data = JSON.stringify(data);
+
+    let config = {
+      method: state === "assign" ? 'PUT' : 'POST',
+      maxBodyLength: Infinity,
+      url: `${process.env.REACT_APP_API_URL}/api/inspection-report${state === "unassign" ? '/unassign' : ''}`,
+      headers: {
+        'Authorization': `Token ${sessionData ? sessionData.token : ''}`,
+        'Content-Type': 'application/json'
+      },
+      data: data
+    };
+
+    axios.request(config)
+      .then((response) => {
+        if (response.data.status) {
+          alert("Inspection " + state + "ed successfully!");
+          window.location.reload();
+        } else {
+          alert("Error! Please try again.");
+        }
+        console.log(JSON.stringify(response.data));
+      })
+      .catch((error) => {
+        alert("Error! Please try again.");
+        console.log(error);
+      });
+
   };
 
   const createDataIfDifferent = (newData, savedData) => {
@@ -198,9 +276,32 @@ const ProductDetailView = () => {
     return Object.keys(data).length ? JSON.stringify(data) : null;
   };
 
+  const fetchAddressSuggestions = async (query) => {
+    const apiKey = process.env.REACT_APP_GEOAPIFY_API_KEY;
+    const response = await fetch(`https://api.geoapify.com/v1/geocode/autocomplete?text=${encodeURIComponent(query)}&filter=countrycode:au&apiKey=${apiKey}`);
+    const data = await response.json();
+    return data.features;
+  };
+
+  const handleAddressChange = async (e) => {
+    const query = e.target.value;
+    setSuggestions([]);
+    if (query.length >= 3) {
+      const results = await fetchAddressSuggestions(query);
+      setSuggestions(results);
+    }
+  };
+
+  const handleSuggestionClick = (suggestion) => {
+    detailsAddress.current.value = suggestion.properties.address_line1 + ', ' + suggestion.properties.city || '';
+    detailsState.current.value = suggestion.properties.state_code || '';
+    detailsPostalCode.current.value = suggestion.properties.postcode || '';
+    setSuggestions([]);
+  };
+
   return (
     <div className="container-fluid mt-3">
-      {!isLoading && <>
+      {!isLoading ? <>
         <div className="row">
           <div className="col-md-8">
             <div className="row mb-3">
@@ -230,26 +331,30 @@ const ProductDetailView = () => {
                 />
               </div>
               <div className="col-md-7">
-                <br></br>
-                <h1 className="h5 d-inline me-2">{isEditMode ? <input type="text" ref={detailsTitle} defaultValue={vehicleData !== null ? vehicleData.title : ''} placeholder="Title" /> : toTitleCase(vehicleData.title)}</h1>
+                {sessionData && (isNew || sessionData.user_id === vehicleData.seller_id._id) && <>
+                  {isEditMode && <span className="badge bg-dark me-2 float-right" onClick={handleCancelClick}>Cancel</span>}
+                  {!isEditMode && <span className="badge bg-dark me-2 float-right" onClick={handleDeleteClick}>Delete</span>}
+                  <span className="badge bg-primary me-2 float-right" onClick={isEditMode ? handleSaveClick : handleEditClick}>{isEditMode ? 'Save' : 'Edit'}</span>
+                </>}
+                {sessionData && (!isNew && vehicleData.inspection_report && vehicleData.inspection_report.status === "requested" && sessionData.role === "mechanic") && <>
+                  <span className="badge bg-primary me-2 float-right" onClick={() => handleAssignInspection("assign")}>Assign Inspection</span>
+                </>}
+                {sessionData && (!isNew && vehicleData.inspection_report && vehicleData.inspection_report.status === "assigned" && vehicleData.inspection_report.mechanic === sessionData.user_id) && <>
+                  <span className="badge bg-dark me-2 float-right" onClick={() => handleAssignInspection("unassign")}>Unassign Inspection</span>
+                </>}
+                <h1 className="fw-bold h5 d-inline me-2">{isEditMode ? <input type="text" className="form-control mw-180" ref={detailsTitle} defaultValue={vehicleData !== null ? vehicleData.title : ''} placeholder="Title" /> : <>{vehicleData !== null ? toTitleCase(vehicleData.title) : ''}</>}</h1>
                 {!isEditMode && (
                   <>
                     <span className="badge bg-success me-2">New</span>
                     <span className="badge bg-danger me-2">Hot</span>
                   </>
                 )}
-                {sessionData && (isNew || sessionData.user_id === vehicleData.seller_id._id) && <>
-                  {isEditMode && <span className="badge bg-dark me-2 float-right" onClick={handleCancelClick}>Cancel</span>}
-                  {!isEditMode && <span className="badge bg-dark me-2 float-right" onClick={handleDeleteClick}>Delete</span>}
-                  <span className="badge bg-primary me-2 float-right" onClick={isEditMode ? handleSaveClick : handleEditClick}>{isEditMode ? 'Save' : 'Edit'}</span>
-                </>}
-                <div className="mb-3">
-                  <br></br>
-                  <span className="fw-bold h5 me-2">${isEditMode ? <input type="text" ref={detailsPrice} defaultValue={vehicleData !== null ? vehicleData.price : ''} placeholder="Price" /> : vehicleData.price}</span>
+                <div className="mt-2">
+                  <span className="h5 me-2">{isEditMode ? <input type="text" className="form-control mw-180" ref={detailsPrice} defaultValue={vehicleData !== null ? vehicleData.price : ''} placeholder="Price" /> : <>$ {vehicleData !== null ? vehicleData.price : 'N/A'}</>}</span>
                   {!isEditMode && (vehicleData.inspection_status === "completed") && <> <i className="bi bi-patch-check-fill text-success me-1" /> AutoAssured </>}
                 </div>
-                <div>
-                  <p>{isEditMode ? <textarea ref={detailsDescription} defaultValue={vehicleData !== null ? vehicleData.description : ''} placeholder="Description" /> : vehicleData.description}</p>
+                <div className="mt-2">
+                  <p className="small">{isEditMode && <textarea className="form-control" ref={detailsDescription} defaultValue={vehicleData !== null ? vehicleData.description : ''} placeholder="Description" />}</p>
                   {!isEditMode ? <>
                     <p className="fw-bold mb-2 small">Vehicle Highlights</p>
                     <ul className="small">
@@ -260,24 +365,33 @@ const ProductDetailView = () => {
                     <details>
                       <summary className="fw-bold mb-2 small">Contact Details</summary>
                       <ul className="small">
-                        <li><b>Seller Name:</b> {toTitleCase(vehicleData.seller_id.name)}</li>
-                        <li><b>Email:</b> {(vehicleData.seller_id.email).toLowerCase()}</li>
-                        <li><b>Address:</b> {toTitleCase(vehicleData.address)}</li>
+                        <li><b>Seller Name:</b> {vehicleData.seller_id && vehicleData.seller_id.name ? toTitleCase(vehicleData.seller_id.name) : "N/A"}</li>
+                        <li><b>Email:</b> {vehicleData.seller_id && vehicleData.seller_id.email ? (vehicleData.seller_id.email).toLowerCase() : "N/A"}</li>
+                        <li><b>Address:</b> {toTitleCase(vehicleData.address)}{vehicleData !== null && ", " + vehicleData.state + " (" + vehicleData.postal_code + ")"}</li>
                       </ul>
                     </details>
                   </> : <>
                     <div className="row col-md-12">
-                      <div className="col-md-3">
+                      <div className="col-md-4">
                         <label htmlFor="postalCode">Address</label><br></br>
-                        <input type="text" ref={detailsAddress} defaultValue={vehicleData !== null ? vehicleData.address : ''} id="detailsAddress" placeholder="Address" />
+                        <input onChange={handleAddressChange} className="form-control mw-180" type="text" ref={detailsAddress} defaultValue={vehicleData !== null ? vehicleData.address : ''} id="detailsAddress" placeholder="Address" />
+                        {suggestions.length > 0 && (
+                          <ul className="suggestions">
+                            {suggestions.map((suggestion, index) => (
+                              <li key={index} onClick={() => handleSuggestionClick(suggestion)}>
+                                {suggestion.properties.address_line1}, {suggestion.properties.address_line2}
+                              </li>
+                            ))}
+                          </ul>
+                        )}
                       </div>
-                      <div className="col-md-3">
+                      <div className="col-md-4">
                         <label htmlFor="inspectionDate">State</label><br></br>
-                        <input type="text" ref={detailsState} defaultValue={vehicleData !== null ? vehicleData.state : ''} id="detailsState" placeholder="State" />
+                        <input className="form-control mw-180" type="text" ref={detailsState} defaultValue={vehicleData !== null ? vehicleData.state : ''} id="detailsState" placeholder="State" />
                       </div>
-                      <div className="col-md-3">
+                      <div className="col-md-4">
                         <label htmlFor="vehicleRego">Postal Code</label><br></br>
-                        <input type="text" ref={detailsPostalCode} defaultValue={vehicleData !== null ? vehicleData.postal_code : ''} id="detailsPostalCode" placeholder="Postal Code" />
+                        <input className="form-control mw-180" type="text" ref={detailsPostalCode} defaultValue={vehicleData !== null ? vehicleData.postal_code : ''} id="detailsPostalCode" placeholder="Postal Code" />
                       </div>
                     </div>
                   </>}
@@ -421,7 +535,7 @@ const ProductDetailView = () => {
                     role="tabpanel"
                     aria-labelledby="nav-ship-returns-tab"
                   >
-                    <OurAssurance isEditMode={isEditMode ? (vehicleData && (vehicleData.inspection_status === 'completed' || vehicleData.inspection_status === 'accepted') ? false : isEditMode) : (isEditMode)} id={id} vehicleData={vehicleData} ref={inspectionRef} />
+                    <OurAssurance isEditMode={isEditMode ? (vehicleData && (vehicleData.inspection_status === 'completed' || vehicleData.inspection_status === 'accepted') ? false : isEditMode) : (isEditMode)} vehicleData={vehicleData} ref={inspectionRef} userRole={sessionData ? sessionData.role : ''} />
                   </div>
                   <div
                     className="tab-pane fade"
@@ -440,7 +554,14 @@ const ProductDetailView = () => {
             <CardServices />
           </div>
         </div>
-      </>}
+      </> : <>
+        <div className="text-center">
+          <div className="spinner-border" role="status">
+            <span className="visually-hidden">Loading...</span>
+          </div>
+        </div>
+      </>
+      }
     </div>
   );
 };

@@ -74,7 +74,7 @@ const Details = forwardRef((props, ref) => {
               {vehicleBrands.map((option, index) => (
                   <option key={index} value={option.value}>{option.label}</option>
               ))}
-            </select> : toTitleCase(vehicleData.brand)}
+            </select> : vehicleData.brand}
           </dd>
           <dt className="col-sm-3">Model</dt>
           <dd className="col-sm-9">
