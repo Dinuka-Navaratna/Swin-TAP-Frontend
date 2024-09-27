@@ -13,6 +13,7 @@ const Admin = () => {
     const [updatedStatus, setUpdatedStatus] = useState(''); // for updated status
     const [updatedPhone, setUpdatedPhone] = useState(''); // for updated phone
     const [showModal, setShowModal] = useState(false); // modal state
+    const [validationError, setValidationError] = useState(''); // to show validation errors
 
     const baseUrl = 'https://api.autoassure.me/api/users/';
     const authToken = 'Token eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNjZjMDRmODQwNWJhNDQ2NzNlYjE2NGZjIiwibmFtZSI6Imthc3VuIiwicm9sZSI6ImFkbWluIiwicGhvbmUiOiIwNzE3NjU2NjU3IiwiZW1haWwiOiJrbWthc3VubWFkdXNhbmthQGdtYWlsLmNvbSIsImV4cCI6MTc1NTQxODcyMCwiaWF0IjoxNzIzODgyNzIwfQ.3TOQUl1htrC9rxaYIDNPKgzASp3wJLgNcJ5nwLvGACw';
@@ -51,14 +52,45 @@ const Admin = () => {
     const closeEditModal = () => {
         setShowModal(false);
         setEditingUser(null);
+        setValidationError(''); // Clear validation error
+    };
+
+    // Validate the input before submission
+    const validateForm = () => {
+        // Name validation (not empty)
+        if (updatedName.trim() === '') {
+            setValidationError('Name is required.');
+            return false;
+        }
+
+        // Email validation (basic pattern)
+        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailPattern.test(updatedEmail)) {
+            setValidationError('Please enter a valid email.');
+            return false;
+        }
+
+        // Phone validation (optional but must be valid if provided)
+        const phonePattern = /^[0-9]{10,15}$/; // Ensure phone has 10-15 digits
+        if (updatedPhone && !phonePattern.test(updatedPhone)) {
+            setValidationError('Please enter a valid phone number (10-15 digits).');
+            return false;
+        }
+
+        // Clear validation error if all validations pass
+        setValidationError('');
+        return true;
     };
 
     // Update a user
     const updateUser = async (userId) => {
+        if (!validateForm()) return; // Prevent submission if validation fails
+
         try {
             const response = await axios.put(
-                `${baseUrl}${userId}`,
+                `${baseUrl}`,
                 { 
+                    _id: userId,
                     name: updatedName, 
                     role: updatedRole,
                     email: updatedEmail,
@@ -143,6 +175,8 @@ const Admin = () => {
                     <div className="modal-content">
                         <span className="close" onClick={closeEditModal}>&times;</span>
                         <h2>Edit User</h2>
+                        {/* Show validation errors */}
+                        {validationError && <p className="validation-error">{validationError}</p>}
                         <form onSubmit={(e) => {
                             e.preventDefault();
                             updateUser(editingUser._id);
