@@ -1,7 +1,18 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useState } from "react";
 
-const FilterTag = (props) => {
+const FilterTag = ({ getProducts }) => {
+  const [activeBrand, setActiveBrand] = useState('');
+
+  const handleBrandClick = (brand) => {
+    if (brand === "Clear") {
+      setActiveBrand("");
+      getProducts(1, 'clear', '', '', '');
+    } else {
+      setActiveBrand(brand);
+      getProducts(1, brand, '', '', '');
+    }
+  };
+
   return (
     <div className="card mb-3">
       <div
@@ -14,27 +25,21 @@ const FilterTag = (props) => {
         Vehicle Brands
       </div>
       <div className="card-body show" id="filterTag">
-        <Link to="/" className="btn btn-sm btn-outline-info me-2 mb-2">
-          Toyota
-        </Link>
-        <Link to="/" className="btn btn-sm btn-outline-secondary me-2 mb-2">
-          Nissan
-        </Link>
-        <Link to="/" className="btn btn-sm btn-outline-success me-2 mb-2">
-          Honda
-        </Link>
-        <Link to="/" className="btn btn-sm btn-outline-danger me-2 mb-2">
-          Ford
-        </Link>
-        <Link to="/" className="btn btn-sm btn-outline-dark me-2 mb-2">
-          BMW
-        </Link>
-        <Link to="/" className="btn btn-sm btn-outline-primary me-2 mb-2">
-          Mercedes-Benz
-        </Link>
-        <Link to="/" className="btn btn-sm btn-outline-warning me-2 mb-2">
-          Audi
-        </Link>
+        {['Toyota', 'Nissan', 'Honda', 'Ford', 'BMW', 'Mercedes-Benz', 'Audi'].map((brand, index) => (
+          <button
+            key={brand}
+            className={`btn btn-sm me-2 mb-2 ${activeBrand === brand ? 'btn-primary' : 'btn-outline-dark'}`}
+            onClick={() => handleBrandClick(brand)}
+          >
+            {brand}
+          </button>
+        ))}
+        <button
+            className={`btn btn-sm me-2 mb-2`} style={{padding: '0px', textDecoration: 'underline'}}
+            onClick={() => handleBrandClick("Clear")}
+          >
+            Clear Filter
+          </button>
       </div>
     </div>
   );

@@ -26,3 +26,7 @@ debug.log*
 # Visual Studio Code
 .vscode/
 .history/
+
+# Python Script - Create Users & Ads
+*.py
+users.txt

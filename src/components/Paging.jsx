@@ -18,7 +18,7 @@ const range = (from, to, step = 1) => {
 
 class Paging extends Component {
   constructor(props) {
-    super();
+    super(props);
     const {
       totalRecords = null,
       pageLimit = 30,
@@ -43,6 +43,16 @@ class Paging extends Component {
 
   componentDidMount() {
     this.gotoPage(1);
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.totalRecords !== this.props.totalRecords) {
+      this.totalPages = Math.ceil(this.props.totalRecords / this.pageLimit);
+      this.gotoPage(1);
+    }
+    if (prevProps.currentPage !== this.props.currentPage) {
+      this.setState({ currentPage: this.props.currentPage });
+    }
   }
 
   gotoPage = (page) => {
@@ -121,9 +131,8 @@ class Paging extends Component {
   };
 
   render() {
-    if (!this.totalRecords) return null;
-
-    if (this.totalPages === 1) return null;
+    // alert(this.totalRecords);
+    // if (!this.totalRecords) return null;
 
     const { currentPage } = this.state;
     const pages = this.fetchPageNumbers();
@@ -140,7 +149,7 @@ class Paging extends Component {
                     aria-label="Previous"
                     onClick={this.handleMoveLeft}
                   >
-                    <span aria-hidden="true">&laquo;</span>
+                    <span aria-hidden="true">«</span>
                     <span className="sr-only">Previous</span>
                   </button>
                 </li>
@@ -155,7 +164,7 @@ class Paging extends Component {
                     aria-label="Next"
                     onClick={this.handleMoveRight}
                   >
-                    <span aria-hidden="true">&raquo;</span>
+                    <span aria-hidden="true">»</span>
                     <span className="sr-only">Next</span>
                   </a>
                 </li>
@@ -188,6 +197,8 @@ Paging.propTypes = {
   pageNeighbours: PropTypes.number,
   onPageChanged: PropTypes.func,
   sizing: PropTypes.string,
+  alignment: PropTypes.string,
+  currentPage: PropTypes.number, // Add currentPage prop type
 };
 
 export default Paging;
