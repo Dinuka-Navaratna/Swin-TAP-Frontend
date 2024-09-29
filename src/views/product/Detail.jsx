@@ -299,6 +299,10 @@ const ProductDetailView = () => {
     setSuggestions([]);
   };
 
+  const handleGenerateDescription = async () => {
+    alert("AI");
+  };
+
   return (
     <div className="container-fluid mt-3">
       {!isLoading ? <>
@@ -342,19 +346,34 @@ const ProductDetailView = () => {
                 {sessionData && (!isNew && vehicleData.inspection_report && vehicleData.inspection_report.status === "assigned" && vehicleData.inspection_report.mechanic === sessionData.user_id) && <>
                   <span className="badge bg-dark me-2 float-right" onClick={() => handleAssignInspection("unassign")}>Unassign Inspection</span>
                 </>}
-                <h1 className="fw-bold h5 d-inline me-2">{isEditMode ? <input type="text" className="form-control mw-180" ref={detailsTitle} defaultValue={vehicleData !== null ? vehicleData.title : ''} placeholder="Title" /> : <>{vehicleData !== null ? toTitleCase(vehicleData.title) : ''}</>}</h1>
+                <h1 className="fw-bold h5 d-inline me-2">{isEditMode ? <><label style={{ fontSize: "small", fontWeight: "normal" }}>Ad Title</label><br></br><input type="text" className="form-control mw-180" ref={detailsTitle} defaultValue={vehicleData !== null ? vehicleData.title : ''} placeholder="Title" /></> : <>{vehicleData !== null ? toTitleCase(vehicleData.title) : ''}</>}</h1>
                 {!isEditMode && (
                   <>
                     <span className="badge bg-success me-2">New</span>
                     <span className="badge bg-danger me-2">Hot</span>
                   </>
                 )}
-                <div className="mt-2">
-                  <span className="h5 me-2">{isEditMode ? <input type="text" className="form-control mw-180" ref={detailsPrice} defaultValue={vehicleData !== null ? vehicleData.price : ''} placeholder="Price" /> : <>$ {vehicleData !== null ? vehicleData.price : 'N/A'}</>}</span>
+                <div className="">
+                  <span className="h5 me-2">{isEditMode ? <><label style={{ fontSize: "small", fontWeight: "normal" }}>Price</label><br></br><input type="text" className="form-control mw-180" ref={detailsPrice} defaultValue={vehicleData !== null ? vehicleData.price : ''} placeholder="Price" /></> : <>$ {vehicleData !== null ? vehicleData.price : 'N/A'}</>}</span>
                   {!isEditMode && (vehicleData.inspection_status === "completed") && <> <i className="bi bi-patch-check-fill text-success me-1" /> AutoAssured </>}
                 </div>
-                <div className="mt-2">
-                  <p className="small">{isEditMode && <textarea className="form-control" ref={detailsDescription} defaultValue={vehicleData !== null ? vehicleData.description : ''} placeholder="Description" />}</p>
+                <div className="">
+                  <p className="small">
+                    {isEditMode && (
+                      <><label style={{ fontSize: "small", fontWeight: "normal" }}>Description</label>
+                        <button className="ai-button" onClick={handleGenerateDescription}>
+                          <i className="bi bi-magic"></i>
+                          <span className="tooltip-text">Write your description using AI</span>
+                        </button><br></br>
+                        <textarea
+                          className="form-control"
+                          ref={detailsDescription}
+                          defaultValue={vehicleData !== null ? vehicleData.description : ''}
+                          placeholder="Description"
+                        />
+                      </>
+                    )}
+                  </p>
                   {!isEditMode ? <>
                     <p className="fw-bold mb-2 small">Vehicle Highlights</p>
                     <ul className="small">
@@ -373,7 +392,7 @@ const ProductDetailView = () => {
                   </> : <>
                     <div className="row col-md-12">
                       <div className="col-md-4">
-                        <label htmlFor="postalCode">Address</label><br></br>
+                        <label style={{ fontSize: "small", fontWeight: "normal" }}>Address</label><br></br>
                         <input onChange={handleAddressChange} className="form-control mw-180" type="text" ref={detailsAddress} defaultValue={vehicleData !== null ? vehicleData.address : ''} id="detailsAddress" placeholder="Address" />
                         {suggestions.length > 0 && (
                           <ul className="suggestions">
@@ -386,11 +405,11 @@ const ProductDetailView = () => {
                         )}
                       </div>
                       <div className="col-md-4">
-                        <label htmlFor="inspectionDate">State</label><br></br>
+                        <label style={{ fontSize: "small", fontWeight: "normal" }}>State</label><br></br>
                         <input className="form-control mw-180" type="text" ref={detailsState} defaultValue={vehicleData !== null ? vehicleData.state : ''} id="detailsState" placeholder="State" />
                       </div>
                       <div className="col-md-4">
-                        <label htmlFor="vehicleRego">Postal Code</label><br></br>
+                        <label style={{ fontSize: "small", fontWeight: "normal" }}>Postal Code</label><br></br>
                         <input className="form-control mw-180" type="text" ref={detailsPostalCode} defaultValue={vehicleData !== null ? vehicleData.postal_code : ''} id="detailsPostalCode" placeholder="Postal Code" />
                       </div>
                     </div>
