@@ -9,6 +9,7 @@ import { setSession } from "../../actions/session";
 import { required, email, maxLength20, minLength8 } from "../../helpers/validation";
 import { ReactComponent as IconEmail } from "bootstrap-icons/icons/envelope.svg";
 import { ReactComponent as IconShieldLock } from "bootstrap-icons/icons/shield-lock.svg";
+import {alertDialog, confirmDialog, promptDialog, successDialog, errorDialog, warningDialog, infoDialog, questionDialog} from "../../helpers/alerts.js";
 
 const SignInForm = (props) => {
   const { handleSubmit, submitting, submitFailed } = props;
@@ -36,19 +37,19 @@ const SignInForm = (props) => {
           token: response.data.data
         };
         setSession(sessionData);
-        alert("Login successful!");
+        successDialog("Login successful!");
         window.location.href = "/account/profile";
       } else {
-        alert("Login failed. Please check your credentials.");
+        warningDialog("Login failed. Please check your credentials.");
         console.log("Login failed: "+response.data.msg);
       }
     } catch (error) {
       console.error("Error during login:", error);
       if (error.response) {
         console.error("Server response:", error.response.data);
-        alert(`Login failed: ${error.response.data.message}`);
+        alertDialog(`Login failed: ${error.response.data.message}`);
       } else {
-        alert("An error occurred. Please try again later.");
+        errorDialog("An error occurred. Please try again later.");
       }
     }
   };

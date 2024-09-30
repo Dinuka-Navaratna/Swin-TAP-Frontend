@@ -1,12 +1,13 @@
 import { lazy } from "react";
 import { Link } from "react-router-dom";
+import { infoDialog } from "../../helpers/alerts.js";
 const CouponApplyForm = lazy(() =>
   import("../../components/others/CouponApplyForm")
 );
 
 const CartView = () => {
   const onSubmitApplyCouponCode = async (values) => {
-    alert(JSON.stringify(values));
+    infoDialog(JSON.stringify(values));
   };
   return (
     <div>

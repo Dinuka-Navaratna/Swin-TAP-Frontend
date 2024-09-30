@@ -13,14 +13,19 @@ const Header = () => {
   }, []);
 
   const handleLogout = () => {
-    const confirmLogout = window.confirm("Are you sure you want to log out?");
-    if (confirmLogout) {
-      clearSession();
-      setSession(null);
-      window.location.reload();
-    } else {
-      alert("That's what I thought, you dummy!\nThink twice before clicking!");
-    }
+    confirmDialog("Are you sure you want to log out?")
+      .then((result) => {
+        if (result.isConfirmed) { // If user clicks "OK"
+          clearSession();
+          setSession(null);
+          window.location.reload();
+        } else {
+          warningDialog("That's what I thought, you dummy!\nThink twice before clicking!");
+        }
+      })
+      .catch((error) => {
+        console.error("Error displaying the confirmation dialog:", error);
+      });
   };
 
   return (
