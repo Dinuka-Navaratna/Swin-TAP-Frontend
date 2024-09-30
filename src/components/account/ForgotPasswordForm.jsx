@@ -7,7 +7,7 @@ import renderFormGroupField from "../../helpers/renderFormGroupField";
 // import { setSession } from "../../actions/session";
 import { required, email } from "../../helpers/validation";
 import { ReactComponent as IconEmail } from "bootstrap-icons/icons/envelope.svg";
-import {alertDialog, confirmDialog, promptDialog, successDialog, errorDialog, warningDialog, infoDialog, questionDialog} from "../../helpers/alerts.js";
+import {successDialog, errorDialog} from "../../helpers/alerts.js";
 
 const ForgotPasswordForm = (props) => {
   const { handleSubmit, submitting, submitFailed } = props;
