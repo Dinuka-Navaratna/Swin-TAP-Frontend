@@ -95,8 +95,12 @@ const ProductDetailView = () => {
 
   const checkInspectionDate = (inspectionDate) => {
     const today = new Date();
-    return inspectionDate > today;
-  };
+    if (inspectionDate > today) {
+      return true;
+    } else {
+      return false;
+    }
+  }
 
   const handleSaveClick = () => {
     infoDialog('Saving changes...');
@@ -182,9 +186,12 @@ const ProductDetailView = () => {
       axios.request(config)
         .then((response) => {
           if (response.data.status) {
-            successDialog(id === "new" ? "Ad posted successfully." : "Ad updated successfully.").then(() => {
-              window.location.href = "/listing/" + response.data.data._id;
-            });
+            if (id === "new") {
+              alert("Ad posted successfully.");
+            } else {
+              alert("Ad updated successfully.");
+            }
+            window.location.href = "/listing/" + response.data.data._id;
           } else {
             console.log(JSON.stringify(response.data));
             if (typeof response.data.msg === 'string' && response.data.msg.includes('not allowed to be empty')) {
@@ -203,19 +210,16 @@ const ProductDetailView = () => {
   };
 
   const handleCancelClick = () => {
-    infoDialog('Cancelling edit mode...').then(() => {
-      setIsEditMode(false);
-      if (id === "new") {
-        window.location.href = "/listing";
-      }
-    });
+    alert('Cancelling edit mode...');
+    setIsEditMode(false);
+    if (id === "new") {
+      window.location.href = "/listing";
+    }
   };
 
   const handleDeleteClick = () => {
-    warningDialog('Deleting ad...').then(() => {
-      setIsEditMode(false);
-      // Implement delete logic here
-    });
+    alert('Deleting ad...');
+    setIsEditMode(false);
   };
 
   const handleAssignInspection = (state) => {
