@@ -29,6 +29,7 @@ const ProductDetailView = () => {
   const detailsAddress = useRef(null);
   const detailsState = useRef(null);
   const detailsPostalCode = useRef(null);
+  const [useAxiosDescription, setUseAxiosDescription] = useState(false);
 
   useEffect(() => {
     const session = getSession();
@@ -301,7 +302,55 @@ const ProductDetailView = () => {
 
   const handleGenerateDescription = async () => {
     alert("AI");
+    if (detailsRef.current) {
+      const details = detailsRef.current.getDetails();
+      const isEmptyOrNull = (value) => value === null || value === '';
+
+      const fieldsToCheck = [
+        'color', 'brand', 'model', 'yom', 'condition', 'transmission',
+        'body_type', 'fuel_type', 'mileage', 'price', 'address', 'state', 'postal_code'
+      ];
+
+      const hasEmptyFields = fieldsToCheck.some(field => isEmptyOrNull(details[field]));
+
+      if (!hasEmptyFields) {
+        details.mileage = details.mileage + " Km";
+        let config = {
+          method: 'POST',
+          maxBodyLength: Infinity,
+          url: `${process.env.REACT_APP_AI_URL}/generate`,
+          data: details
+        };
+
+        axios.request(config)
+          .then((response) => {
+            console.log(response.data.description);
+            var backendDescription = response.data.description;
+            const textarea = document.getElementById('descriptionTextarea');
+            setUseAxiosDescription(true);
+            textarea.value = "";
+            let index = 0;
+            const interval = setInterval(() => {
+              if (textarea) {
+                textarea.value += backendDescription[index];
+              }
+              index++;
+              if (index === backendDescription.length) {
+                clearInterval(interval);
+              }
+            }, 20); // Adjust the speed of typing here
+            setUseAxiosDescription(false);
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      } else {
+        alert('All vehicle details must be filled out to provide an accurate and detailed description using the AI writer. Please ensure no fields are left empty.')
+        return;
+      }
+    }
   };
+
 
   return (
     <div className="container-fluid mt-3">
@@ -366,10 +415,13 @@ const ProductDetailView = () => {
                           <span className="tooltip-text">Write your description using AI</span>
                         </button><br></br>
                         <textarea
+                          rows="4"
+                          id="descriptionTextarea"
                           className="form-control"
                           ref={detailsDescription}
                           defaultValue={vehicleData !== null ? vehicleData.description : ''}
                           placeholder="Description"
+                          readOnly={useAxiosDescription}
                         />
                       </>
                     )}
@@ -390,6 +442,7 @@ const ProductDetailView = () => {
                       </ul>
                     </details>
                   </> : <>
+                    <br></br>
                     <div className="row col-md-12">
                       <div className="col-md-4">
                         <label style={{ fontSize: "small", fontWeight: "normal" }}>Address</label><br></br>
@@ -413,6 +466,7 @@ const ProductDetailView = () => {
                         <input className="form-control mw-180" type="text" ref={detailsPostalCode} defaultValue={vehicleData !== null ? vehicleData.postal_code : ''} id="detailsPostalCode" placeholder="Postal Code" />
                       </div>
                     </div>
+                    <br></br>
                   </>}
                 </div>
 
