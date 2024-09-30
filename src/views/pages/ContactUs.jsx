@@ -1,10 +1,35 @@
-import { lazy } from "react";
-import React from "react";
+import React, { lazy, Suspense } from "react";
 import axios from "axios";
 import { successDialog, errorDialog } from "../../helpers/alerts.js";
 
 // Lazy loading the ContactUsForm component
 const ContactUsForm = lazy(() => import("../../components/ContactUsForm"));
+
+// Header styles
+const headerStyle = {
+  backgroundColor: '#285594', // Blue background
+  color: 'white',
+  padding: '60px 20px',
+  textAlign: 'center',
+};
+
+const headerTitleStyle = {
+  fontSize: '3rem', // Title font size
+  fontWeight: 'bold',
+  marginBottom: '1rem',
+};
+
+const headerSubtitleStyle = {
+  fontSize: '1.5rem', // Subtitle font size
+  marginBottom: '1rem',
+};
+
+const headerDescriptionStyle = {
+  fontSize: '1rem', // Description text size
+  maxWidth: '800px', // Max width for centered text block
+  margin: '0 auto', // Centering the text
+  lineHeight: '1.6', // Line height for better readability
+};
 
 const ContactUsView = () => {
   const onSubmit = async (values, dispatch, props) => {
@@ -50,7 +75,21 @@ const ContactUsView = () => {
   };
 
   return (
-    <div className="container my-3">
+    <div className="container-fluid my-3"> {/* Changed to container-fluid for full-width */}
+      <div className="row g-3">
+        <div className="col-md-12">
+          {/* Header Section */}
+          <header style={headerStyle}>
+            <h1 style={headerTitleStyle}>CONTACT US</h1>
+            <h2 style={headerSubtitleStyle}>
+            Our team of customer service is ready to help you.  
+            </h2>
+            <p style={headerDescriptionStyle}>
+           
+            </p>
+          </header>
+        </div>
+      </div>
       <div className="row g-3">
         <div className="col-md-8">
           <div className="card">
@@ -62,7 +101,9 @@ const ContactUsView = () => {
                 Have suggestions on how we can improve your experience online and mobile mechanic services? Let us know by completing the form below or call 
                 <strong><a href="tel:(123) 456-7890">(123) 456-7890</a></strong>.
               </p>
-              <ContactUsForm onSubmit={onSubmit} />
+              <Suspense fallback={<div>Loading...</div>}>
+                <ContactUsForm onSubmit={onSubmit} />
+              </Suspense>
             </div>
           </div>
         </div>
