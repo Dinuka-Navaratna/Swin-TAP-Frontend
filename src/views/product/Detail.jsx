@@ -2,9 +2,11 @@ import { lazy, useRef, useState, useEffect } from "react";
 import { useParams } from 'react-router-dom';
 import { data } from "../../data";
 import { getSession } from "../../actions/session";
-import { toTitleCase } from '../../helpers/letterCaseChange'
+import { toTitleCase } from '../../helpers/letterCaseChange';
 import axios from "axios";
+import { successDialog, errorDialog, warningDialog, infoDialog } from "../../helpers/alerts.js"; // Import dialogs
 import './style.css';
+
 const CardFeaturedProduct = lazy(() => import("../../components/card/CardFeaturedProduct"));
 const CardServices = lazy(() => import("../../components/card/CardServices"));
 const Details = lazy(() => import("../../components/others/Details"));
@@ -49,23 +51,25 @@ const ProductDetailView = () => {
 
         axios.request(config)
           .then((response) => {
-            // console.log(JSON.stringify(response.data));
             if (response.data.status === false) {
-              alert("Invalid ad ID");
-              window.location.href = "/listing";
+              errorDialog("Invalid ad ID").then(() => {
+                window.location.href = "/listing";
+              });
             } else {
               setVehicleData(response.data.data);
               setIsLoading(false);
             }
           })
           .catch((error) => {
+            errorDialog("An error occurred while fetching the vehicle data.");
             console.log(error);
           });
       } else {
         if (session) {
           if (session.role !== "seller") {
-            alert("You are not a seller bro!");
-            window.location.href = "/listing";
+            warningDialog("You are not a seller!").then(() => {
+              window.location.href = "/listing";
+            });
           }
           if (vehicleData) {
             window.location.reload();
@@ -74,8 +78,9 @@ const ProductDetailView = () => {
           setIsEditMode(true);
           setIsLoading(false);
         } else {
-          alert("Log in to post a new ad");
-          window.location.href = "/account/signin";
+          infoDialog("Log in to post a new ad").then(() => {
+            window.location.href = "/account/signin";
+          });
         }
       }
     }
@@ -84,7 +89,7 @@ const ProductDetailView = () => {
   const handleEditClick = () => {
     setIsEditMode(true);
     if (vehicleData.inspection_status === 'accepted') {
-      alert('Modifying inspection booking details (date/location) will cause in additional payment as a mechanic has already accepted the booking.');
+      warningDialog('Modifying inspection booking details (date/location) will cause additional payment as a mechanic has already accepted the booking.');
     }
   };
 
@@ -98,7 +103,7 @@ const ProductDetailView = () => {
   }
 
   const handleSaveClick = () => {
-    alert('Saving changes...');
+    infoDialog('Saving changes...');
     if (detailsRef.current) {
       const details = detailsRef.current.getDetails();
       details.title = detailsTitle.current.value;
@@ -110,7 +115,7 @@ const ProductDetailView = () => {
       details.seller_id = sessionData.user_id;
 
       if (detailsDescription.current.value.length < 250) {
-        alert('Please enter a description with atleast 250 characters!');
+        warningDialog('Please enter a description with at least 250 characters!');
         return;
       }
 
@@ -124,9 +129,9 @@ const ProductDetailView = () => {
             "vehicle_rego": inspection.inspectionRego,
             "postal_code": details.postal_code,
             "inspection_time": (inspection.inspectionDate).replace(/-/g, '/')
-          }
+          };
         } else {
-          alert("Inspection date cannot be today or before. Please try again with a future date.");
+          warningDialog("Inspection date cannot be today or before. Please try again with a future date.");
           return;
         }
       }
@@ -158,7 +163,6 @@ const ProductDetailView = () => {
             "inspection_time": (inspection.inspectionDate).replace(/-/g, '/')
           }
         });
-        console.log("Data to be sent:", data);
       } else {
         data = createDataIfDifferent(details, vehicleData);
         if (data) {
@@ -191,15 +195,15 @@ const ProductDetailView = () => {
           } else {
             console.log(JSON.stringify(response.data));
             if (typeof response.data.msg === 'string' && response.data.msg.includes('not allowed to be empty')) {
-              alert("All fields must be filled. Please try again.")
+              warningDialog("All fields must be filled. Please try again.")
             } else {
               console.log(response);
-              alert("An error occurred. Please try again.");
+              errorDialog("An error occurred. Please try again.");
             }
           }
         })
         .catch((error) => {
-          alert("An error occurred. Please try again.");
+          errorDialog("An error occurred. Please try again.");
           console.log(error);
         });
     }
@@ -271,8 +275,6 @@ const ProductDetailView = () => {
       }
     }
     data["_id"] = id;
-    // data['inspection_status'] = "not_requested";
-
     return Object.keys(data).length ? JSON.stringify(data) : null;
   };
 
@@ -396,52 +398,6 @@ const ProductDetailView = () => {
                     </div>
                   </>}
                 </div>
-
-                {/* <div className="mb-3">
-                <div className="d-inline float-start me-2">
-                  <div className="input-group input-group-sm mw-140">
-                    <button
-                      className="btn btn-primary text-white"
-                      type="button"
-                    >
-                      <i className="bi bi-dash-lg"></i>
-                    </button>
-                    <input
-                      type="text"
-                      className="form-control"
-                      defaultValue="1"
-                    />
-                    <button
-                      className="btn btn-primary text-white"
-                      type="button"
-                    >
-                      <i className="bi bi-plus-lg"></i>
-                    </button>
-                  </div>
-                </div>
-                <button
-                  type="button"
-                  className="btn btn-sm btn-primary me-2"
-                  title="Add to cart"
-                >
-                  <i className="bi bi-cart-plus me-1"></i>Add to cart
-                </button>
-                <button
-                  type="button"
-                  className="btn btn-sm btn-warning me-2"
-                  title="Buy now"
-                >
-                  <i className="bi bi-cart3 me-1"></i>Buy now
-                </button>
-                <button
-                  type="button"
-                  className="btn btn-sm btn-outline-secondary"
-                  title="Add to wishlist"
-                >
-                  <i className="bi bi-heart-fill"></i>
-                </button>
-              </div> */}
-
               </div>
             </div>
             <div className="row">

@@ -1,18 +1,19 @@
 import React, { useEffect, lazy } from "react";
 import { getSession } from "../../actions/session";
+import { infoDialog } from "../../helpers/alerts.js";
 const SignInForm = lazy(() => import("../../components/account/SignInForm"));
 
 const SignInView = () => {
   useEffect(() => {
     const session = getSession();
     if (session) {
-      alert("You'are already logged in as '"+session.name+"'.\nPlease logout to sign in as a different user.");
+      infoDialog("You'are already logged in as '"+session.name+"'.\nPlease logout to sign in as a different user.");
       window.location.href = "/account/profile";
     }
   }, []);
 
   const onSubmit = async (values) => {
-    alert(JSON.stringify(values));
+    infoDialog(JSON.stringify(values));
   };
 
   return (
