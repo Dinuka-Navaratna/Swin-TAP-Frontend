@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { getSession, clearSession } from "../actions/session";
-import { confirmDialog, warningDialog, successDialog } from "../helpers/alerts.js"; // Import SweetAlert2 dialogs
 
 const Header = () => {
   const [session, setSession] = useState(null);
@@ -14,7 +13,6 @@ const Header = () => {
   }, []);
 
   const handleLogout = () => {
-    // Replace window.confirm with confirmDialog
     confirmDialog("Are you sure you want to log out?")
       .then((result) => {
         if (result.isConfirmed) { // If user clicks "OK"
@@ -39,7 +37,18 @@ const Header = () => {
               <img alt="logo" src="../../images/logo.webp" />
             </Link>
           </div>
+          {/* <div className="col-md-5">
+            <Search />
+          </div> */}
           <div className="col-md-6 navbar navbar-expand-lg navbar-light bg-light p-0">
+            {/* <div className="position-relative d-inline me-3">
+              <Link to="/cart" className="btn btn-primary">
+                <i className="bi bi-cart3"></i>&nbsp;
+                <div className="position-absolute top-0 start-100 translate-middle badge bg-danger rounded-circle">
+                  2
+                </div>
+              </Link>
+            </div> */}
             <button
               className="navbar-toggler"
               type="button"
@@ -53,6 +62,65 @@ const Header = () => {
             </button>
             <div className="collapse navbar-collapse" id="navbarSupportedContent">
               <ul className="navbar-nav">
+                {/* <li className="nav-item dropdown">
+                  <button
+                    className="btn nav-link dropdown-toggle fw-bold"
+                    id="navbarDropdown"
+                    data-toggle="dropdown"
+                    aria-expanded="false"
+                    data-bs-toggle="dropdown"
+                  >
+                    All Pages
+                  </button>
+                  <ul className="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <li>
+                      <Link className="dropdown-item" to="/account/signin">
+                        Sign In
+                      </Link>
+                    </li>
+                    <li>
+                      <Link className="dropdown-item" to="/account/signup">
+                        Sign Up
+                      </Link>
+                    </li>
+                    <li>
+                      <hr className="dropdown-divider" />
+                    </li>
+                    <li>
+                      <Link className="dropdown-item" to="/checkout">
+                        Checkout Page
+                      </Link>
+                    </li>
+                    <li>
+                      <Link className="dropdown-item" to="/contact-us">
+                        Contact Us
+                      </Link>
+                    </li>
+                    <li>
+                      <Link className="dropdown-item" to="/blog">
+                        Blog
+                      </Link>
+                    </li>
+                    <li>
+                      <Link className="dropdown-item" to="/blog/detail">
+                        Blog Detail
+                      </Link>
+                    </li>
+                    <li>
+                      <hr className="dropdown-divider" />
+                    </li>
+                    <li>
+                      <Link className="dropdown-item" to="/fsafasf">
+                        404 Page Not Found
+                      </Link>
+                    </li>
+                    <li>
+                      <Link className="dropdown-item" to="/500">
+                        500 Internal Server Error
+                      </Link>
+                    </li>
+                  </ul>
+                </li> */}
                 <li className="nav-item">
                   <Link className="nav-link" to="/">
                     Home
@@ -83,6 +151,12 @@ const Header = () => {
                     T & C
                   </Link>
                 </li>
+
+                {/* <li className="nav-item">
+                  <Link className="nav-link" to="/documentation">
+                    Documentation
+                  </Link>
+                </li> */}
               </ul>
             </div>
             <div className="btn-group">
@@ -120,9 +194,21 @@ const Header = () => {
                         </Link>
                       </li>
                     )}
+                    {/* <li>
+                      <Link className="dropdown-item" to="/account/wishlist">
+                        <i className="bi bi-heart-fill text-danger"></i>&nbsp;
+                        Wishlist
+                      </Link>
+                    </li> */}
                     <li>
                       <hr className="dropdown-divider" />
                     </li>
+                    {/* <li>
+                      <Link className="dropdown-item" to="/account/notification">
+                        <i className="bi bi-bell-fill text-primary"></i>&nbsp;
+                        Notification
+                      </Link>
+                    </li> */}
                     <li>
                       <Link className="dropdown-item" to="/support">
                         <i className="bi bi-info-circle-fill text-success"></i>&nbsp;
@@ -165,11 +251,12 @@ const Header = () => {
                 )}
               </ul>
             </div>
+            {/* <Link to="/account/signin">Sign In</Link> |{" "}
+              <Link to="/account/signup"> Sign Up</Link> */}
           </div>
         </div>
       </div>
     </header>
   );
 };
-
 export default Header;
