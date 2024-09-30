@@ -82,6 +82,7 @@ const ProductDetailView = () => {
           infoDialog("Log in to post a new ad").then(() => {
             window.location.href = "/account/signin";
           });
+          window.location.href = "/account/signin";
         }
       }
     }
