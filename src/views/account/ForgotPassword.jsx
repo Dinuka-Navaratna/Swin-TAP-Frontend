@@ -1,19 +1,21 @@
+import {infoDialog} from "../../helpers/alerts.js";
 import React, { useEffect, lazy } from "react";
 import { getSession } from "../../actions/session";
 const ForgotPasswordForm = lazy(() => import("../../components/account/ForgotPasswordForm"));
+
 
 const ForgotPasswordView = () => {
   useEffect(() => {
     const session = getSession();
     if (session) {
-      alert(session);
-      alert("You'are already logged in using '"+session+"'.\nPlease logout to sign in as a different user.");
+      infoDialog(session);
+      infoDialog("You'are already logged in using '"+session+"'.\nPlease logout to sign in as a different user.");
       window.location.href = "/account/profile";
     }
   }, []);
 
   const onSubmit = async (values) => {
-    alert(JSON.stringify(values));
+    infoDialog(JSON.stringify(values));
   };
   return (
     <div className="container my-3">
