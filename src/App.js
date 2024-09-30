@@ -30,7 +30,7 @@ const SupportView = lazy(() => import("./views/pages/Support"));
 const BlogView = lazy(() => import("./views/blog/Blog"));
 const OurAssurance = lazy(() => import("./views/pages/OurAssurance"));
 const AboutUsDetailView = lazy(() => import("./views/aboutus/Detail"));
-const AlertButtons = lazy(() => import("./components/AlertButtons")); // New component for alert buttons
+const AdminPanel = lazy(() => import("./views/admin/admin"));
 
 function App() {
   return (
@@ -80,9 +80,10 @@ function App() {
             <Route exact path="/support" element={<SupportView />} />
             <Route exact path="/blog" element={<BlogView />} />
             <Route exact path="/about-us" element={<AboutUsDetailView />} />
+            <Route exact path="/admin" element={<AdminPanel />} />
+            
             <Route exact path="/500" element={<InternalServerErrorView />} />
             <Route exact path="/assurance" element={<OurAssurance />} />
-            <Route exact path="/alerts" element={<AlertButtons />} /> {/* New route for Alert Buttons */}
             <Route path="*" element={<NotFoundView />} />
           </Routes>
         </Suspense>

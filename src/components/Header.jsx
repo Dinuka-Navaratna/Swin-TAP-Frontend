@@ -101,8 +101,8 @@ const Header = () => {
                   <>
                     <li>
                       <Link className="dropdown-item" to="/account/profile">
-                        <i className="bi bi-person-square"></i>&nbsp;
-                        My Profile
+                        <i className="bi bi-person-square"></i>&nbsp;&nbsp;
+                        {session.name}
                       </Link>
                     </li>
                     {session.role === "seller" ? (

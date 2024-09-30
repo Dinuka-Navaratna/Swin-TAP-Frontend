@@ -1,0 +1,333 @@
+/* Scope all styles under .admin-panel */
+
+.admin-panel {
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Table title styling */
+.admin-panel h2 {
+    text-align: center;
+    font-size: 24px;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+/* Table styling */
+.admin-panel table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: white;
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+}
+
+.admin-panel table th, 
+.admin-panel table td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+    white-space: nowrap;
+}
+
+/* Table header */
+.admin-panel table thead {
+    background-color: #333;
+    color: white;
+}
+
+.admin-panel table tbody tr:hover {
+    background-color: #f1f1f1;
+}
+
+/* Button styling */
+.admin-panel button {
+    padding: 8px 16px;
+    margin: 5px;
+    border: none;
+    background-color: #007bff;
+    color: white;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.admin-panel button:hover {
+    background-color: #0056b3;
+}
+
+/* Delete button styling */
+.admin-panel button:nth-child(2) {
+    background-color: #dc3545;
+}
+
+.admin-panel button:nth-child(2):hover {
+    background-color: #c82333;
+}
+
+/* Modal background */
+.admin-panel .modal {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+}
+
+/* Modal content box */
+.admin-panel .modal-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    max-width: 400px;
+    width: 100%;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    position: relative;
+    animation: fadeIn 0.3s ease;
+}
+
+/* Close button inside modal */
+.admin-panel .modal-content .close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 24px;
+    cursor: pointer;
+    color: #333;
+    transition: color 0.3s ease;
+}
+
+.admin-panel .modal-content .close:hover {
+    color: #ff0000;
+}
+
+/* Form styling inside modal */
+.admin-panel .modal-content form {
+    display: flex;
+    flex-direction: column;
+}
+
+.admin-panel .modal-content label {
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+.admin-panel .modal-content input[type="text"] {
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    margin-bottom: 20px;
+    width: 100%;
+}
+
+/* Modal save and cancel buttons */
+.admin-panel .modal-content button {
+    padding: 10px;
+    border: none;
+    border-radius: 4px;
+    margin: 5px 0;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+.admin-panel .modal-content button[type="submit"] {
+    background-color: #28a745;
+    color: white;
+}
+
+.admin-panel .modal-content button[type="submit"]:hover {
+    background-color: #218838;
+}
+
+.admin-panel .modal-content button[type="button"] {
+    background-color: #6c757d;
+    color: white;
+}
+
+.admin-panel .modal-content button[type="button"]:hover {
+    background-color: #5a6268;
+}
+
+/* Add some fade-in animation for modal */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+/* Responsive design for smaller devices */
+@media screen and (max-width: 768px) {
+    .admin-panel table, 
+    .admin-panel table tbody, 
+    .admin-panel table tr, 
+    .admin-panel table th, 
+    .admin-panel table td {
+        display: block;
+        width: 100%;
+    }
+
+    .admin-panel table thead {
+        display: none;
+    }
+
+    .admin-panel table tr {
+        margin-bottom: 15px;
+        border-bottom: 2px solid #ddd;
+    }
+
+    .admin-panel table td {
+        padding-left: 50%;
+        position: relative;
+        text-align: right;
+    }
+
+    .admin-panel table td::before {
+        content: attr(data-label);
+        position: absolute;
+        left: 0;
+        padding-left: 15px;
+        font-weight: bold;
+        text-transform: uppercase;
+    }
+}
+
+/* Modal background */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.5); /* Transparent black background */
+    z-index: 1000;
+    animation: fadeIn 0.3s ease; /* Smooth fade-in animation */
+}
+
+/* Modal content box */
+.modal-content {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    max-width: 500px;
+    width: 100%;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    position: relative;
+    animation: slideDown 0.4s ease; /* Smooth slide down animation */
+}
+
+/* Modal header (Close button) */
+.modal-content .close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 24px;
+    cursor: pointer;
+    color: #333;
+    transition: color 0.3s ease;
+}
+
+.modal-content .close:hover {
+    color: #ff0000; /* Red color when hovered */
+}
+
+/* Modal form styles */
+.modal-content form {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Form labels */
+.modal-content label {
+    margin-bottom: 10px;
+    font-weight: bold;
+    color: #333;
+}
+
+/* Text input fields */
+.modal-content input[type="text"], 
+.modal-content input[type="email"],
+.modal-content select {
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    width: 100%;
+    font-size: 16px;
+    box-sizing: border-box;
+}
+
+/* Buttons inside modal */
+.modal-content button {
+    padding: 12px 20px;
+    margin: 10px 0;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+/* Save button styling */
+.modal-content button[type="submit"] {
+    background-color: #28a745;
+    color: white;
+}
+
+.modal-content button[type="submit"]:hover {
+    background-color: #218838;
+}
+
+/* Cancel button styling */
+.modal-content button[type="button"] {
+    background-color: #6c757d;
+    color: white;
+}
+
+.modal-content button[type="button"]:hover {
+    background-color: #5a6268;
+}
+
+/* Animation for fade-in effect */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+/* Animation for slide-down effect */
+@keyframes slideDown {
+    from {
+        transform: translateY(-50px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* Responsive modal for small screens */
+@media (max-width: 768px) {
+    .modal-content {
+        width: 90%; /* Full-width modal for smaller screens */
+    }
+}
