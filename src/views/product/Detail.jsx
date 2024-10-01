@@ -31,6 +31,7 @@ const ProductDetailView = () => {
   const detailsAddress = useRef(null);
   const detailsState = useRef(null);
   const detailsPostalCode = useRef(null);
+  const [useAxiosDescription, setUseAxiosDescription] = useState(false);
 
   useEffect(() => {
     const session = getSession();
@@ -81,6 +82,7 @@ const ProductDetailView = () => {
           infoDialog("Log in to post a new ad").then(() => {
             window.location.href = "/account/signin";
           });
+          window.location.href = "/account/signin";
         }
       }
     }
@@ -301,6 +303,58 @@ const ProductDetailView = () => {
     setSuggestions([]);
   };
 
+  const handleGenerateDescription = async () => {
+    alert("AI");
+    if (detailsRef.current) {
+      const details = detailsRef.current.getDetails();
+      const isEmptyOrNull = (value) => value === null || value === '';
+
+      const fieldsToCheck = [
+        'color', 'brand', 'model', 'yom', 'condition', 'transmission',
+        'body_type', 'fuel_type', 'mileage', 'price', 'address', 'state', 'postal_code'
+      ];
+
+      const hasEmptyFields = fieldsToCheck.some(field => isEmptyOrNull(details[field]));
+
+      if (!hasEmptyFields) {
+        details.mileage = details.mileage + " Km";
+        let config = {
+          method: 'POST',
+          maxBodyLength: Infinity,
+          url: `${process.env.REACT_APP_AI_URL}/generate`,
+          data: details
+        };
+
+        axios.request(config)
+          .then((response) => {
+            console.log(response.data.description);
+            var backendDescription = response.data.description;
+            const textarea = document.getElementById('descriptionTextarea');
+            setUseAxiosDescription(true);
+            textarea.value = "";
+            let index = 0;
+            const interval = setInterval(() => {
+              if (textarea) {
+                textarea.value += backendDescription[index];
+              }
+              index++;
+              if (index === backendDescription.length) {
+                clearInterval(interval);
+              }
+            }, 20); // Adjust the speed of typing here
+            setUseAxiosDescription(false);
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      } else {
+        alert('All vehicle details must be filled out to provide an accurate and detailed description using the AI writer. Please ensure no fields are left empty.')
+        return;
+      }
+    }
+  };
+
+
   return (
     <div className="container-fluid mt-3">
       {!isLoading ? <>
@@ -344,19 +398,37 @@ const ProductDetailView = () => {
                 {sessionData && (!isNew && vehicleData.inspection_report && vehicleData.inspection_report.status === "assigned" && vehicleData.inspection_report.mechanic === sessionData.user_id) && <>
                   <span className="badge bg-dark me-2 float-right" onClick={() => handleAssignInspection("unassign")}>Unassign Inspection</span>
                 </>}
-                <h1 className="fw-bold h5 d-inline me-2">{isEditMode ? <input type="text" className="form-control mw-180" ref={detailsTitle} defaultValue={vehicleData !== null ? vehicleData.title : ''} placeholder="Title" /> : <>{vehicleData !== null ? toTitleCase(vehicleData.title) : ''}</>}</h1>
+                <h1 className="fw-bold h5 d-inline me-2">{isEditMode ? <><label style={{ fontSize: "small", fontWeight: "normal" }}>Ad Title</label><br></br><input type="text" className="form-control mw-180" ref={detailsTitle} defaultValue={vehicleData !== null ? vehicleData.title : ''} placeholder="Title" /></> : <>{vehicleData !== null ? toTitleCase(vehicleData.title) : ''}</>}</h1>
                 {!isEditMode && (
                   <>
                     <span className="badge bg-success me-2">New</span>
                     <span className="badge bg-danger me-2">Hot</span>
                   </>
                 )}
-                <div className="mt-2">
-                  <span className="h5 me-2">{isEditMode ? <input type="text" className="form-control mw-180" ref={detailsPrice} defaultValue={vehicleData !== null ? vehicleData.price : ''} placeholder="Price" /> : <>$ {vehicleData !== null ? vehicleData.price : 'N/A'}</>}</span>
+                <div className="">
+                  <span className="h5 me-2">{isEditMode ? <><label style={{ fontSize: "small", fontWeight: "normal" }}>Price</label><br></br><input type="text" className="form-control mw-180" ref={detailsPrice} defaultValue={vehicleData !== null ? vehicleData.price : ''} placeholder="Price" /></> : <>$ {vehicleData !== null ? vehicleData.price : 'N/A'}</>}</span>
                   {!isEditMode && (vehicleData.inspection_status === "completed") && <> <i className="bi bi-patch-check-fill text-success me-1" /> AutoAssured </>}
                 </div>
-                <div className="mt-2">
-                  <p className="small">{isEditMode && <textarea className="form-control" ref={detailsDescription} defaultValue={vehicleData !== null ? vehicleData.description : ''} placeholder="Description" />}</p>
+                <div className="">
+                  <p className="small">
+                    {isEditMode && (
+                      <><label style={{ fontSize: "small", fontWeight: "normal" }}>Description</label>
+                        <button className="ai-button" onClick={handleGenerateDescription}>
+                          <i className="bi bi-magic"></i>
+                          <span className="tooltip-text">Write your description using AI</span>
+                        </button><br></br>
+                        <textarea
+                          rows="4"
+                          id="descriptionTextarea"
+                          className="form-control"
+                          ref={detailsDescription}
+                          defaultValue={vehicleData !== null ? vehicleData.description : ''}
+                          placeholder="Description"
+                          readOnly={useAxiosDescription}
+                        />
+                      </>
+                    )}
+                  </p>
                   {!isEditMode ? <>
                     <p className="fw-bold mb-2 small">Vehicle Highlights</p>
                     <ul className="small">
@@ -373,9 +445,10 @@ const ProductDetailView = () => {
                       </ul>
                     </details>
                   </> : <>
+                    <br></br>
                     <div className="row col-md-12">
                       <div className="col-md-4">
-                        <label htmlFor="postalCode">Address</label><br></br>
+                        <label style={{ fontSize: "small", fontWeight: "normal" }}>Address</label><br></br>
                         <input onChange={handleAddressChange} className="form-control mw-180" type="text" ref={detailsAddress} defaultValue={vehicleData !== null ? vehicleData.address : ''} id="detailsAddress" placeholder="Address" />
                         {suggestions.length > 0 && (
                           <ul className="suggestions">
@@ -388,14 +461,15 @@ const ProductDetailView = () => {
                         )}
                       </div>
                       <div className="col-md-4">
-                        <label htmlFor="inspectionDate">State</label><br></br>
+                        <label style={{ fontSize: "small", fontWeight: "normal" }}>State</label><br></br>
                         <input className="form-control mw-180" type="text" ref={detailsState} defaultValue={vehicleData !== null ? vehicleData.state : ''} id="detailsState" placeholder="State" />
                       </div>
                       <div className="col-md-4">
-                        <label htmlFor="vehicleRego">Postal Code</label><br></br>
+                        <label style={{ fontSize: "small", fontWeight: "normal" }}>Postal Code</label><br></br>
                         <input className="form-control mw-180" type="text" ref={detailsPostalCode} defaultValue={vehicleData !== null ? vehicleData.postal_code : ''} id="detailsPostalCode" placeholder="Postal Code" />
                       </div>
                     </div>
+                    <br></br>
                   </>}
                 </div>
               </div>
