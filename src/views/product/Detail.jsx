@@ -4,7 +4,8 @@ import { data } from "../../data";
 import { getSession } from "../../actions/session";
 import { toTitleCase } from '../../helpers/letterCaseChange';
 import axios from "axios";
-import { successDialog, errorDialog, warningDialog, infoDialog } from "../../helpers/alerts.js"; // Import dialogs
+import { successDialog, errorDialog, warningDialog, infoDialog } from "../../helpers/alerts.js";
+import uploadFile from '../../helpers/uploadFile.js';
 import './style.css';
 
 const CardFeaturedProduct = lazy(() => import("../../components/card/CardFeaturedProduct"));
@@ -354,6 +355,27 @@ const ProductDetailView = () => {
     }
   };
 
+  const handleImageClick = () => {
+    if (!isEditMode) return;
+
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
+    input.onchange = async (event) => {
+      const file = event.target.files[0];
+      if (file && file.type.startsWith('image/')) {
+        try {
+          await uploadFile(file, `Token ${sessionData.token}`);
+          alert('');
+        } catch (err) {
+          alert('Failed to upload image');
+        }
+      } else {
+        alert('Please select a valid image file');
+      }
+    };
+    input.click();
+  };
 
   return (
     <div className="container-fluid mt-3">
@@ -366,24 +388,28 @@ const ProductDetailView = () => {
                   src="../../images/products/vehicle.jpg"
                   className="img-fluid mb-3"
                   alt=""
+                  onClick={handleImageClick}
                 />
                 <img
                   src="../../images/products/vehicle.jpg"
                   className="border border-secondary me-2"
                   width="75"
                   alt="..."
+                  onClick={handleImageClick}
                 />
                 <img
                   src="../../images/products/vehicle.jpg"
                   className="border border-secondary me-2"
                   width="75"
                   alt="..."
+                  onClick={handleImageClick}
                 />
                 <img
                   src="../../images/products/vehicle.jpg"
                   className="border border-secondary me-2"
                   width="75"
                   alt="..."
+                  onClick={handleImageClick}
                 />
               </div>
               <div className="col-md-7">
