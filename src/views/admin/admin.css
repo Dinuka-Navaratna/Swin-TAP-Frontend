@@ -331,3 +331,8 @@
         width: 90%; /* Full-width modal for smaller screens */
     }
 }
+
+.logo-size{
+    width: 8rem;
+    height: 8rem;
+}

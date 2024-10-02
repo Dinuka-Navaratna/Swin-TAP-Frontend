@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import './style.css'; // Assuming you still have the scoped CSS
+import './admin.css';
 
-const Admin = () => {
+const UserManagement = () => {
     const [users, setUsers] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -247,4 +247,4 @@ const Admin = () => {
     );
 };
 
-export default Admin;
+export default UserManagement;

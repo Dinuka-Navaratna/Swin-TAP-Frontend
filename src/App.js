@@ -30,7 +30,13 @@ const SupportView = lazy(() => import("./views/pages/Support"));
 const BlogView = lazy(() => import("./views/blog/Blog"));
 const OurAssurance = lazy(() => import("./views/pages/OurAssurance"));
 const AboutUsDetailView = lazy(() => import("./views/aboutus/Detail"));
-const AdminPanel = lazy(() => import("./views/admin/admin"));
+
+//Admin Components
+const AdminPanel = lazy(() => import("./views/admin/AdminPanel"));
+const UserManagement = lazy(() => import("./views/admin/UserManagement"));
+const MechanicManagement = lazy(() =>
+  import("./views/admin/MechanicManagement")
+);
 
 function App() {
   return (
@@ -81,7 +87,17 @@ function App() {
             <Route exact path="/blog" element={<BlogView />} />
             <Route exact path="/about-us" element={<AboutUsDetailView />} />
             <Route exact path="/admin" element={<AdminPanel />} />
-            
+            <Route
+              exact
+              path="/admin/user-management"
+              element={<UserManagement />}
+            />
+            <Route
+              exact
+              path="/admin/mechanic-management"
+              element={<MechanicManagement />}
+            />
+
             <Route exact path="/500" element={<InternalServerErrorView />} />
             <Route exact path="/assurance" element={<OurAssurance />} />
             <Route path="*" element={<NotFoundView />} />
