@@ -33,6 +33,8 @@ const ProductDetailView = () => {
   const detailsState = useRef(null);
   const detailsPostalCode = useRef(null);
   const [useAxiosDescription, setUseAxiosDescription] = useState(false);
+  const [imageUploading, setImageUploading] = useState(false);
+  const [selectedImage, setSelectedImage] = useState(null);
 
   useEffect(() => {
     const session = getSession();
@@ -355,26 +357,44 @@ const ProductDetailView = () => {
     }
   };
 
-  const handleImageClick = () => {
-    if (!isEditMode) return;
+  const handleImageClick = (event) => {
+    if (imageUploading) return;
 
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.accept = 'image/*';
-    input.onchange = async (event) => {
-      const file = event.target.files[0];
-      if (file && file.type.startsWith('image/')) {
-        try {
-          await uploadFile(file, `Token ${sessionData.token}`);
-          alert('');
-        } catch (err) {
-          alert('Failed to upload image');
-        }
-      } else {
-        alert('Please select a valid image file');
+    if (!isEditMode) {
+      // Swap images logic
+      const firstImage = document.querySelector('.img-fluid.mb-3');
+      const clickedImage = event.target;
+
+      if (firstImage && clickedImage && firstImage !== clickedImage) {
+        const tempSrc = firstImage.src;
+        firstImage.src = clickedImage.src;
+        clickedImage.src = tempSrc;
       }
-    };
-    input.click();
+    } else {
+      // Image upload logic
+      const input = document.createElement('input');
+      input.type = 'file';
+      input.accept = 'image/*';
+      input.onchange = async (inputEvent) => {
+        const file = inputEvent.target.files[0];
+        if (file && file.type.startsWith('image/')) {
+          setImageUploading(true);
+          try {
+            const imageUrl = URL.createObjectURL(file);
+            event.target.src = imageUrl; // Replace the clicked image
+            await uploadFile(file, `Token ${sessionData.token}`);
+            alert('Image uploaded successfully');
+          } catch (err) {
+            alert('Failed to upload image' + err);
+          } finally {
+            setImageUploading(false);
+          }
+        } else {
+          alert('Please select a valid image file');
+        }
+      };
+      input.click();
+    }
   };
 
   return (
@@ -383,7 +403,9 @@ const ProductDetailView = () => {
         <div className="row">
           <div className="col-md-8">
             <div className="row mb-3">
-              <div className="col-md-5 text-center">
+              <div className="col-md-5 text-center" style={{position: "relative"}}>
+                {imageUploading && <div className="spinner-overlay" role="status"><span className="sr-only spinner-border"></span></div>}
+                {selectedImage && <img src={selectedImage} className="img-fluid mb-3" alt="Selected" />}
                 <img
                   src="../../images/products/vehicle.jpg"
                   className="img-fluid mb-3"
@@ -394,6 +416,7 @@ const ProductDetailView = () => {
                   src="../../images/products/vehicle.jpg"
                   className="border border-secondary me-2"
                   width="75"
+                  height="50"
                   alt="..."
                   onClick={handleImageClick}
                 />
@@ -401,6 +424,7 @@ const ProductDetailView = () => {
                   src="../../images/products/vehicle.jpg"
                   className="border border-secondary me-2"
                   width="75"
+                  height="50"
                   alt="..."
                   onClick={handleImageClick}
                 />
@@ -408,6 +432,7 @@ const ProductDetailView = () => {
                   src="../../images/products/vehicle.jpg"
                   className="border border-secondary me-2"
                   width="75"
+                  height="50"
                   alt="..."
                   onClick={handleImageClick}
                 />

@@ -1,5 +1,5 @@
 // uploadFile.js
-const axios = require('axios');
+import axios from "axios";
 const FormData = require('form-data');
 
 const uploadFile = (file, token) => {
@@ -11,8 +11,7 @@ const uploadFile = (file, token) => {
     maxBodyLength: Infinity,
     url: `${process.env.REACT_APP_API_URL}/api/files/`,
     headers: { 
-      'Authorization': `Token ${token}`, 
-      ...data.getHeaders()
+      'Authorization': `Token ${token}`
     },
     data : data
   };
@@ -28,4 +27,4 @@ const uploadFile = (file, token) => {
     });
 };
 
-module.exports = uploadFile;
+export default uploadFile;
