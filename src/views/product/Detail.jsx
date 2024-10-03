@@ -162,7 +162,7 @@ const ProductDetailView = () => {
             "status": details.inspection_status,
             "vehicle_rego": inspection.inspectionRego,
             "postal_code": details.postal_code,
-            "inspection_time": (inspection.inspectionDate).replace(/-/g, '/')
+            "inspection_time": `${inspection.inspectionDate.replace(/-/g, '/')} ${inspection.inspectionTime}`
           }
         });
       } else {
