@@ -405,7 +405,7 @@ const ProductDetailView = () => {
             <div className="row mb-3">
               <div className="col-md-5 text-center" style={{position: "relative"}}>
                 {imageUploading && <div className="spinner-overlay" role="status"><span className="sr-only spinner-border"></span></div>}
-                {selectedImage && <img src={selectedImage} className="img-fluid mb-3" alt="Selected" />}
+                {/* {selectedImage && <img src={selectedImage} className="img-fluid mb-3" alt="Selected" />} */}
                 <img
                   src="../../images/products/vehicle.jpg"
                   className="img-fluid mb-3"
