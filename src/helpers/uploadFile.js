@@ -5,6 +5,7 @@ const FormData = require('form-data');
 const uploadFile = (file, token) => {
   let data = new FormData();
   data.append('file', file);
+  data.append('dimensions', '[{"width":300,"height":300},{"width":180,"height":270}]');
 
   let config = {
     method: 'post',
