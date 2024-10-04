@@ -35,6 +35,7 @@ const ProductDetailView = () => {
   const [useAxiosDescription, setUseAxiosDescription] = useState(false);
   const [imageUploading, setImageUploading] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
+  const [uploadedImageIds, setUploadedImageIds] = useState([]);
 
   useEffect(() => {
     const session = getSession();
@@ -166,7 +167,8 @@ const ProductDetailView = () => {
             "vehicle_rego": inspection.inspectionRego,
             "postal_code": details.postal_code,
             "inspection_time": `${inspection.inspectionDate.replace(/-/g, '/')} ${inspection.inspectionTime}`
-          }
+          },
+          "files": uploadedImageIds
         });
       } else {
         data = createDataIfDifferent(details, vehicleData);
@@ -380,10 +382,28 @@ const ProductDetailView = () => {
         if (file && file.type.startsWith('image/')) {
           setImageUploading(true);
           try {
-            const imageUrl = URL.createObjectURL(file);
-            event.target.src = imageUrl; // Replace the clicked image
-            await uploadFile(file, `Token ${sessionData.token}`);
-            alert('Image uploaded successfully');
+            const response = await uploadFile(file, `Token ${sessionData.token}`);
+            if (response.status) {
+              const newImageId = response.data._id;
+
+              const imageUrl = URL.createObjectURL(file);
+              event.target.src = imageUrl; // Replace the clicked image
+              // Update the state with the new image ID
+              setUploadedImageIds((prevIds) => {
+                // Remove the old image ID if it exists
+                const updatedIds = prevIds.filter(id => id !== event.target.dataset.imageId);
+                // Add the new image ID
+                return [...updatedIds, newImageId];
+              });
+
+              // Update the data-image-id attribute of the clicked image
+              event.target.dataset.imageId = newImageId;
+              console.log(uploadedImageIds);
+              alert('Image uploaded successfully');
+            } else {
+              console.log(response);
+              alert('Image uploaded successfully');
+            }
           } catch (err) {
             alert('Failed to upload image' + err);
           } finally {
@@ -403,7 +423,7 @@ const ProductDetailView = () => {
         <div className="row">
           <div className="col-md-8">
             <div className="row mb-3">
-              <div className="col-md-5 text-center" style={{position: "relative"}}>
+              <div className="col-md-5 text-center" style={{ position: "relative" }}>
                 {imageUploading && <div className="spinner-overlay" role="status"><span className="sr-only spinner-border"></span></div>}
                 {/* {selectedImage && <img src={selectedImage} className="img-fluid mb-3" alt="Selected" />} */}
                 <img
@@ -411,6 +431,7 @@ const ProductDetailView = () => {
                   className="img-fluid mb-3"
                   alt=""
                   onClick={handleImageClick}
+                  data-image-id=""
                 />
                 <img
                   src="../../images/products/vehicle.jpg"
@@ -419,6 +440,7 @@ const ProductDetailView = () => {
                   height="50"
                   alt="..."
                   onClick={handleImageClick}
+                  data-image-id=""
                 />
                 <img
                   src="../../images/products/vehicle.jpg"
@@ -427,6 +449,7 @@ const ProductDetailView = () => {
                   height="50"
                   alt="..."
                   onClick={handleImageClick}
+                  data-image-id=""
                 />
                 <img
                   src="../../images/products/vehicle.jpg"
@@ -435,6 +458,7 @@ const ProductDetailView = () => {
                   height="50"
                   alt="..."
                   onClick={handleImageClick}
+                  data-image-id=""
                 />
               </div>
               <div className="col-md-7">
