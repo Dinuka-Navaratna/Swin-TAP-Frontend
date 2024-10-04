@@ -1,7 +1,5 @@
 export const required = (value) =>
-  value || (typeof value == "number" && value === 0)
-    ? undefined
-    : "This field is required";
+  value || (typeof value == "number" && value === 0) ? undefined : "This field is required";
 export const number = (value) =>
   value && isNaN(Number(value)) ? "Must be a number" : undefined;
 export const digit = (value) =>
