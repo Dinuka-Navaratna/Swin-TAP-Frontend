@@ -62,6 +62,10 @@ const ProductDetailView = () => {
               });
             } else {
               setVehicleData(response.data.data);
+              if (response.data.data.files) {
+                const initialImageIds = response.data.data.files.map(file => file._id);
+                setUploadedImageIds(initialImageIds);
+              }
               setIsLoading(false);
             }
           })
@@ -167,8 +171,7 @@ const ProductDetailView = () => {
             "vehicle_rego": inspection.inspectionRego,
             "postal_code": details.postal_code,
             "inspection_time": `${inspection.inspectionDate.replace(/-/g, '/')} ${inspection.inspectionTime}`
-          },
-          "files": uploadedImageIds
+          }
         });
       } else {
         data = createDataIfDifferent(details, vehicleData);
@@ -178,6 +181,9 @@ const ProductDetailView = () => {
           console.log("No differences found.");
         }
       }
+      let dataObject = JSON.parse(data);
+      dataObject["files"] = uploadedImageIds;
+      data = JSON.stringify(dataObject);
 
       let config = {
         method: isNew ? 'POST' : 'PUT',
@@ -389,17 +395,21 @@ const ProductDetailView = () => {
 
               const imageUrl = URL.createObjectURL(file);
               event.target.src = imageUrl; // Replace the clicked image
+
+              // Update the data-image-id attribute of the clicked image before updating the state
+              const oldImageId = event.target.dataset.imageId;
+              event.target.dataset.imageId = newImageId;
+
               // Update the state with the new image ID
               setUploadedImageIds((prevIds) => {
                 // Remove the old image ID if it exists
-                const updatedIds = prevIds.filter(id => id !== event.target.dataset.imageId);
+                const updatedIds = prevIds.filter(id => id !== oldImageId);
                 // Add the new image ID
-                return [...updatedIds, newImageId];
+                const newIds = [...updatedIds, newImageId];
+                console.log('Updated IDs:', newIds); // Log the updated IDs
+                return newIds;
               });
 
-              // Update the data-image-id attribute of the clicked image
-              event.target.dataset.imageId = newImageId;
-              console.log(uploadedImageIds);
               alert('Image uploaded successfully');
             } else {
               console.log(response);
@@ -418,6 +428,9 @@ const ProductDetailView = () => {
     }
   };
 
+  const fileCount = vehicleData?.files?.length || 0;
+  const defaultImagesNeeded = 4 - fileCount;
+
   return (
     <div className="container-fluid mt-3">
       {!isLoading ? <>
@@ -427,40 +440,72 @@ const ProductDetailView = () => {
               <div className="col-md-5 text-center" style={{ position: "relative" }}>
                 {imageUploading && <div className="spinner-overlay" role="status"><span className="sr-only spinner-border"></span></div>}
                 {/* {selectedImage && <img src={selectedImage} className="img-fluid mb-3" alt="Selected" />} */}
-                <img
-                  src="../../images/products/vehicle.jpg"
-                  className="img-fluid mb-3"
-                  alt=""
-                  onClick={handleImageClick}
-                  data-image-id=""
-                />
-                <img
-                  src="../../images/products/vehicle.jpg"
-                  className="border border-secondary me-2"
-                  width="75"
-                  height="50"
-                  alt="..."
-                  onClick={handleImageClick}
-                  data-image-id=""
-                />
-                <img
-                  src="../../images/products/vehicle.jpg"
-                  className="border border-secondary me-2"
-                  width="75"
-                  height="50"
-                  alt="..."
-                  onClick={handleImageClick}
-                  data-image-id=""
-                />
-                <img
-                  src="../../images/products/vehicle.jpg"
-                  className="border border-secondary me-2"
-                  width="75"
-                  height="50"
-                  alt="..."
-                  onClick={handleImageClick}
-                  data-image-id=""
-                />
+                {isNew ? (
+                  <>
+                    <img
+                      src="../../images/products/vehicle.jpg"
+                      className="img-fluid mb-3"
+                      alt=""
+                      onClick={handleImageClick}
+                      data-image-id=""
+                    />
+                    <img
+                      src="../../images/products/vehicle.jpg"
+                      className="border border-secondary me-2"
+                      width="75"
+                      height="50"
+                      alt="..."
+                      onClick={handleImageClick}
+                      data-image-id=""
+                    />
+                    <img
+                      src="../../images/products/vehicle.jpg"
+                      className="border border-secondary me-2"
+                      width="75"
+                      height="50"
+                      alt="..."
+                      onClick={handleImageClick}
+                      data-image-id=""
+                    />
+                    <img
+                      src="../../images/products/vehicle.jpg"
+                      className="border border-secondary me-2"
+                      width="75"
+                      height="50"
+                      alt="..."
+                      onClick={handleImageClick}
+                      data-image-id=""
+                    />
+                  </>
+                ) : (
+                  <>
+                    {vehicleData.files.map((file, index) => (
+                      <img
+                        key={file._id}
+                        src={`${process.env.REACT_APP_API_URL}/uploads/300x300/${file.new_filename}`}
+                        className={`border border-secondary me-2 ${index === 0 ? 'img-fluid mb-3' : ''}`}
+                        width={index === 0 ? undefined : "75"}
+                        height={index === 0 ? undefined : "50"}
+                        alt=""
+                        onClick={handleImageClick}
+                        data-image-id={file._id}
+                      />
+                    ))}
+                    {isEditMode || defaultImagesNeeded === 4 &&
+                      Array.from({ length: defaultImagesNeeded }).map((_, index) => (
+                        <img
+                          key={`default-${index}`}
+                          src="../../images/products/vehicle.jpg"
+                          className={defaultImagesNeeded === 4 && index == 0 ? "img-fluid mb-3" : "border border-secondary me-2"}
+                          width={!(defaultImagesNeeded === 4 && index == 0) && "75"}
+                          height={!(defaultImagesNeeded === 4 && index == 0) && "50"}
+                          alt="..."
+                          onClick={handleImageClick}
+                          data-image-id=""
+                        />
+                      ))}
+                  </>
+                )}
               </div>
               <div className="col-md-7">
                 {sessionData && (isNew || sessionData.user_id === vehicleData.seller_id._id) && <>
