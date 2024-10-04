@@ -192,6 +192,7 @@ const ProductDetailView = () => {
 
       axios.request(config)
         .then((response) => {
+          console.log(data);
           if (response.data.status) {
             if (id === "new") {
               alert("Ad posted successfully.");
@@ -382,7 +383,7 @@ const ProductDetailView = () => {
         if (file && file.type.startsWith('image/')) {
           setImageUploading(true);
           try {
-            const response = await uploadFile(file, `Token ${sessionData.token}`);
+            const response = await uploadFile(file, `${sessionData.token}`);
             if (response.status) {
               const newImageId = response.data._id;
 
@@ -402,7 +403,7 @@ const ProductDetailView = () => {
               alert('Image uploaded successfully');
             } else {
               console.log(response);
-              alert('Image uploaded successfully');
+              alert('Image upload error!');
             }
           } catch (err) {
             alert('Failed to upload image' + err);
