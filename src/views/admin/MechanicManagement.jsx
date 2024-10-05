@@ -1,270 +1,209 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
-import "./admin.css";
+import { getSession } from "../../actions/session";
+import Breadcrumb from "../../components/Breadcrumb";
+import MechanicStatusFilter from "./MechanicStatusFilter";
+import UserSearch from "./UserSearch";
+import CardGrid from "./CardGrid";
+import CardList from "./CardList";
+import Paging from "../../components/Paging";
 
 const MechanicManagement = () => {
-  const [users, setUsers] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [editingUser, setEditingUser] = useState(null); // to track which user is being edited
-  const [updatedName, setUpdatedName] = useState(""); // for holding the updated name
-  const [updatedRole, setUpdatedRole] = useState(""); // for updated role
-  const [updatedEmail, setUpdatedEmail] = useState(""); // for updated email
-  const [updatedStatus, setUpdatedStatus] = useState(""); // for updated status
-  const [updatedPhone, setUpdatedPhone] = useState(""); // for updated phone
-  const [showModal, setShowModal] = useState(false); // modal state
-  const [validationError, setValidationError] = useState(""); // to show validation errors
+  const [currentUsers, setCurrentUsers] = useState([]);
+  const [currentPage, setCurrentPage] = useState(null);
+  const [totalPages, setTotalPages] = useState(null);
+  const [totalItems, setTotalItems] = useState(0);
+  const [view, setView] = useState("grid");
+  const [selectedVerification, setSelectedVerification] = useState("");
+  const [loading, setLoading] = useState(false);
+  const session = getSession();
 
-  const baseUrl = "https://api.autoassure.me/api/users/";
-  const authToken =
-    "Token eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNjZjMDRmODQwNWJhNDQ2NzNlYjE2NGZjIiwibmFtZSI6Imthc3VuIiwicm9sZSI6ImFkbWluIiwicGhvbmUiOiIwNzE3NjU2NjU3IiwiZW1haWwiOiJrbWthc3VubWFkdXNhbmthQGdtYWlsLmNvbSIsImV4cCI6MTc1NTQxODcyMCwiaWF0IjoxNzIzODgyNzIwfQ.3TOQUl1htrC9rxaYIDNPKgzASp3wJLgNcJ5nwLvGACw";
+  const getUsers = useCallback(
+    async (page, verification = "") => {
+      setLoading(true);
+      const finalVerification =
+        verification === "clear" ? "" : verification || selectedVerification;
 
-  // Fetch all users when the component mounts
-  useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        const response = await axios.get(baseUrl, {
-          headers: {
-            Authorization: authToken,
-          },
-        });
-        setUsers(response.data.data.value);
-        setLoading(false);
-      } catch (error) {
-        setError("Failed to fetch data");
-        setLoading(false);
-      }
-    };
-    fetchUsers();
-  }, []);
-
-  // Open modal and set user for editing
-  const openEditModal = (user) => {
-    setEditingUser(user);
-    setUpdatedName(user.name);
-    setUpdatedRole(user.role);
-    setUpdatedEmail(user.email);
-    setUpdatedStatus(user.status);
-    setUpdatedPhone(user.phone || ""); // Optional chaining for phone
-    setShowModal(true);
-  };
-
-  // Close modal
-  const closeEditModal = () => {
-    setShowModal(false);
-    setEditingUser(null);
-    setValidationError(""); // Clear validation error
-  };
-
-  // Validate the input before submission
-  const validateForm = () => {
-    // Name validation (not empty)
-    if (updatedName.trim() === "") {
-      setValidationError("Name is required.");
-      return false;
-    }
-
-    // Email validation (basic pattern)
-    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailPattern.test(updatedEmail)) {
-      setValidationError("Please enter a valid email.");
-      return false;
-    }
-
-    // Phone validation (optional but must be valid if provided)
-    const phonePattern = /^[0-9]{10,15}$/; // Ensure phone has 10-15 digits
-    if (updatedPhone && !phonePattern.test(updatedPhone)) {
-      setValidationError("Please enter a valid phone number (10-15 digits).");
-      return false;
-    }
-
-    // Clear validation error if all validations pass
-    setValidationError("");
-    return true;
-  };
-
-  // Update a user
-  const updateUser = async (userId) => {
-    if (!validateForm()) return; // Prevent submission if validation fails
-
-    try {
-      const response = await axios.put(
-        `${baseUrl}`,
-        {
-          _id: userId,
-          name: updatedName,
-          role: updatedRole,
-          email: updatedEmail,
-          status: updatedStatus,
-          phone: updatedPhone,
+      let config = {
+        method: "get",
+        maxBodyLength: Infinity,
+        url: `${process.env.REACT_APP_API_URL}/api/users?role=mechanic&page=${
+          page !== null ? page : ""
+        }&limit=9`,
+        headers: {
+          Authorization:
+            "Token eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNjZjMDRmODQwNWJhNDQ2NzNlYjE2NGZjIiwibmFtZSI6Imthc3VuIiwicm9sZSI6ImFkbWluIiwicGhvbmUiOiIwNzE3NjU2NjU3IiwiZW1haWwiOiJrbWthc3VubWFkdXNhbmthQGdtYWlsLmNvbSIsImV4cCI6MTc1NTQxODcyMCwiaWF0IjoxNzIzODgyNzIwfQ.3TOQUl1htrC9rxaYIDNPKgzASp3wJLgNcJ5nwLvGACw", //`Token ${session ? session.token : ""}`,
         },
-        {
-          headers: {
-            Authorization: authToken,
-          },
-        }
-      );
-      alert(`User ${userId} updated successfully!`);
-      // Update the local state to reflect the changes
-      const updatedUsers = users.map((user) =>
-        user._id === userId
-          ? {
-              ...user,
-              name: updatedName,
-              role: updatedRole,
-              email: updatedEmail,
-              status: updatedStatus,
-              phone: updatedPhone,
-            }
-          : user
-      );
-      setUsers(updatedUsers);
-      closeEditModal(); // Close modal after updating
-    } catch (error) {
-      alert("Error updating user");
-    }
-  };
+      };
 
-  // Delete a user
-  const deleteUser = async (userId, userName) => {
-    if (window.confirm(`Are you sure you want to delete user "${userName}"?`)) {
       try {
-        await axios.delete(`${baseUrl}${userId}`, {
-          headers: {
-            Authorization: authToken,
-          },
-        });
-        alert(`User "${userName}" deleted successfully!`);
-        // Remove the user from the local state
-        setUsers(users.filter((user) => user._id !== userId));
+        const response = await axios.request(config);
+        const users = response.data.data.value;
+        const totalItems = response.data.data.count;
+        const totalPages = Math.ceil(totalItems / 9);
+        setCurrentUsers(users);
+        setTotalItems(totalItems);
+        setTotalPages(totalPages);
+        setLoading(false);
+        setCurrentPage(page);
       } catch (error) {
-        alert("Error deleting user");
+        setCurrentUsers([]);
+        setTotalItems(0);
+        setLoading(false);
       }
+    },
+    [selectedVerification, session]
+  );
+
+  // Ensure getUsers is called once when the component mounts, and when the filters change
+  useEffect(() => {
+    getUsers(currentPage);
+  }, [currentPage, getUsers]);
+
+  const onPageChanged = (page) => {
+    if (page.currentPage !== currentPage) {
+      setCurrentPage(page.currentPage);
     }
   };
-
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>{error}</p>;
 
   return (
-    <div className="admin-panel">
-      <h2>Mechanic Data Table</h2>
-      <table border="1" cellPadding="10">
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Role</th>
-            <th>Status</th>
-            <th>Email</th>
-            <th>Phone</th>
-            <th>Created At</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {users.map((user) => (
-            <tr key={user._id}>
-              <td>{user.name}</td>
-              <td>{user.role}</td>
-              <td>{user.status}</td>
-              <td>{user.email}</td>
-              <td>{user.phone || "N/A"}</td>
-              <td>{new Date(user.created_at).toLocaleString()}</td>
-              <td>
-                <button onClick={() => openEditModal(user)}>Edit</button>
-                <button onClick={() => deleteUser(user._id, user.name)}>
-                  Delete
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+    <React.Fragment>
+      <div
+        className="p-5 bg-primary bs-cover"
+        style={{
+          backgroundImage: "url(../../images/banner/Banner_listing.png)",
+        }}
+      >
+        <div className="container text-center">
+          <span className="display-5 px-3 bg-white rounded shadow">
+            Mechanic Management
+          </span>
+        </div>
+      </div>
 
-      {/* Modal */}
-      {showModal && (
-        <div className="modal">
-          <div className="modal-content">
-            <span className="close" onClick={closeEditModal}>
-              &times;
-            </span>
-            <h2>Edit User</h2>
-            {/* Show validation errors */}
-            {validationError && (
-              <p className="validation-error">{validationError}</p>
+      <div className="container-fluid my-4">
+        <div className="row">
+          <div className="col-md-3 d-none d-md-block">
+            <MechanicStatusFilter
+              getUsers={getUsers}
+              selectedVerification={selectedVerification}
+            />
+            <UserSearch />
+          </div>
+          <div className="col-md-9">
+            <div className="row">
+              <div className="col-6"></div>
+              <div className="col-6 d-flex justify-content-end">
+                <div className="btn-group ms-3" role="group" id="viewChanger">
+                  <button
+                    aria-label="Grid"
+                    type="button"
+                    onClick={() => setView("grid")}
+                    className={`btn ${
+                      view === "grid" ? "btn-primary" : "btn-outline-primary"
+                    }`}
+                  >
+                    <i className="bi bi-grid" />
+                  </button>
+                  <button
+                    aria-label="List"
+                    type="button"
+                    onClick={() => setView("list")}
+                    className={`btn ${
+                      view === "list" ? "btn-primary" : "btn-outline-primary"
+                    }`}
+                  >
+                    <i className="bi bi-list" />
+                  </button>
+                </div>
+              </div>
+            </div>
+            <br></br>
+            <div className="row">
+              <div className="col-4">
+                <p>
+                  <b>Total Mechanics: </b>
+                  {totalItems}
+                </p>
+              </div>
+            </div>
+            <div className="d-block d-md-none">
+              <MechanicStatusFilter
+                getUsers={getUsers}
+                selectedVerification={selectedVerification}
+              />
+            </div>
+            <hr />
+            {loading ? (
+              <div className="text-center">
+                <div className="spinner-border" role="status">
+                  <span className="visually-hidden">Loading...</span>
+                </div>
+              </div>
+            ) : (
+              <div className="row g-3">
+                {currentUsers.length === 0 ? (
+                  <div className="col-12">
+                    <p>No results found</p>
+                  </div>
+                ) : (
+                  <>
+                    {view === "grid" &&
+                      currentUsers.map((user, idx) => (
+                        <div key={idx} className="col-md-4">
+                          <CardGrid
+                            data={user}
+                            role={session ? session.role : ""}
+                            getUsers={getUsers}
+                            currentPage={currentPage}
+                          />
+                        </div>
+                      ))}
+                    {view === "list" &&
+                      currentUsers.map((user, idx) => (
+                        <div key={idx} className="col-md-12">
+                          <CardList
+                            data={user}
+                            role={session ? session.role : ""}
+                            getUsers={getUsers}
+                            currentPage={currentPage}
+                          />
+                        </div>
+                      ))}
+                  </>
+                )}
+              </div>
             )}
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                updateUser(editingUser._id);
-              }}
-            >
-              <label>
-                Name:
-                <input
-                  type="text"
-                  value={updatedName}
-                  onChange={(e) => setUpdatedName(e.target.value)}
-                  required
-                />
-              </label>
-
-              <label>
-                Role:
-                <select
-                  value={updatedRole}
-                  onChange={(e) => setUpdatedRole(e.target.value)}
-                  required
-                >
-                  <option value="Admin">Admin</option>
-                  <option value="Mechanic">Mechanic</option>
-                  <option value="Seller">Seller</option>
-                </select>
-              </label>
-
-              <label>
-                Email:
-                <input
-                  type="email"
-                  value={updatedEmail}
-                  onChange={(e) => setUpdatedEmail(e.target.value)}
-                  required
-                />
-              </label>
-
-              <label>
-                Status:
-                <select
-                  value={updatedStatus}
-                  onChange={(e) => setUpdatedStatus(e.target.value)}
-                  required
-                >
-                  <option value="not confirm">Not Confirmed</option>
-                  <option value="confirm">Confirmed</option>
-                  <option value="Active">Active</option>
-                  <option value="de-active">De-active</option>
-                </select>
-              </label>
-
-              <label>
-                Phone:
-                <input
-                  type="text"
-                  value={updatedPhone}
-                  onChange={(e) => setUpdatedPhone(e.target.value)}
-                />
-              </label>
-
-              <button type="submit">Save</button>
-              <button type="button" onClick={closeEditModal}>
-                Cancel
-              </button>
-            </form>
+            <hr />
+            <Paging
+              totalRecords={totalItems}
+              pageLimit={9}
+              pageNeighbours={3}
+              onPageChanged={onPageChanged}
+              currentPage={currentPage}
+              sizing=""
+              alignment="justify-content-center"
+            />
+            <div className="d-block d-md-none">
+              <UserSearch />
+            </div>
           </div>
         </div>
-      )}
-    </div>
+      </div>
+    </React.Fragment>
   );
 };
 
 export default MechanicManagement;
+
+// const baseUrl = "https://api.autoassure.me/api/users?role=mechanic";
+//const authToken =
+//"Token eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNjZjMDRmODQwNWJhNDQ2NzNlYjE2NGZjIiwibmFtZSI6Imthc3VuIiwicm9sZSI6ImFkbWluIiwicGhvbmUiOiIwNzE3NjU2NjU3IiwiZW1haWwiOiJrbWthc3VubWFkdXNhbmthQGdtYWlsLmNvbSIsImV4cCI6MTc1NTQxODcyMCwiaWF0IjoxNzIzODgyNzIwfQ.3TOQUl1htrC9rxaYIDNPKgzASp3wJLgNcJ5nwLvGACw";
+/*  let config = {
+        method: "get",
+        maxBodyLength: Infinity,
+        url: `${process.env.REACT_APP_API_URL}/api/users?role=mechanic`,
+        headers: {
+          Authorization: `Token eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNjZjMDRmODQwNWJhNDQ2NzNlYjE2NGZjIiwibmFtZSI6Imthc3VuIiwicm9sZSI6ImFkbWluIiwicGhvbmUiOiIwNzE3NjU2NjU3IiwiZW1haWwiOiJrbWthc3VubWFkdXNhbmthQGdtYWlsLmNvbSIsImV4cCI6MTc1NTQxODcyMCwiaWF0IjoxNzIzODgyNzIwfQ.3TOQUl1htrC9rxaYIDNPKgzASp3wJLgNcJ5nwLvGACw`,
+        },
+      };*/
