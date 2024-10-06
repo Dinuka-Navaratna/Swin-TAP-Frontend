@@ -65,6 +65,8 @@ const CardList = (props) => {
     }
   };
 
+  // Create a new Date object
+  const options = { year: "numeric", month: "long", day: "numeric" };
   return (
     <div className="list-item d-flex align-items-start p-3 border-bottom">
       {/* Image section */}
@@ -83,10 +85,19 @@ const CardList = (props) => {
         </h6>
         <div className="my-2">
           <p className="small mt-2">
+            {!props.mechanic && (
+              <>
+                {" "}
+                <b>Role:</b> {item.role || "Not Provided"} <br />
+              </>
+            )}
             <b>Email:</b> {item.email || "Not Provided"} <br />
             <b>Phone:</b> {item.phone || "Not Provided"} <br />
             <b>Address:</b> {item.address || "Not Provided"} <br />
-            <b>Joined Date:</b> {item.created_at || "Not Provided"} <br />
+            <b>Joined Date:</b>{" "}
+            {new Date(item.created_at).toLocaleDateString(undefined, options) ||
+              "Not Provided"}{" "}
+            <br />
             {item.role === "mechanic" && (
               <>
                 {" "}
@@ -192,7 +203,12 @@ const CardList = (props) => {
               <Form.Control
                 type="text"
                 name="created_at"
-                value={item.created_at || "Not Provided"}
+                value={
+                  new Date(item.created_at).toLocaleDateString(
+                    undefined,
+                    options
+                  ) || "Not Provided"
+                }
                 onChange={handleChange}
                 readOnly
               />
