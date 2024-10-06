@@ -6,10 +6,16 @@ const MechanicStatusFilter = ({ getUsers }) => {
   const handleVerificationClick = (verification) => {
     if (verification === "Clear") {
       setActiveVerification("");
-      getUsers(1, "clear", "", "", "");
+      getUsers(1, "clear", "", "");
     } else {
       setActiveVerification(verification);
-      getUsers(1, verification, "", "", "");
+      let mechanic_verification = "";
+      if (verification === "Verified") {
+        mechanic_verification = "verified";
+      } else if (verification === "Not Verified") {
+        mechanic_verification = "not_verified";
+      }
+      getUsers(1, mechanic_verification, "", "");
     }
   };
 

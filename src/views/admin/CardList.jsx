@@ -98,13 +98,17 @@ const CardList = (props) => {
             {new Date(item.created_at).toLocaleDateString(undefined, options) ||
               "Not Provided"}{" "}
             <br />
-            {item.role === "mechanic" && (
+            <b>Mechanic Verification Status:</b>{" "}
+            {item.role === "mechanic" ? (
               <>
-                {" "}
-                <b>Mechanic Verification Status:</b>{" "}
-                {item.mechanic_verification || "Not Provided"} <br />
+                {(item.mechanic_verification === "verified"
+                  ? "Verified"
+                  : "Not Verified") || "Not Provided"}{" "}
               </>
+            ) : (
+              "N / A"
             )}
+            <br />
             <b>Identity Verification Documents:</b>{" "}
             {item.identity_verification_documents.size != null
               ? item.identity_verification_documents

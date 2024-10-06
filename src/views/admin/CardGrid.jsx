@@ -98,7 +98,11 @@ const CardGrid = (props) => {
             <br />
             <b>Mechanic Verification Status:</b>{" "}
             {item.role === "mechanic" ? (
-              <>{item.mechanic_verification || "Not Provided"} </>
+              <>
+                {(item.mechanic_verification === "verified"
+                  ? "Verified"
+                  : "Not Verified") || "Not Provided"}{" "}
+              </>
             ) : (
               "N / A"
             )}
