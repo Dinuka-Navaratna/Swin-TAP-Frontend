@@ -65,6 +65,9 @@ const CardGrid = (props) => {
     }
   };
 
+  // Create a new Date object
+  const options = { year: "numeric", month: "long", day: "numeric" };
+
   return (
     <div className="card">
       <img
@@ -80,29 +83,40 @@ const CardGrid = (props) => {
         </h6>
         <div className="my-2">
           <p className="small mt-2">
+            {!props.mechanic && (
+              <>
+                {" "}
+                <b>Role:</b> {item.role || "Not Provided"} <br />
+              </>
+            )}
             <b>Email:</b> {item.email || "Not Provided"} <br />
             <b>Phone:</b> {item.phone || "Not Provided"} <br />
             <b>Address:</b> {item.address || "Not Provided"} <br />
-            <b>Joined Date:</b> {item.created_at || "Not Provided"} <br />
-            {item.role === "mechanic" && (
-              <>
-                {" "}
-                <b>Mechanic Verification Status:</b>{" "}
-                {item.mechanic_verification || "Not Provided"} <br />
-              </>
+            <b>Joined Date:</b>{" "}
+            {new Date(item.created_at).toLocaleDateString(undefined, options) ||
+              "Not Provided"}{" "}
+            <br />
+            <b>Mechanic Verification Status:</b>{" "}
+            {item.role === "mechanic" ? (
+              <>{item.mechanic_verification || "Not Provided"} </>
+            ) : (
+              "N / A"
             )}
+            <br />
             <b>Identity Verification Documents:</b>{" "}
             {item.identity_verification_documents.size != null
               ? item.identity_verification_documents
               : "Not Provided"}
             <br></br>
-            {item.role === "mechanic" && (
+            <b>Skill Verification Documents: </b>
+            {item.role === "mechanic" ? (
               <>
-                <b>Skill Verification Documents:</b>{" "}
                 {item.skill_verification_documents.size != null
                   ? item.skill_verification_documents
-                  : "Not Provided"}{" "}
+                  : "Not Provided"}
               </>
+            ) : (
+              "N / A"
             )}
           </p>
         </div>
@@ -188,7 +202,12 @@ const CardGrid = (props) => {
               <Form.Control
                 type="text"
                 name="created_at"
-                value={item.created_at || "Not Provided"}
+                value={
+                  new Date(item.created_at).toLocaleDateString(
+                    undefined,
+                    options
+                  ) || "Not Provided"
+                }
                 onChange={handleChange}
                 readOnly
               />

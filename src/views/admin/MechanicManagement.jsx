@@ -19,7 +19,7 @@ const MechanicManagement = () => {
   const session = getSession();
 
   const getUsers = useCallback(
-    async (page, verification = "") => {
+    async (page, verification, email, name) => {
       setLoading(true);
       const finalVerification =
         verification === "clear" ? "" : verification || selectedVerification;
@@ -27,9 +27,11 @@ const MechanicManagement = () => {
       let config = {
         method: "get",
         maxBodyLength: Infinity,
-        url: `${process.env.REACT_APP_API_URL}/api/users?role=mechanic&page=${
-          page !== null ? page : ""
-        }&limit=9`,
+        url: `${process.env.REACT_APP_API_URL}/api/users?role=mechanic&offset=${
+          page !== null ? (page - 1) * 9 : ""
+        }&limit=9&name=${name ? name : ""}&email=${
+          email ? email : ""
+        }&mechanic_verification=${finalVerification}`,
         headers: {
           Authorization:
             "Token eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNjZjMDRmODQwNWJhNDQ2NzNlYjE2NGZjIiwibmFtZSI6Imthc3VuIiwicm9sZSI6ImFkbWluIiwicGhvbmUiOiIwNzE3NjU2NjU3IiwiZW1haWwiOiJrbWthc3VubWFkdXNhbmthQGdtYWlsLmNvbSIsImV4cCI6MTc1NTQxODcyMCwiaWF0IjoxNzIzODgyNzIwfQ.3TOQUl1htrC9rxaYIDNPKgzASp3wJLgNcJ5nwLvGACw", //`Token ${session ? session.token : ""}`,
@@ -88,7 +90,7 @@ const MechanicManagement = () => {
               getUsers={getUsers}
               selectedVerification={selectedVerification}
             />
-            <UserSearch />
+            <UserSearch getUsers={getUsers} />
           </div>
           <div className="col-md-9">
             <div className="row">
@@ -156,6 +158,7 @@ const MechanicManagement = () => {
                             role={session ? session.role : ""}
                             getUsers={getUsers}
                             currentPage={currentPage}
+                            mechanic={true}
                           />
                         </div>
                       ))}
@@ -167,6 +170,7 @@ const MechanicManagement = () => {
                             role={session ? session.role : ""}
                             getUsers={getUsers}
                             currentPage={currentPage}
+                            mechanic={true}
                           />
                         </div>
                       ))}

@@ -1,45 +1,59 @@
-import React from "react";
-import { ReactComponent as IconTruckFill } from "bootstrap-icons/icons/truck.svg";
-import { ReactComponent as IconLifePreserverFill } from "bootstrap-icons/icons/life-preserver.svg";
-import { ReactComponent as IconArrowCounterclockwiseFill } from "bootstrap-icons/icons/arrow-counterclockwise.svg";
+import React, { useState } from "react";
 
 const UserSearch = (props) => {
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+
+  // Handler for name search
+  const handleNameSearch = () => {
+    // Implement search logic here
+    props.getUsers(1, "clear", "", name);
+  };
+
+  // Handler for email search
+  const handleEmailSearch = () => {
+    // Implement search logic here
+    props.getUsers(1, "clear", email, "");
+  };
+
   return (
     <div className="card mb-3">
       <div className="card-header fw-bold text-uppercase">Custom Search</div>
       <div className="card-body">
-        <div className="row border-bottom">
-          <div className="col-2">
-            <IconTruckFill width={40} height={40} />
-          </div>
-          <div className="col">
-            <div className="ms-3">
-              <span className="fw-bold">Assured vehicles</span>
-              <p className="text-muted small">Mechanically verified vehicles</p>
-            </div>
-          </div>
-        </div>
-        <div className="row border-bottom py-3">
-          <div className="col-2">
-            <IconLifePreserverFill width={40} height={40} />
-          </div>
-          <div className="col">
-            <div className="ms-3">
-              <span className="fw-bold">Support 24/7</span>
-              <p className="text-muted small m-0">Online 24 hours</p>
-            </div>
-          </div>
-        </div>
+        {/* Name Search Section */}
         <div className="row pt-3">
-          <div className="col-2">
-            <IconArrowCounterclockwiseFill width={40} height={40} />
+          <div className="col-12">
+            <label className="fw-bold">Search by Name</label>
+            <div className="input-group">
+              <input
+                type="text"
+                className="form-control"
+                placeholder="Enter name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+              />
+              <button className="btn btn-primary" onClick={handleNameSearch}>
+                Search Name
+              </button>
+            </div>
           </div>
-          <div className="col">
-            <div className="ms-3">
-              <span className="fw-bold">On-going Maintenance</span>
-              <p className="text-muted small m-0">
-                No need to worry about vehicle maintenance
-              </p>
+        </div>
+
+        {/* Email Search Section */}
+        <div className="row pt-3">
+          <div className="col-12">
+            <label className="fw-bold">Search by Email</label>
+            <div className="input-group">
+              <input
+                type="email"
+                className="form-control"
+                placeholder="Enter email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+              <button className="btn btn-primary" onClick={handleEmailSearch}>
+                Search Email
+              </button>
             </div>
           </div>
         </div>
