@@ -134,13 +134,14 @@ const CardGrid = (props) => {
             <i className="bi bi-code-square" />
           </button>
 
-          <button
-            type="button"
+          <a
+            href={`mailto:${item.email}`}
             className="btn btn-sm btn-info mx-1"
             title="Email"
           >
             <i className="bi bi-chat-left-text" />
-          </button>
+          </a>
+
           <button
             type="button"
             className="btn btn-sm btn-danger mx-1"
