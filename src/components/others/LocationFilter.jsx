@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './LocationFilter.css';
-import {warningDialog} from "../../helpers/alerts.js";
+import { warningDialog } from "../../helpers/alerts.js";
 
 const SuburbAutocomplete = ({ suburbs, getProducts, selectedSuburb }) => {
     const [inputValue, setInputValue] = useState('');
@@ -38,11 +38,15 @@ const SuburbAutocomplete = ({ suburbs, getProducts, selectedSuburb }) => {
     const handleKeyDown = (e) => {
         if (e.key === 'Enter') {
             if (inputValue === '') {
-                getProducts(1, '', '', '', 'clear');
+                clearFilter();
             } else if (!filteredSuburbs.some(suburb => `${suburb.suburb} - ${suburb.postcode}` === inputValue)) {
                 warningDialog('Please select a suburb from the dropdown.');
             }
         }
+    };
+
+    const clearFilter = () => {
+        getProducts(1, '', '', '', 'clear');
     };
 
     return (
@@ -55,16 +59,21 @@ const SuburbAutocomplete = ({ suburbs, getProducts, selectedSuburb }) => {
                 placeholder="Suburb or postal code"
                 className="form-control"
             />
-            {filteredSuburbs.length > 0 && (
-                <ul className="suggestions">
-                    {filteredSuburbs.map((suburb, index) => (
-                        <li key={index} onClick={() => handleSuggestionClick(suburb)}>
-                            {suburb.suburb} - {suburb.postcode}
-                        </li>
-                    ))}
-                </ul>
-            )}
-        </div>
+            <button onClick={clearFilter} className="clear-filter-btn">
+                Clear Filter
+            </button>
+            {
+                filteredSuburbs.length > 0 && (
+                    <ul className="suggestions">
+                        {filteredSuburbs.map((suburb, index) => (
+                            <li key={index} onClick={() => handleSuggestionClick(suburb)}>
+                                {suburb.suburb} - {suburb.postcode}
+                            </li>
+                        ))}
+                    </ul>
+                )
+            }
+        </div >
     );
 };
 
