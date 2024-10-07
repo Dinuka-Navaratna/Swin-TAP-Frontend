@@ -491,7 +491,7 @@ const ProductDetailView = () => {
                         data-image-id={file._id}
                       />
                     ))}
-                    {isEditMode || defaultImagesNeeded === 4 &&
+                    {(isEditMode || defaultImagesNeeded === 4) &&
                       Array.from({ length: defaultImagesNeeded }).map((_, index) => (
                         <img
                           key={`default-${index}`}
@@ -523,7 +523,7 @@ const ProductDetailView = () => {
                 {!isEditMode && (
                   <>
                     <span className="badge bg-success me-2">New</span>
-                    <span className="badge bg-danger me-2">Hot</span>
+                    {/* <span className="badge bg-danger me-2">Hot</span> */}
                   </>
                 )}
                 <div className="">
@@ -595,110 +595,114 @@ const ProductDetailView = () => {
                 </div>
               </div>
             </div>
-            <div className="row">
-              <div className="col-md-12">
-                <nav>
-                  <div className="nav nav-tabs" id="nav-tab" role="tablist">
-                    <a
-                      className="nav-link active"
-                      id="nav-details-tab"
-                      data-bs-toggle="tab"
-                      href="#nav-details"
-                      role="tab"
-                      aria-controls="nav-details"
-                      aria-selected="true"
-                    >
-                      Vehicle Details
-                    </a>
-                    <a
-                      className="nav-link"
-                      id="nav-ship-returns-tab"
-                      data-bs-toggle="tab"
-                      href="#nav-ship-returns"
-                      role="tab"
-                      aria-controls="nav-ship-returns"
-                      aria-selected="false"
-                    >
-                      {isEditMode ? (vehicleData && (vehicleData.inspection_status === 'completed' || vehicleData.inspection_status === 'accepted') ? "Our Assurance" : "Book Inspection") : ("Our Assurance")}
-                    </a>
-                    {!isEditMode ? <>
-                      <a
-                        className="nav-link"
-                        id="nav-faq-tab"
-                        data-bs-toggle="tab"
-                        href="#nav-faq"
-                        role="tab"
-                        aria-controls="nav-faq"
-                        aria-selected="false"
+            {!isLoading &&
+              <>
+                <div className="row">
+                  <div className="col-md-12">
+                    <nav>
+                      <div className="nav nav-tabs" id="nav-tab" role="tablist">
+                        <a
+                          className="nav-link active"
+                          id="nav-details-tab"
+                          data-bs-toggle="tab"
+                          href="#nav-details"
+                          role="tab"
+                          aria-controls="nav-details"
+                          aria-selected="true"
+                        >
+                          Vehicle Details
+                        </a>
+                        <a
+                          className="nav-link"
+                          id="nav-ship-returns-tab"
+                          data-bs-toggle="tab"
+                          href="#nav-ship-returns"
+                          role="tab"
+                          aria-controls="nav-ship-returns"
+                          aria-selected="false"
+                        >
+                          {isEditMode ? (vehicleData && (vehicleData.inspection_status === 'completed' || vehicleData.inspection_status === 'accepted') ? "Our Assurance" : "Book Inspection") : ("Our Assurance")}
+                        </a>
+                        {!isEditMode ? <>
+                          <a
+                            className="nav-link"
+                            id="nav-faq-tab"
+                            data-bs-toggle="tab"
+                            href="#nav-faq"
+                            role="tab"
+                            aria-controls="nav-faq"
+                            aria-selected="false"
+                          >
+                            Questions and Answers
+                          </a>
+                        </> : <>
+                          <a
+                            className="nav-link"
+                            id="nav-randr-tab"
+                            data-bs-toggle="tab"
+                            href="#nav-randr"
+                            role="tab"
+                            aria-controls="nav-randr"
+                            aria-selected="false"
+                          >
+                            T & C
+                          </a>
+                        </>}
+                      </div>
+                    </nav>
+                    <div className="tab-content p-3 small" id="nav-tabContent">
+                      <div
+                        className="tab-pane fade show active"
+                        id="nav-details"
+                        role="tabpanel"
+                        aria-labelledby="nav-details-tab"
                       >
-                        Questions and Answers
-                      </a>
-                    </> : <>
-                      <a
-                        className="nav-link"
-                        id="nav-randr-tab"
-                        data-bs-toggle="tab"
-                        href="#nav-randr"
-                        role="tab"
-                        aria-controls="nav-randr"
-                        aria-selected="false"
+                        <Details isEditMode={isEditMode ? (vehicleData && (vehicleData.inspection_status === 'completed' || vehicleData.inspection_status === 'accepted') ? false : isEditMode) : (isEditMode)} vehicleData={vehicleData} ref={detailsRef} />
+                      </div>
+                      {isEditMode ? <>
+                        <div
+                          className="tab-pane fade"
+                          id="nav-randr"
+                          role="tabpanel"
+                          aria-labelledby="nav-randr-tab"
+                        >
+                          <TermsConditions />
+                        </div>
+                      </> : <>
+                        <div
+                          className="tab-pane fade"
+                          id="nav-faq"
+                          role="tabpanel"
+                          aria-labelledby="nav-faq-tab"
+                        >
+                          <dl>
+                            {Array.from({ length: 5 }, (_, key) => (
+                              <QuestionAnswer key={key} />
+                            ))}
+                          </dl>
+                        </div>
+                      </>}
+                      <div
+                        className="tab-pane fade"
+                        id="nav-ship-returns"
+                        role="tabpanel"
+                        aria-labelledby="nav-ship-returns-tab"
                       >
-                        T & C
-                      </a>
-                    </>}
-                  </div>
-                </nav>
-                <div className="tab-content p-3 small" id="nav-tabContent">
-                  <div
-                    className="tab-pane fade show active"
-                    id="nav-details"
-                    role="tabpanel"
-                    aria-labelledby="nav-details-tab"
-                  >
-                    <Details isEditMode={isEditMode ? (vehicleData && (vehicleData.inspection_status === 'completed' || vehicleData.inspection_status === 'accepted') ? false : isEditMode) : (isEditMode)} vehicleData={vehicleData} ref={detailsRef} />
-                  </div>
-                  {isEditMode ? <>
-                    <div
-                      className="tab-pane fade"
-                      id="nav-randr"
-                      role="tabpanel"
-                      aria-labelledby="nav-randr-tab"
-                    >
-                      <TermsConditions />
+                        <OurAssurance isEditMode={isEditMode ? (vehicleData && (vehicleData.inspection_status === 'completed' || vehicleData.inspection_status === 'accepted') ? false : isEditMode) : (isEditMode)} vehicleData={vehicleData} ref={inspectionRef} userRole={sessionData ? sessionData.role : ''} />
+                      </div>
+                      <div
+                        className="tab-pane fade"
+                        id="nav-size-chart"
+                        role="tabpanel"
+                        aria-labelledby="nav-size-chart-tab"
+                      >
+                        <SizeChart />
+                      </div>
                     </div>
-                  </> : <>
-                    <div
-                      className="tab-pane fade"
-                      id="nav-faq"
-                      role="tabpanel"
-                      aria-labelledby="nav-faq-tab"
-                    >
-                      <dl>
-                        {Array.from({ length: 5 }, (_, key) => (
-                          <QuestionAnswer key={key} />
-                        ))}
-                      </dl>
-                    </div>
-                  </>}
-                  <div
-                    className="tab-pane fade"
-                    id="nav-ship-returns"
-                    role="tabpanel"
-                    aria-labelledby="nav-ship-returns-tab"
-                  >
-                    <OurAssurance isEditMode={isEditMode ? (vehicleData && (vehicleData.inspection_status === 'completed' || vehicleData.inspection_status === 'accepted') ? false : isEditMode) : (isEditMode)} vehicleData={vehicleData} ref={inspectionRef} userRole={sessionData ? sessionData.role : ''} />
-                  </div>
-                  <div
-                    className="tab-pane fade"
-                    id="nav-size-chart"
-                    role="tabpanel"
-                    aria-labelledby="nav-size-chart-tab"
-                  >
-                    <SizeChart />
                   </div>
                 </div>
-              </div>
-            </div>
+              </>
+            }
           </div>
           <div className="col-md-4">
             <CardFeaturedProduct data={data.products} />
@@ -713,7 +717,7 @@ const ProductDetailView = () => {
         </div>
       </>
       }
-    </div>
+    </div >
   );
 };
 
