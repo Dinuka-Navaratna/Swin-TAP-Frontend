@@ -9,7 +9,7 @@ import { setSession } from "../../actions/session";
 import { required, email, maxLength20, minLength8 } from "../../helpers/validation";
 import { ReactComponent as IconEmail } from "bootstrap-icons/icons/envelope.svg";
 import { ReactComponent as IconShieldLock } from "bootstrap-icons/icons/shield-lock.svg";
-import {alertDialog, confirmDialog, promptDialog, successDialog, errorDialog, warningDialog, infoDialog, questionDialog} from "../../helpers/alerts.js";
+import {alertDialog, errorDialog, warningDialog } from "../../helpers/alerts.js";
 
 const SignInForm = (props) => {
   const { handleSubmit, submitting, submitFailed } = props;
@@ -30,6 +30,7 @@ const SignInForm = (props) => {
     try {
       const response = await axios.request(config);
       console.log('Response:', response.data);
+    
       if (response.data.status) {
         const decoded = jwtDecode(response.data.data);
         const sessionData = {
@@ -37,7 +38,8 @@ const SignInForm = (props) => {
           token: response.data.data
         };
         setSession(sessionData);
-        successDialog("Login successful!");
+    
+        // Directly redirect to profile page without showing an alert
         window.location.href = "/account/profile";
       } else {
         warningDialog("Login failed. Please check your credentials.");

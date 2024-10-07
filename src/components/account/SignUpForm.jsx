@@ -8,7 +8,7 @@ import renderFormField from "../../helpers/renderFormField";
 import { required, maxLength20, minLength8, email, name } from "../../helpers/validation";
 import { ReactComponent as IconEmail } from "bootstrap-icons/icons/envelope.svg";
 import { ReactComponent as IconShieldLock } from "bootstrap-icons/icons/shield-lock.svg";
-import {alertDialog, confirmDialog, promptDialog, successDialog, errorDialog, warningDialog, infoDialog, questionDialog} from "../../helpers/alerts.js";
+import { successDialog, errorDialog, warningDialog } from "../../helpers/alerts.js";
 
 const SignUpForm = (props) => {
   const { handleSubmit, submitting, submitFailed } = props;
@@ -36,11 +36,15 @@ const SignUpForm = (props) => {
       if (response.data.status) {
         console.log(response.data.data);
         // setSession(response.data.data);
-        successDialog("Sign up successful!\nPlease sign in to continue.");
-        window.location.href = "/account/signin";
+        
+        // Ensure the user clicks OK before redirecting
+        successDialog("Sign up successful!\nPlease sign in to continue.").then(() => {
+          window.location.href = "/account/signin";
+        });
+        
       } else {
         warningDialog("Sign up failed. Please check your details.");
-        console.log("User registration failed: "+response.data.msg);
+        console.log("User registration failed: " + response.data.msg);
       }
     } catch (error) {
       console.error("Error during sign up:", error);

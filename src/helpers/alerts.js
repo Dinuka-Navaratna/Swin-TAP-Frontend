@@ -36,13 +36,17 @@ export const promptDialog = () => {
 
 // Success Dialog
 export const successDialog = (message) => {
-  Swal.fire({
+  return Swal.fire({
     title: 'Success',
     text: message,
     icon: 'success',
-    confirmButtonText: 'OK'
+    confirmButtonText: 'OK',
+    allowOutsideClick: false,  // Prevent closing by clicking outside
+    allowEscapeKey: false,     // Prevent closing by pressing the escape key
+    returnFocus: false         // Prevent dialog from closing due to focus loss
   });
 };
+
 
 // Error Dialog
 export const errorDialog = (message) => {
