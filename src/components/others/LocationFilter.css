@@ -3,6 +3,10 @@
     width: 100%;
 }
 
+.autocomplete input {
+    width: 200px;
+}
+
 .suggestions {
     position: absolute;
     top: 100%;
