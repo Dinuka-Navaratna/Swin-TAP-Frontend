@@ -16,18 +16,21 @@ const Header = () => {
   const handleLogout = () => {
     confirmDialog("Are you sure you want to log out?")
       .then((result) => {
-        if (result.isConfirmed) { // If user clicks "OK"
-          clearSession();
+        if (result.isConfirmed) {
+          clearSession();  // Make sure this function properly clears session
           setSession(null);
-          window.location.reload();
+          
+          // Redirect to login or home page after logout
+          window.location.href = "/account/signin";  // Redirect to sign-in page after logout
         } else {
-          warningDialog("That's what I thought, you dummy!\nThink twice before clicking!");
+          warningDialog("Logout canceled. Feel free to stay as long as you need.");
         }
       })
       .catch((error) => {
         console.error("Error displaying the confirmation dialog:", error);
       });
   };
+  
 
   return (
     <header className="p-3 border-bottom bg-light">
