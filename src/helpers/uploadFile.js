@@ -2,7 +2,7 @@
 import axios from "axios";
 const FormData = require('form-data');
 
-const uploadFile = (file, token) => {
+const uploadFile = async (file, token) => {
   let data = new FormData();
   data.append('file', file);
   data.append('dimensions', '[{"width":300,"height":300},{"width":180,"height":270}]');
@@ -17,15 +17,13 @@ const uploadFile = (file, token) => {
     data : data
   };
 
-  return axios.request(config)
-    .then((response) => {
-      // console.log(JSON.stringify(response.data));
-      return response.data;
-    })
-    .catch((error) => {
-      console.error(error);
-      throw error;
-    });
+  try {
+    const response = await axios.request(config);
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
 };
 
 export default uploadFile;
