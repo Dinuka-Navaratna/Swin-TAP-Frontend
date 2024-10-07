@@ -52,8 +52,8 @@ const SuburbAutocomplete = ({ suburbs, getProducts, selectedSuburb }) => {
                 value={inputValue}
                 onChange={handleInputChange}
                 onKeyDown={handleKeyDown}
-                placeholder="Enter a suburb or postal code"
-                className="form-control mw-180"
+                placeholder="Suburb or postal code"
+                className="form-control"
             />
             {filteredSuburbs.length > 0 && (
                 <ul className="suggestions">
