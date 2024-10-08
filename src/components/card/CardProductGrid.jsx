@@ -13,10 +13,11 @@ const isNewHot = (dateString, daysGap) => {
 const CardProductGrid = (props) => {
   const ads = props.data;
   const role = props.role;
+  const files = (ads.files).length;
   return (
     <Link to={"/listing/" + ads._id} className="text-decoration-none">
       <div className="card">
-        <img src={"../../images/products/vehicle.jpg"} className="card-img-top" alt="..." />
+        <img style={{ maxHeight: "250px" }} src={files !== 0 ? `${process.env.REACT_APP_API_URL}/uploads/300x300/${ads.files[0].new_filename}` : "../../images/products/vehicle.jpg"} className="card-img-top" alt="..." />
         {isNewHot(ads.created_at, 5) && (
           <span className="badge bg-success position-absolute mt-2 ms-2">
             New

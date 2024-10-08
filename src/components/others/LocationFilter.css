@@ -1,6 +1,22 @@
 .autocomplete {
     position: relative;
     width: 100%;
+    display: flex;
+    align-items: center;
+}
+
+.autocomplete input {
+    width: 200px;
+    margin-right: 10px;
+}
+
+.clear-filter-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    text-decoration: underline;
+    font-size: small;
 }
 
 .suggestions {
