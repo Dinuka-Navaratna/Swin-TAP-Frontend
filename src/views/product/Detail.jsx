@@ -34,7 +34,6 @@ const ProductDetailView = () => {
   const detailsPostalCode = useRef(null);
   const [useAxiosDescription, setUseAxiosDescription] = useState(false);
   const [imageUploading, setImageUploading] = useState(false);
-  const [selectedImage, setSelectedImage] = useState(null);
   const [uploadedImageIds, setUploadedImageIds] = useState([]);
 
   useEffect(() => {
@@ -439,7 +438,6 @@ const ProductDetailView = () => {
             <div className="row mb-3">
               <div className="col-md-5 text-center" style={{ position: "relative" }}>
                 {imageUploading && <div className="spinner-overlay" role="status"><span className="sr-only spinner-border"></span></div>}
-                {/* {selectedImage && <img src={selectedImage} className="img-fluid mb-3" alt="Selected" />} */}
                 {isNew ? (
                   <>
                     <img
