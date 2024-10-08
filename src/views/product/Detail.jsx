@@ -4,7 +4,8 @@ import { data } from "../../data";
 import { getSession } from "../../actions/session";
 import { toTitleCase } from '../../helpers/letterCaseChange';
 import axios from "axios";
-import { successDialog, errorDialog, warningDialog, infoDialog, confirmDialog } from "../../helpers/alerts.js"; // Import dialogs
+import { successDialog, errorDialog, warningDialog, infoDialog, confirmDialog } from "../../helpers/alerts.js";
+import uploadFile from '../../helpers/uploadFile.js';
 import './style.css';
 
 const CardFeaturedProduct = lazy(() => import("../../components/card/CardFeaturedProduct"));
@@ -32,6 +33,9 @@ const ProductDetailView = () => {
   const detailsState = useRef(null);
   const detailsPostalCode = useRef(null);
   const [useAxiosDescription, setUseAxiosDescription] = useState(false);
+  const [imageUploading, setImageUploading] = useState(false);
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [uploadedImageIds, setUploadedImageIds] = useState([]);
 
   useEffect(() => {
     const session = getSession();
@@ -58,6 +62,10 @@ const ProductDetailView = () => {
               });
             } else {
               setVehicleData(response.data.data);
+              if (response.data.data.files) {
+                const initialImageIds = response.data.data.files.map(file => file._id);
+                setUploadedImageIds(initialImageIds);
+              }
               setIsLoading(false);
             }
           })
@@ -173,6 +181,9 @@ const ProductDetailView = () => {
           console.log("No differences found.");
         }
       }
+      let dataObject = JSON.parse(data);
+      dataObject["files"] = uploadedImageIds;
+      data = JSON.stringify(dataObject);
 
       let config = {
         method: isNew ? 'POST' : 'PUT',
@@ -187,6 +198,7 @@ const ProductDetailView = () => {
 
       axios.request(config)
         .then((response) => {
+          console.log(data);
           if (response.data.status) {
             if (id === "new") {
               successDialog("Ad posted successfully.");
@@ -370,6 +382,70 @@ const ProductDetailView = () => {
     }
   };
 
+  const handleImageClick = (event) => {
+    if (imageUploading) return;
+
+    if (!isEditMode) {
+      // Swap images logic
+      const firstImage = document.querySelector('.img-fluid.mb-3');
+      const clickedImage = event.target;
+
+      if (firstImage && clickedImage && firstImage !== clickedImage) {
+        const tempSrc = firstImage.src;
+        firstImage.src = clickedImage.src;
+        clickedImage.src = tempSrc;
+      }
+    } else {
+      // Image upload logic
+      const input = document.createElement('input');
+      input.type = 'file';
+      input.accept = 'image/*';
+      input.onchange = async (inputEvent) => {
+        const file = inputEvent.target.files[0];
+        if (file && file.type.startsWith('image/')) {
+          setImageUploading(true);
+          try {
+            const response = await uploadFile(file, `${sessionData.token}`);
+            if (response.status) {
+              const newImageId = response.data._id;
+
+              const imageUrl = URL.createObjectURL(file);
+              event.target.src = imageUrl; // Replace the clicked image
+
+              // Update the data-image-id attribute of the clicked image before updating the state
+              const oldImageId = event.target.dataset.imageId;
+              event.target.dataset.imageId = newImageId;
+
+              // Update the state with the new image ID
+              setUploadedImageIds((prevIds) => {
+                // Remove the old image ID if it exists
+                const updatedIds = prevIds.filter(id => id !== oldImageId);
+                // Add the new image ID
+                const newIds = [...updatedIds, newImageId];
+                console.log('Updated IDs:', newIds); // Log the updated IDs
+                return newIds;
+              });
+
+              alert('Image uploaded successfully');
+            } else {
+              console.log(response);
+              alert('Image upload error!');
+            }
+          } catch (err) {
+            alert('Failed to upload image' + err);
+          } finally {
+            setImageUploading(false);
+          }
+        } else {
+          alert('Please select a valid image file');
+        }
+      };
+      input.click();
+    }
+  };
+
+  const fileCount = vehicleData?.files?.length || 0;
+  const defaultImagesNeeded = 4 - fileCount;
 
   return (
     <div className="container-fluid mt-3">
@@ -377,30 +453,75 @@ const ProductDetailView = () => {
         <div className="row">
           <div className="col-md-8">
             <div className="row mb-3">
-              <div className="col-md-5 text-center">
-                <img
-                  src="../../images/products/vehicle.jpg"
-                  className="img-fluid mb-3"
-                  alt=""
-                />
-                <img
-                  src="../../images/products/vehicle.jpg"
-                  className="border border-secondary me-2"
-                  width="75"
-                  alt="..."
-                />
-                <img
-                  src="../../images/products/vehicle.jpg"
-                  className="border border-secondary me-2"
-                  width="75"
-                  alt="..."
-                />
-                <img
-                  src="../../images/products/vehicle.jpg"
-                  className="border border-secondary me-2"
-                  width="75"
-                  alt="..."
-                />
+              <div className="col-md-5 text-center" style={{ position: "relative" }}>
+                {imageUploading && <div className="spinner-overlay" role="status"><span className="sr-only spinner-border"></span></div>}
+                {/* {selectedImage && <img src={selectedImage} className="img-fluid mb-3" alt="Selected" />} */}
+                {isNew ? (
+                  <>
+                    <img
+                      src="../../images/products/vehicle.jpg"
+                      className="img-fluid mb-3"
+                      alt=""
+                      onClick={handleImageClick}
+                      data-image-id=""
+                    />
+                    <img
+                      src="../../images/products/vehicle.jpg"
+                      className="border border-secondary me-2"
+                      width="75"
+                      height="50"
+                      alt="..."
+                      onClick={handleImageClick}
+                      data-image-id=""
+                    />
+                    <img
+                      src="../../images/products/vehicle.jpg"
+                      className="border border-secondary me-2"
+                      width="75"
+                      height="50"
+                      alt="..."
+                      onClick={handleImageClick}
+                      data-image-id=""
+                    />
+                    <img
+                      src="../../images/products/vehicle.jpg"
+                      className="border border-secondary me-2"
+                      width="75"
+                      height="50"
+                      alt="..."
+                      onClick={handleImageClick}
+                      data-image-id=""
+                    />
+                  </>
+                ) : (
+                  <>
+                    {vehicleData.files.map((file, index) => (
+                      <img
+                        key={file._id}
+                        src={`${process.env.REACT_APP_API_URL}/uploads/300x300/${file.new_filename}`}
+                        className={`border border-secondary me-2 ${index === 0 ? 'img-fluid mb-3' : ''}`}
+                        width={index === 0 ? undefined : "75"}
+                        height={index === 0 ? undefined : "50"}
+                        alt=""
+                        onClick={handleImageClick}
+                        data-image-id={file._id}
+                      />
+                    ))}
+                    {(isEditMode || defaultImagesNeeded === 4) &&
+                      Array.from({ length: defaultImagesNeeded }).map((_, index) => (
+                        <img
+                          key={`default-${index}`}
+                          src="../../images/products/vehicle.jpg"
+                          className={defaultImagesNeeded === 4 && index == 0 ? "img-fluid mb-3" : "border border-secondary me-2"}
+                          width={!(defaultImagesNeeded === 4 && index == 0) && "75"}
+                          height={!(defaultImagesNeeded === 4 && index == 0) && "50"}
+                          alt="..."
+                          onClick={handleImageClick}
+                          data-image-id=""
+                        />
+                      ))}
+                  </>
+                )}
               </div>
               <div className="col-md-7">
                 {sessionData && (isNew || sessionData.user_id === vehicleData.seller_id._id) && <>
@@ -418,7 +539,7 @@ const ProductDetailView = () => {
                 {!isEditMode && (
                   <>
                     <span className="badge bg-success me-2">New</span>
-                    <span className="badge bg-danger me-2">Hot</span>
+                    {/* <span className="badge bg-danger me-2">Hot</span> */}
                   </>
                 )}
                 <div className="">
@@ -490,110 +611,114 @@ const ProductDetailView = () => {
                 </div>
               </div>
             </div>
-            <div className="row">
-              <div className="col-md-12">
-                <nav>
-                  <div className="nav nav-tabs" id="nav-tab" role="tablist">
-                    <a
-                      className="nav-link active"
-                      id="nav-details-tab"
-                      data-bs-toggle="tab"
-                      href="#nav-details"
-                      role="tab"
-                      aria-controls="nav-details"
-                      aria-selected="true"
-                    >
-                      Vehicle Details
-                    </a>
-                    <a
-                      className="nav-link"
-                      id="nav-ship-returns-tab"
-                      data-bs-toggle="tab"
-                      href="#nav-ship-returns"
-                      role="tab"
-                      aria-controls="nav-ship-returns"
-                      aria-selected="false"
-                    >
-                      {isEditMode ? (vehicleData && (vehicleData.inspection_status === 'completed' || vehicleData.inspection_status === 'accepted') ? "Our Assurance" : "Book Inspection") : ("Our Assurance")}
-                    </a>
-                    {!isEditMode ? <>
-                      <a
-                        className="nav-link"
-                        id="nav-faq-tab"
-                        data-bs-toggle="tab"
-                        href="#nav-faq"
-                        role="tab"
-                        aria-controls="nav-faq"
-                        aria-selected="false"
+            {!isLoading &&
+              <>
+                <div className="row">
+                  <div className="col-md-12">
+                    <nav>
+                      <div className="nav nav-tabs" id="nav-tab" role="tablist">
+                        <a
+                          className="nav-link active"
+                          id="nav-details-tab"
+                          data-bs-toggle="tab"
+                          href="#nav-details"
+                          role="tab"
+                          aria-controls="nav-details"
+                          aria-selected="true"
+                        >
+                          Vehicle Details
+                        </a>
+                        <a
+                          className="nav-link"
+                          id="nav-ship-returns-tab"
+                          data-bs-toggle="tab"
+                          href="#nav-ship-returns"
+                          role="tab"
+                          aria-controls="nav-ship-returns"
+                          aria-selected="false"
+                        >
+                          {isEditMode ? (vehicleData && (vehicleData.inspection_status === 'completed' || vehicleData.inspection_status === 'accepted') ? "Our Assurance" : "Book Inspection") : ("Our Assurance")}
+                        </a>
+                        {!isEditMode ? <>
+                          <a
+                            className="nav-link"
+                            id="nav-faq-tab"
+                            data-bs-toggle="tab"
+                            href="#nav-faq"
+                            role="tab"
+                            aria-controls="nav-faq"
+                            aria-selected="false"
+                          >
+                            Questions and Answers
+                          </a>
+                        </> : <>
+                          <a
+                            className="nav-link"
+                            id="nav-randr-tab"
+                            data-bs-toggle="tab"
+                            href="#nav-randr"
+                            role="tab"
+                            aria-controls="nav-randr"
+                            aria-selected="false"
+                          >
+                            T & C
+                          </a>
+                        </>}
+                      </div>
+                    </nav>
+                    <div className="tab-content p-3 small" id="nav-tabContent">
+                      <div
+                        className="tab-pane fade show active"
+                        id="nav-details"
+                        role="tabpanel"
+                        aria-labelledby="nav-details-tab"
                       >
-                        Questions and Answers
-                      </a>
-                    </> : <>
-                      <a
-                        className="nav-link"
-                        id="nav-randr-tab"
-                        data-bs-toggle="tab"
-                        href="#nav-randr"
-                        role="tab"
-                        aria-controls="nav-randr"
-                        aria-selected="false"
+                        <Details isEditMode={isEditMode ? (vehicleData && (vehicleData.inspection_status === 'completed' || vehicleData.inspection_status === 'accepted') ? false : isEditMode) : (isEditMode)} vehicleData={vehicleData} ref={detailsRef} />
+                      </div>
+                      {isEditMode ? <>
+                        <div
+                          className="tab-pane fade"
+                          id="nav-randr"
+                          role="tabpanel"
+                          aria-labelledby="nav-randr-tab"
+                        >
+                          <TermsConditions />
+                        </div>
+                      </> : <>
+                        <div
+                          className="tab-pane fade"
+                          id="nav-faq"
+                          role="tabpanel"
+                          aria-labelledby="nav-faq-tab"
+                        >
+                          <dl>
+                            {Array.from({ length: 5 }, (_, key) => (
+                              <QuestionAnswer key={key} />
+                            ))}
+                          </dl>
+                        </div>
+                      </>}
+                      <div
+                        className="tab-pane fade"
+                        id="nav-ship-returns"
+                        role="tabpanel"
+                        aria-labelledby="nav-ship-returns-tab"
                       >
-                        T & C
-                      </a>
-                    </>}
-                  </div>
-                </nav>
-                <div className="tab-content p-3 small" id="nav-tabContent">
-                  <div
-                    className="tab-pane fade show active"
-                    id="nav-details"
-                    role="tabpanel"
-                    aria-labelledby="nav-details-tab"
-                  >
-                    <Details isEditMode={isEditMode ? (vehicleData && (vehicleData.inspection_status === 'completed' || vehicleData.inspection_status === 'accepted') ? false : isEditMode) : (isEditMode)} vehicleData={vehicleData} ref={detailsRef} />
-                  </div>
-                  {isEditMode ? <>
-                    <div
-                      className="tab-pane fade"
-                      id="nav-randr"
-                      role="tabpanel"
-                      aria-labelledby="nav-randr-tab"
-                    >
-                      <TermsConditions />
+                        <OurAssurance isEditMode={isEditMode ? (vehicleData && (vehicleData.inspection_status === 'completed' || vehicleData.inspection_status === 'accepted') ? false : isEditMode) : (isEditMode)} vehicleData={vehicleData} ref={inspectionRef} userRole={sessionData ? sessionData.role : ''} />
+                      </div>
+                      <div
+                        className="tab-pane fade"
+                        id="nav-size-chart"
+                        role="tabpanel"
+                        aria-labelledby="nav-size-chart-tab"
+                      >
+                        <SizeChart />
+                      </div>
                     </div>
-                  </> : <>
-                    <div
-                      className="tab-pane fade"
-                      id="nav-faq"
-                      role="tabpanel"
-                      aria-labelledby="nav-faq-tab"
-                    >
-                      <dl>
-                        {Array.from({ length: 5 }, (_, key) => (
-                          <QuestionAnswer key={key} />
-                        ))}
-                      </dl>
-                    </div>
-                  </>}
-                  <div
-                    className="tab-pane fade"
-                    id="nav-ship-returns"
-                    role="tabpanel"
-                    aria-labelledby="nav-ship-returns-tab"
-                  >
-                    <OurAssurance isEditMode={isEditMode ? (vehicleData && (vehicleData.inspection_status === 'completed' || vehicleData.inspection_status === 'accepted') ? false : isEditMode) : (isEditMode)} vehicleData={vehicleData} ref={inspectionRef} userRole={sessionData ? sessionData.role : ''} />
-                  </div>
-                  <div
-                    className="tab-pane fade"
-                    id="nav-size-chart"
-                    role="tabpanel"
-                    aria-labelledby="nav-size-chart-tab"
-                  >
-                    <SizeChart />
                   </div>
                 </div>
-              </div>
-            </div>
+              </>
+            }
           </div>
           <div className="col-md-4">
             <CardFeaturedProduct data={data.products} />
@@ -608,7 +733,7 @@ const ProductDetailView = () => {
         </div>
       </>
       }
-    </div>
+    </div >
   );
 };
 
