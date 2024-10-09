@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './LocationFilter.css';
+import { warningDialog } from "../../helpers/alerts.js";
 
 const SuburbAutocomplete = ({ suburbs, getProducts, selectedSuburb }) => {
     const [inputValue, setInputValue] = useState('');
@@ -37,11 +38,15 @@ const SuburbAutocomplete = ({ suburbs, getProducts, selectedSuburb }) => {
     const handleKeyDown = (e) => {
         if (e.key === 'Enter') {
             if (inputValue === '') {
-                getProducts(1, '', '', '', 'clear');
+                clearFilter();
             } else if (!filteredSuburbs.some(suburb => `${suburb.suburb} - ${suburb.postcode}` === inputValue)) {
-                alert('Please select a suburb from the dropdown.');
+                warningDialog('Please select a suburb from the dropdown.');
             }
         }
+    };
+
+    const clearFilter = () => {
+        getProducts(1, '', '', '', 'clear');
     };
 
     return (
@@ -51,19 +56,24 @@ const SuburbAutocomplete = ({ suburbs, getProducts, selectedSuburb }) => {
                 value={inputValue}
                 onChange={handleInputChange}
                 onKeyDown={handleKeyDown}
-                placeholder="Enter a suburb or postal code"
-                className="form-control mw-180"
+                placeholder="Suburb or postal code"
+                className="form-control"
             />
-            {filteredSuburbs.length > 0 && (
-                <ul className="suggestions">
-                    {filteredSuburbs.map((suburb, index) => (
-                        <li key={index} onClick={() => handleSuggestionClick(suburb)}>
-                            {suburb.suburb} - {suburb.postcode}
-                        </li>
-                    ))}
-                </ul>
-            )}
-        </div>
+            <button onClick={clearFilter} className="clear-filter-btn">
+                Clear Filter
+            </button>
+            {
+                filteredSuburbs.length > 0 && (
+                    <ul className="suggestions">
+                        {filteredSuburbs.map((suburb, index) => (
+                            <li key={index} onClick={() => handleSuggestionClick(suburb)}>
+                                {suburb.suburb} - {suburb.postcode}
+                            </li>
+                        ))}
+                    </ul>
+                )
+            }
+        </div >
     );
 };
 

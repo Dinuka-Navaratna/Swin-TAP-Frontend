@@ -8,22 +8,31 @@ import renderFormField from "../../helpers/renderFormField";
 import { required, maxLength20, minLength8, email, name } from "../../helpers/validation";
 import { ReactComponent as IconEmail } from "bootstrap-icons/icons/envelope.svg";
 import { ReactComponent as IconShieldLock } from "bootstrap-icons/icons/shield-lock.svg";
+import { successDialog, errorDialog, warningDialog } from "../../helpers/alerts.js";
 
 const SignUpForm = (props) => {
   const { handleSubmit, submitting, submitFailed } = props;
 
   const onSubmit = async (formValues) => {
+
+    const mechanic = formValues.mechanic;
+    var role = "seller";
+    if (mechanic && mechanic === true) {
+      role = "mechanic";
+    }
+
     const data = JSON.stringify({
       name: `${formValues.firstName} ${formValues.lastName}`,
       email: formValues.email,
-      password: formValues.password
+      password: formValues.password,
+      role: role
     });
 
     const config = {
       method: 'post',
       maxBodyLength: Infinity,
       url: `${process.env.REACT_APP_API_URL}/api/users`,
-      headers: { 
+      headers: {
         'Content-Type': 'application/json'
       },
       data: data
@@ -33,17 +42,17 @@ const SignUpForm = (props) => {
       console.log(data);
       const response = await axios.request(config);
       if (response.data.status) {
-        console.log(response.data.data);
-        // setSession(response.data.data);
-        alert("Sign up successful!\nPlease sign in to continue.");
-        window.location.href = "/account/signin";
+        // console.log(response.data.data);
+        successDialog("Sign up successful!\nPlease sign in to continue.").then(() => {
+          window.location.href = "/account/signin";
+        });
       } else {
-        alert("Sign up failed. Please check your details.");
-        console.log("User registration failed: "+response.data.msg);
+        warningDialog("Sign up failed. Please check your details.");
+        console.log("User registration failed: " + response.data.msg);
       }
     } catch (error) {
       console.error("Error during sign up:", error);
-      alert("An error occurred. Please try again later.");
+      errorDialog("An error occurred. Please try again later.");
     }
   };
 
@@ -100,6 +109,13 @@ const SignUpForm = (props) => {
         required={true}
         maxLength="20"
         minLength="8"
+        className="mb-3"
+      />
+      <Field
+        name="mechanic"
+        type="checkbox"
+        label="Register as Mechanic?"
+        component={renderFormGroupField}
         className="mb-3"
       />
       <div className="d-grid">
