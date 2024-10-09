@@ -208,7 +208,6 @@ const ProductDetailView = () => {
                 window.location.href = "/listing/" + response.data.data._id;
               });
             }
-            // window.location.href = "/listing/" + response.data.data._id;
           } else {
             console.log(JSON.stringify(response.data));
             if (typeof response.data.msg === 'string' && response.data.msg.includes('not allowed to be empty')) {
