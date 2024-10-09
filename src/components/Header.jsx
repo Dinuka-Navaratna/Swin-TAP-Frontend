@@ -17,13 +17,9 @@ const Header = () => {
     confirmDialog("Are you sure you want to log out?")
       .then((result) => {
         if (result.isConfirmed) {
-          clearSession();  // Make sure this function properly clears session
+          clearSession();
           setSession(null);
-          
-          // Redirect to login or home page after logout
-          window.location.href = "/account/signin";  // Redirect to sign-in page after logout
-        } else {
-          warningDialog("Logout canceled. Feel free to stay as long as you need.");
+          window.location.reload();
         }
       })
       .catch((error) => {
