@@ -90,7 +90,6 @@ const ProductDetailView = () => {
           infoDialog("Log in to post a new ad").then(() => {
             window.location.href = "/account/signin";
           });
-          // window.location.href = "/account/signin";
         }
       }
     }
@@ -201,11 +200,15 @@ const ProductDetailView = () => {
           console.log(data);
           if (response.data.status) {
             if (id === "new") {
-              successDialog("Ad posted successfully.");
+              successDialog("Ad posted successfully.").then(() => {
+                window.location.href = "/listing/" + response.data.data._id;
+              });
             } else {
-              successDialog("Ad updated successfully.");
+              successDialog("Ad updated successfully.").then(() => {
+                window.location.href = "/listing/" + response.data.data._id;
+              });
             }
-            window.location.href = "/listing/" + response.data.data._id;
+            // window.location.href = "/listing/" + response.data.data._id;
           } else {
             console.log(JSON.stringify(response.data));
             if (typeof response.data.msg === 'string' && response.data.msg.includes('not allowed to be empty')) {
@@ -224,26 +227,26 @@ const ProductDetailView = () => {
   };
 
   const handleCancelClick = () => {
-    infoDialog('Cancelling edit mode...');
-    setIsEditMode(false);
-    if (id === "new") {
-      window.location.href = "/listing";
-    }
+    confirmDialog('Are you sure you want to cancel editing?').then((result) => {
+      if (result.isConfirmed) {
+        setIsEditMode(false);
+        if (id === "new") {
+          window.location.href = "/listing";
+        }
+      }
+    });
   };
 
   const handleDeleteClick = () => {
-    // Replace alert with confirmDialog to confirm deletion
     confirmDialog('Are you sure you want to delete this ad?').then((result) => {
       if (result.isConfirmed) {
-        successDialog('Deleting ad...').then(() => {
-          setIsEditMode(false);
-          // You may want to add actual deletion logic here
-        });
+        setIsEditMode(false);
+        alert("Delete under development");
       }
     });
   };
   const handleAssignInspection = (state) => {
-    infoDialog('Inspection ' + state + 'ing...');
+    alert('Inspection ' + state + 'ing...');
 
     let data = {
       _id: vehicleData.inspection_report._id
@@ -268,20 +271,20 @@ const ProductDetailView = () => {
     };
 
     axios.request(config)
-  .then((response) => {
-    if (response.data.status) {
-      successDialog(`Inspection ${state}ed successfully!`).then(() => {
-        window.location.reload(); // Reload the page after the user clicks "OK"
+      .then((response) => {
+        if (response.data.status) {
+          successDialog(`Inspection ${state}ed successfully!`).then(() => {
+            window.location.reload();
+          });
+        } else {
+          errorDialog("Error! Please try again.");
+        }
+        console.log(JSON.stringify(response.data));
+      })
+      .catch((error) => {
+        errorDialog("Error! Please try again.");
+        console.log(error);
       });
-    } else {
-      errorDialog("Error! Please try again.");
-    }
-    console.log(JSON.stringify(response.data));
-  })
-  .catch((error) => {
-    errorDialog("Error! Please try again.");
-    console.log(error);
-  });
 
   };
 
@@ -345,36 +348,27 @@ const ProductDetailView = () => {
         };
 
         axios.request(config)
-  .then((response) => {
-    if (response.data.status === true || response.data.status === 'success') {
-      if (id === "new") {
-        successDialog("Ad posted successfully.")
-          .then((result) => {
-            if (result.isConfirmed) {  // Wait for user to click OK
-              window.location.href = "/listing/" + response.data.data._id;
-            }
+          .then((response) => {
+            console.log(response.data.description);
+            var backendDescription = response.data.description;
+            const textarea = document.getElementById('descriptionTextarea');
+            setUseAxiosDescription(true);
+            textarea.value = "";
+            let index = 0;
+            const interval = setInterval(() => {
+              if (textarea) {
+                textarea.value += backendDescription[index];
+              }
+              index++;
+              if (index === backendDescription.length) {
+                clearInterval(interval);
+              }
+            }, 20); // Adjust the speed of typing here
+            setUseAxiosDescription(false);
+          })
+          .catch((error) => {
+            console.log(error);
           });
-      } else {
-        successDialog("Ad updated successfully.")
-          .then((result) => {
-            if (result.isConfirmed) {  // Wait for user to click OK
-              window.location.href = "/listing/" + response.data.data._id;
-            }
-          });
-      }
-    } else {
-      if (typeof response.data.msg === 'string' && response.data.msg.includes('not allowed to be empty')) {
-        warningDialog("All fields must be filled. Please try again.");
-      } else {
-        errorDialog("An error occurred. Please try again.");
-      }
-    }
-  })
-  .catch((error) => {
-    errorDialog("An error occurred. Please try again.");
-    console.log(error);
-  });
-
       } else {
         warningDialog('All vehicle details must be filled out to provide an accurate and detailed description using the AI writer. Please ensure no fields are left empty.')
         return;
