@@ -2,9 +2,12 @@ import { lazy, useRef, useState, useEffect } from "react";
 import { useParams } from 'react-router-dom';
 import { data } from "../../data";
 import { getSession } from "../../actions/session";
-import { toTitleCase } from '../../helpers/letterCaseChange'
+import { toTitleCase } from '../../helpers/letterCaseChange';
 import axios from "axios";
+import { successDialog, errorDialog, warningDialog, infoDialog, confirmDialog } from "../../helpers/alerts.js";
+import uploadFile from '../../helpers/uploadFile.js';
 import './style.css';
+
 const CardFeaturedProduct = lazy(() => import("../../components/card/CardFeaturedProduct"));
 const CardServices = lazy(() => import("../../components/card/CardServices"));
 const Details = lazy(() => import("../../components/others/Details"));
@@ -29,6 +32,10 @@ const ProductDetailView = () => {
   const detailsAddress = useRef(null);
   const detailsState = useRef(null);
   const detailsPostalCode = useRef(null);
+  const [useAxiosDescription, setUseAxiosDescription] = useState(false);
+  const [imageUploading, setImageUploading] = useState(false);
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [uploadedImageIds, setUploadedImageIds] = useState([]);
 
   useEffect(() => {
     const session = getSession();
@@ -49,23 +56,29 @@ const ProductDetailView = () => {
 
         axios.request(config)
           .then((response) => {
-            // console.log(JSON.stringify(response.data));
             if (response.data.status === false) {
-              alert("Invalid ad ID");
-              window.location.href = "/listing";
+              errorDialog("Invalid ad ID").then(() => {
+                window.location.href = "/listing";
+              });
             } else {
               setVehicleData(response.data.data);
+              if (response.data.data.files) {
+                const initialImageIds = response.data.data.files.map(file => file._id);
+                setUploadedImageIds(initialImageIds);
+              }
               setIsLoading(false);
             }
           })
           .catch((error) => {
+            errorDialog("An error occurred while fetching the vehicle data.");
             console.log(error);
           });
       } else {
         if (session) {
           if (session.role !== "seller") {
-            alert("You are not a seller bro!");
-            window.location.href = "/listing";
+            warningDialog("You are not a seller!").then(() => {
+              window.location.href = "/listing";
+            });
           }
           if (vehicleData) {
             window.location.reload();
@@ -74,8 +87,9 @@ const ProductDetailView = () => {
           setIsEditMode(true);
           setIsLoading(false);
         } else {
-          alert("Log in to post a new ad");
-          window.location.href = "/account/signin";
+          infoDialog("Log in to post a new ad").then(() => {
+            window.location.href = "/account/signin";
+          });
         }
       }
     }
@@ -84,7 +98,7 @@ const ProductDetailView = () => {
   const handleEditClick = () => {
     setIsEditMode(true);
     if (vehicleData.inspection_status === 'accepted') {
-      alert('Modifying inspection booking details (date/location) will cause in additional payment as a mechanic has already accepted the booking.');
+      warningDialog('Modifying inspection booking details (date/location) will cause additional payment as a mechanic has already accepted the booking.');
     }
   };
 
@@ -98,7 +112,7 @@ const ProductDetailView = () => {
   }
 
   const handleSaveClick = () => {
-    alert('Saving changes...');
+    infoDialog('Saving changes...');
     if (detailsRef.current) {
       const details = detailsRef.current.getDetails();
       details.title = detailsTitle.current.value;
@@ -110,7 +124,7 @@ const ProductDetailView = () => {
       details.seller_id = sessionData.user_id;
 
       if (detailsDescription.current.value.length < 250) {
-        alert('Please enter a description with atleast 250 characters!');
+        warningDialog('Please enter a description with at least 250 characters!');
         return;
       }
 
@@ -124,9 +138,9 @@ const ProductDetailView = () => {
             "vehicle_rego": inspection.inspectionRego,
             "postal_code": details.postal_code,
             "inspection_time": (inspection.inspectionDate).replace(/-/g, '/')
-          }
+          };
         } else {
-          alert("Inspection date cannot be today or before. Please try again with a future date.");
+          warningDialog("Inspection date cannot be today or before. Please try again with a future date.");
           return;
         }
       }
@@ -155,10 +169,9 @@ const ProductDetailView = () => {
             "status": details.inspection_status,
             "vehicle_rego": inspection.inspectionRego,
             "postal_code": details.postal_code,
-            "inspection_time": (inspection.inspectionDate).replace(/-/g, '/')
+            "inspection_time": `${inspection.inspectionDate.replace(/-/g, '/')} ${inspection.inspectionTime}`
           }
         });
-        console.log("Data to be sent:", data);
       } else {
         data = createDataIfDifferent(details, vehicleData);
         if (data) {
@@ -167,6 +180,9 @@ const ProductDetailView = () => {
           console.log("No differences found.");
         }
       }
+      let dataObject = JSON.parse(data);
+      dataObject["files"] = uploadedImageIds;
+      data = JSON.stringify(dataObject);
 
       let config = {
         method: isNew ? 'POST' : 'PUT',
@@ -181,43 +197,53 @@ const ProductDetailView = () => {
 
       axios.request(config)
         .then((response) => {
+          console.log(data);
           if (response.data.status) {
             if (id === "new") {
-              alert("Ad posted successfully.");
+              successDialog("Ad posted successfully.").then(() => {
+                window.location.href = "/listing/" + response.data.data._id;
+              });
             } else {
-              alert("Ad updated successfully.");
+              successDialog("Ad updated successfully.").then(() => {
+                window.location.href = "/listing/" + response.data.data._id;
+              });
             }
-            window.location.href = "/listing/" + response.data.data._id;
           } else {
             console.log(JSON.stringify(response.data));
             if (typeof response.data.msg === 'string' && response.data.msg.includes('not allowed to be empty')) {
-              alert("All fields must be filled. Please try again.")
+              warningDialog("All fields must be filled. Please try again.")
             } else {
               console.log(response);
-              alert("An error occurred. Please try again.");
+              errorDialog("An error occurred. Please try again.");
             }
           }
         })
         .catch((error) => {
-          alert("An error occurred. Please try again.");
+          errorDialog("An error occurred. Please try again.");
           console.log(error);
         });
     }
   };
 
   const handleCancelClick = () => {
-    alert('Cancelling edit mode...');
-    setIsEditMode(false);
-    if (id === "new") {
-      window.location.href = "/listing";
-    }
+    confirmDialog('Are you sure you want to cancel editing?').then((result) => {
+      if (result.isConfirmed) {
+        setIsEditMode(false);
+        if (id === "new") {
+          window.location.href = "/listing";
+        }
+      }
+    });
   };
 
   const handleDeleteClick = () => {
-    alert('Deleting ad...');
-    setIsEditMode(false);
+    confirmDialog('Are you sure you want to delete this ad?').then((result) => {
+      if (result.isConfirmed) {
+        setIsEditMode(false);
+        alert("Delete under development");
+      }
+    });
   };
-
   const handleAssignInspection = (state) => {
     alert('Inspection ' + state + 'ing...');
 
@@ -246,15 +272,16 @@ const ProductDetailView = () => {
     axios.request(config)
       .then((response) => {
         if (response.data.status) {
-          alert("Inspection " + state + "ed successfully!");
-          window.location.reload();
+          successDialog(`Inspection ${state}ed successfully!`).then(() => {
+            window.location.reload();
+          });
         } else {
-          alert("Error! Please try again.");
+          errorDialog("Error! Please try again.");
         }
         console.log(JSON.stringify(response.data));
       })
       .catch((error) => {
-        alert("Error! Please try again.");
+        errorDialog("Error! Please try again.");
         console.log(error);
       });
 
@@ -271,8 +298,6 @@ const ProductDetailView = () => {
       }
     }
     data["_id"] = id;
-    // data['inspection_status'] = "not_requested";
-
     return Object.keys(data).length ? JSON.stringify(data) : null;
   };
 
@@ -299,36 +324,197 @@ const ProductDetailView = () => {
     setSuggestions([]);
   };
 
+  const handleGenerateDescription = async () => {
+    alert("AI");
+    if (detailsRef.current) {
+      const details = detailsRef.current.getDetails();
+      const isEmptyOrNull = (value) => value === null || value === '';
+
+      const fieldsToCheck = [
+        'color', 'brand', 'model', 'yom', 'condition', 'transmission',
+        'body_type', 'fuel_type', 'mileage', 'price', 'address', 'state', 'postal_code'
+      ];
+
+      const hasEmptyFields = fieldsToCheck.some(field => isEmptyOrNull(details[field]));
+
+      if (!hasEmptyFields) {
+        details.mileage = details.mileage + " Km";
+        let config = {
+          method: 'POST',
+          maxBodyLength: Infinity,
+          url: `${process.env.REACT_APP_AI_URL}/generate`,
+          data: details
+        };
+
+        axios.request(config)
+          .then((response) => {
+            console.log(response.data.description);
+            var backendDescription = response.data.description;
+            const textarea = document.getElementById('descriptionTextarea');
+            setUseAxiosDescription(true);
+            textarea.value = "";
+            let index = 0;
+            const interval = setInterval(() => {
+              if (textarea) {
+                textarea.value += backendDescription[index];
+              }
+              index++;
+              if (index === backendDescription.length) {
+                clearInterval(interval);
+              }
+            }, 20); // Adjust the speed of typing here
+            setUseAxiosDescription(false);
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      } else {
+        warningDialog('All vehicle details must be filled out to provide an accurate and detailed description using the AI writer. Please ensure no fields are left empty.')
+        return;
+      }
+    }
+  };
+
+  const handleImageClick = (event) => {
+    if (imageUploading) return;
+
+    if (!isEditMode) {
+      // Swap images logic
+      const firstImage = document.querySelector('.img-fluid.mb-3');
+      const clickedImage = event.target;
+
+      if (firstImage && clickedImage && firstImage !== clickedImage) {
+        const tempSrc = firstImage.src;
+        firstImage.src = clickedImage.src;
+        clickedImage.src = tempSrc;
+      }
+    } else {
+      // Image upload logic
+      const input = document.createElement('input');
+      input.type = 'file';
+      input.accept = 'image/*';
+      input.onchange = async (inputEvent) => {
+        const file = inputEvent.target.files[0];
+        if (file && file.type.startsWith('image/')) {
+          setImageUploading(true);
+          try {
+            const response = await uploadFile(file, `${sessionData.token}`);
+            if (response.status) {
+              const newImageId = response.data._id;
+
+              const imageUrl = URL.createObjectURL(file);
+              event.target.src = imageUrl; // Replace the clicked image
+
+              // Update the data-image-id attribute of the clicked image before updating the state
+              const oldImageId = event.target.dataset.imageId;
+              event.target.dataset.imageId = newImageId;
+
+              // Update the state with the new image ID
+              setUploadedImageIds((prevIds) => {
+                // Remove the old image ID if it exists
+                const updatedIds = prevIds.filter(id => id !== oldImageId);
+                // Add the new image ID
+                const newIds = [...updatedIds, newImageId];
+                console.log('Updated IDs:', newIds); // Log the updated IDs
+                return newIds;
+              });
+
+              alert('Image uploaded successfully');
+            } else {
+              console.log(response);
+              alert('Image upload error!');
+            }
+          } catch (err) {
+            alert('Failed to upload image' + err);
+          } finally {
+            setImageUploading(false);
+          }
+        } else {
+          alert('Please select a valid image file');
+        }
+      };
+      input.click();
+    }
+  };
+
+  const fileCount = vehicleData?.files?.length || 0;
+  const defaultImagesNeeded = 4 - fileCount;
+
   return (
     <div className="container-fluid mt-3">
       {!isLoading ? <>
         <div className="row">
           <div className="col-md-8">
             <div className="row mb-3">
-              <div className="col-md-5 text-center">
-                <img
-                  src="../../images/products/vehicle.jpg"
-                  className="img-fluid mb-3"
-                  alt=""
-                />
-                <img
-                  src="../../images/products/vehicle.jpg"
-                  className="border border-secondary me-2"
-                  width="75"
-                  alt="..."
-                />
-                <img
-                  src="../../images/products/vehicle.jpg"
-                  className="border border-secondary me-2"
-                  width="75"
-                  alt="..."
-                />
-                <img
-                  src="../../images/products/vehicle.jpg"
-                  className="border border-secondary me-2"
-                  width="75"
-                  alt="..."
-                />
+              <div className="col-md-5 text-center" style={{ position: "relative" }}>
+                {imageUploading && <div className="spinner-overlay" role="status"><span className="sr-only spinner-border"></span></div>}
+                {/* {selectedImage && <img src={selectedImage} className="img-fluid mb-3" alt="Selected" />} */}
+                {isNew ? (
+                  <>
+                    <img
+                      src="../../images/products/vehicle.jpg"
+                      className="img-fluid mb-3"
+                      alt=""
+                      onClick={handleImageClick}
+                      data-image-id=""
+                    />
+                    <img
+                      src="../../images/products/vehicle.jpg"
+                      className="border border-secondary me-2"
+                      width="75"
+                      height="50"
+                      alt="..."
+                      onClick={handleImageClick}
+                      data-image-id=""
+                    />
+                    <img
+                      src="../../images/products/vehicle.jpg"
+                      className="border border-secondary me-2"
+                      width="75"
+                      height="50"
+                      alt="..."
+                      onClick={handleImageClick}
+                      data-image-id=""
+                    />
+                    <img
+                      src="../../images/products/vehicle.jpg"
+                      className="border border-secondary me-2"
+                      width="75"
+                      height="50"
+                      alt="..."
+                      onClick={handleImageClick}
+                      data-image-id=""
+                    />
+                  </>
+                ) : (
+                  <>
+                    {vehicleData.files.map((file, index) => (
+                      <img
+                        key={file._id}
+                        src={`${process.env.REACT_APP_API_URL}/uploads/300x300/${file.new_filename}`}
+                        className={`border border-secondary me-2 ${index === 0 ? 'img-fluid mb-3' : ''}`}
+                        width={index === 0 ? undefined : "75"}
+                        height={index === 0 ? undefined : "50"}
+                        alt=""
+                        onClick={handleImageClick}
+                        data-image-id={file._id}
+                      />
+                    ))}
+                    {(isEditMode || defaultImagesNeeded === 4) &&
+                      Array.from({ length: defaultImagesNeeded }).map((_, index) => (
+                        <img
+                          key={`default-${index}`}
+                          src="../../images/products/vehicle.jpg"
+                          className={defaultImagesNeeded === 4 && index == 0 ? "img-fluid mb-3" : "border border-secondary me-2"}
+                          width={!(defaultImagesNeeded === 4 && index == 0) && "75"}
+                          height={!(defaultImagesNeeded === 4 && index == 0) && "50"}
+                          alt="..."
+                          onClick={handleImageClick}
+                          data-image-id=""
+                        />
+                      ))}
+                  </>
+                )}
               </div>
               <div className="col-md-7">
                 {sessionData && (isNew || sessionData.user_id === vehicleData.seller_id._id) && <>
@@ -342,19 +528,37 @@ const ProductDetailView = () => {
                 {sessionData && (!isNew && vehicleData.inspection_report && vehicleData.inspection_report.status === "assigned" && vehicleData.inspection_report.mechanic === sessionData.user_id) && <>
                   <span className="badge bg-dark me-2 float-right" onClick={() => handleAssignInspection("unassign")}>Unassign Inspection</span>
                 </>}
-                <h1 className="fw-bold h5 d-inline me-2">{isEditMode ? <input type="text" className="form-control mw-180" ref={detailsTitle} defaultValue={vehicleData !== null ? vehicleData.title : ''} placeholder="Title" /> : <>{vehicleData !== null ? toTitleCase(vehicleData.title) : ''}</>}</h1>
+                <h1 className="fw-bold h5 d-inline me-2">{isEditMode ? <><label style={{ fontSize: "small", fontWeight: "normal" }}>Ad Title</label><br></br><input type="text" className="form-control mw-180" ref={detailsTitle} defaultValue={vehicleData !== null ? vehicleData.title : ''} placeholder="Title" /></> : <>{vehicleData !== null ? toTitleCase(vehicleData.title) : ''}</>}</h1>
                 {!isEditMode && (
                   <>
                     <span className="badge bg-success me-2">New</span>
-                    <span className="badge bg-danger me-2">Hot</span>
+                    {/* <span className="badge bg-danger me-2">Hot</span> */}
                   </>
                 )}
-                <div className="mt-2">
-                  <span className="h5 me-2">{isEditMode ? <input type="text" className="form-control mw-180" ref={detailsPrice} defaultValue={vehicleData !== null ? vehicleData.price : ''} placeholder="Price" /> : <>$ {vehicleData !== null ? vehicleData.price : 'N/A'}</>}</span>
+                <div className="">
+                  <span className="h5 me-2">{isEditMode ? <><label style={{ fontSize: "small", fontWeight: "normal" }}>Price</label><br></br><input type="text" className="form-control mw-180" ref={detailsPrice} defaultValue={vehicleData !== null ? vehicleData.price : ''} placeholder="Price" /></> : <>$ {vehicleData !== null ? vehicleData.price : 'N/A'}</>}</span>
                   {!isEditMode && (vehicleData.inspection_status === "completed") && <> <i className="bi bi-patch-check-fill text-success me-1" /> AutoAssured </>}
                 </div>
-                <div className="mt-2">
-                  <p className="small">{isEditMode && <textarea className="form-control" ref={detailsDescription} defaultValue={vehicleData !== null ? vehicleData.description : ''} placeholder="Description" />}</p>
+                <div className="">
+                  <p className="small">
+                    {isEditMode && (
+                      <><label style={{ fontSize: "small", fontWeight: "normal" }}>Description</label>
+                        <button className="ai-button" onClick={handleGenerateDescription}>
+                          <i className="bi bi-magic"></i>
+                          <span className="tooltip-text">Write your description using AI</span>
+                        </button><br></br>
+                        <textarea
+                          rows="4"
+                          id="descriptionTextarea"
+                          className="form-control"
+                          ref={detailsDescription}
+                          defaultValue={vehicleData !== null ? vehicleData.description : ''}
+                          placeholder="Description"
+                          readOnly={useAxiosDescription}
+                        />
+                      </>
+                    )}
+                  </p>
                   {!isEditMode ? <>
                     <p className="fw-bold mb-2 small">Vehicle Highlights</p>
                     <ul className="small">
@@ -371,9 +575,10 @@ const ProductDetailView = () => {
                       </ul>
                     </details>
                   </> : <>
+                    <br></br>
                     <div className="row col-md-12">
                       <div className="col-md-4">
-                        <label htmlFor="postalCode">Address</label><br></br>
+                        <label style={{ fontSize: "small", fontWeight: "normal" }}>Address</label><br></br>
                         <input onChange={handleAddressChange} className="form-control mw-180" type="text" ref={detailsAddress} defaultValue={vehicleData !== null ? vehicleData.address : ''} id="detailsAddress" placeholder="Address" />
                         {suggestions.length > 0 && (
                           <ul className="suggestions">
@@ -386,168 +591,127 @@ const ProductDetailView = () => {
                         )}
                       </div>
                       <div className="col-md-4">
-                        <label htmlFor="inspectionDate">State</label><br></br>
+                        <label style={{ fontSize: "small", fontWeight: "normal" }}>State</label><br></br>
                         <input className="form-control mw-180" type="text" ref={detailsState} defaultValue={vehicleData !== null ? vehicleData.state : ''} id="detailsState" placeholder="State" />
                       </div>
                       <div className="col-md-4">
-                        <label htmlFor="vehicleRego">Postal Code</label><br></br>
+                        <label style={{ fontSize: "small", fontWeight: "normal" }}>Postal Code</label><br></br>
                         <input className="form-control mw-180" type="text" ref={detailsPostalCode} defaultValue={vehicleData !== null ? vehicleData.postal_code : ''} id="detailsPostalCode" placeholder="Postal Code" />
                       </div>
                     </div>
+                    <br></br>
                   </>}
-                </div>
-
-                {/* <div className="mb-3">
-                <div className="d-inline float-start me-2">
-                  <div className="input-group input-group-sm mw-140">
-                    <button
-                      className="btn btn-primary text-white"
-                      type="button"
-                    >
-                      <i className="bi bi-dash-lg"></i>
-                    </button>
-                    <input
-                      type="text"
-                      className="form-control"
-                      defaultValue="1"
-                    />
-                    <button
-                      className="btn btn-primary text-white"
-                      type="button"
-                    >
-                      <i className="bi bi-plus-lg"></i>
-                    </button>
-                  </div>
-                </div>
-                <button
-                  type="button"
-                  className="btn btn-sm btn-primary me-2"
-                  title="Add to cart"
-                >
-                  <i className="bi bi-cart-plus me-1"></i>Add to cart
-                </button>
-                <button
-                  type="button"
-                  className="btn btn-sm btn-warning me-2"
-                  title="Buy now"
-                >
-                  <i className="bi bi-cart3 me-1"></i>Buy now
-                </button>
-                <button
-                  type="button"
-                  className="btn btn-sm btn-outline-secondary"
-                  title="Add to wishlist"
-                >
-                  <i className="bi bi-heart-fill"></i>
-                </button>
-              </div> */}
-
-              </div>
-            </div>
-            <div className="row">
-              <div className="col-md-12">
-                <nav>
-                  <div className="nav nav-tabs" id="nav-tab" role="tablist">
-                    <a
-                      className="nav-link active"
-                      id="nav-details-tab"
-                      data-bs-toggle="tab"
-                      href="#nav-details"
-                      role="tab"
-                      aria-controls="nav-details"
-                      aria-selected="true"
-                    >
-                      Vehicle Details
-                    </a>
-                    <a
-                      className="nav-link"
-                      id="nav-ship-returns-tab"
-                      data-bs-toggle="tab"
-                      href="#nav-ship-returns"
-                      role="tab"
-                      aria-controls="nav-ship-returns"
-                      aria-selected="false"
-                    >
-                      {isEditMode ? (vehicleData && (vehicleData.inspection_status === 'completed' || vehicleData.inspection_status === 'accepted') ? "Our Assurance" : "Book Inspection") : ("Our Assurance")}
-                    </a>
-                    {!isEditMode ? <>
-                      <a
-                        className="nav-link"
-                        id="nav-faq-tab"
-                        data-bs-toggle="tab"
-                        href="#nav-faq"
-                        role="tab"
-                        aria-controls="nav-faq"
-                        aria-selected="false"
-                      >
-                        Questions and Answers
-                      </a>
-                    </> : <>
-                      <a
-                        className="nav-link"
-                        id="nav-randr-tab"
-                        data-bs-toggle="tab"
-                        href="#nav-randr"
-                        role="tab"
-                        aria-controls="nav-randr"
-                        aria-selected="false"
-                      >
-                        T & C
-                      </a>
-                    </>}
-                  </div>
-                </nav>
-                <div className="tab-content p-3 small" id="nav-tabContent">
-                  <div
-                    className="tab-pane fade show active"
-                    id="nav-details"
-                    role="tabpanel"
-                    aria-labelledby="nav-details-tab"
-                  >
-                    <Details isEditMode={isEditMode ? (vehicleData && (vehicleData.inspection_status === 'completed' || vehicleData.inspection_status === 'accepted') ? false : isEditMode) : (isEditMode)} vehicleData={vehicleData} ref={detailsRef} />
-                  </div>
-                  {isEditMode ? <>
-                    <div
-                      className="tab-pane fade"
-                      id="nav-randr"
-                      role="tabpanel"
-                      aria-labelledby="nav-randr-tab"
-                    >
-                      <TermsConditions />
-                    </div>
-                  </> : <>
-                    <div
-                      className="tab-pane fade"
-                      id="nav-faq"
-                      role="tabpanel"
-                      aria-labelledby="nav-faq-tab"
-                    >
-                      <dl>
-                        {Array.from({ length: 5 }, (_, key) => (
-                          <QuestionAnswer key={key} />
-                        ))}
-                      </dl>
-                    </div>
-                  </>}
-                  <div
-                    className="tab-pane fade"
-                    id="nav-ship-returns"
-                    role="tabpanel"
-                    aria-labelledby="nav-ship-returns-tab"
-                  >
-                    <OurAssurance isEditMode={isEditMode ? (vehicleData && (vehicleData.inspection_status === 'completed' || vehicleData.inspection_status === 'accepted') ? false : isEditMode) : (isEditMode)} vehicleData={vehicleData} ref={inspectionRef} userRole={sessionData ? sessionData.role : ''} />
-                  </div>
-                  <div
-                    className="tab-pane fade"
-                    id="nav-size-chart"
-                    role="tabpanel"
-                    aria-labelledby="nav-size-chart-tab"
-                  >
-                    <SizeChart />
-                  </div>
                 </div>
               </div>
             </div>
+            {!isLoading &&
+              <>
+                <div className="row">
+                  <div className="col-md-12">
+                    <nav>
+                      <div className="nav nav-tabs" id="nav-tab" role="tablist">
+                        <a
+                          className="nav-link active"
+                          id="nav-details-tab"
+                          data-bs-toggle="tab"
+                          href="#nav-details"
+                          role="tab"
+                          aria-controls="nav-details"
+                          aria-selected="true"
+                        >
+                          Vehicle Details
+                        </a>
+                        <a
+                          className="nav-link"
+                          id="nav-ship-returns-tab"
+                          data-bs-toggle="tab"
+                          href="#nav-ship-returns"
+                          role="tab"
+                          aria-controls="nav-ship-returns"
+                          aria-selected="false"
+                        >
+                          {isEditMode ? (vehicleData && (vehicleData.inspection_status === 'completed' || vehicleData.inspection_status === 'accepted') ? "Our Assurance" : "Book Inspection") : ("Our Assurance")}
+                        </a>
+                        {!isEditMode ? <>
+                          <a
+                            className="nav-link"
+                            id="nav-faq-tab"
+                            data-bs-toggle="tab"
+                            href="#nav-faq"
+                            role="tab"
+                            aria-controls="nav-faq"
+                            aria-selected="false"
+                          >
+                            Questions and Answers
+                          </a>
+                        </> : <>
+                          <a
+                            className="nav-link"
+                            id="nav-randr-tab"
+                            data-bs-toggle="tab"
+                            href="#nav-randr"
+                            role="tab"
+                            aria-controls="nav-randr"
+                            aria-selected="false"
+                          >
+                            T & C
+                          </a>
+                        </>}
+                      </div>
+                    </nav>
+                    <div className="tab-content p-3 small" id="nav-tabContent">
+                      <div
+                        className="tab-pane fade show active"
+                        id="nav-details"
+                        role="tabpanel"
+                        aria-labelledby="nav-details-tab"
+                      >
+                        <Details isEditMode={isEditMode ? (vehicleData && (vehicleData.inspection_status === 'completed' || vehicleData.inspection_status === 'accepted') ? false : isEditMode) : (isEditMode)} vehicleData={vehicleData} ref={detailsRef} />
+                      </div>
+                      {isEditMode ? <>
+                        <div
+                          className="tab-pane fade"
+                          id="nav-randr"
+                          role="tabpanel"
+                          aria-labelledby="nav-randr-tab"
+                        >
+                          <TermsConditions />
+                        </div>
+                      </> : <>
+                        <div
+                          className="tab-pane fade"
+                          id="nav-faq"
+                          role="tabpanel"
+                          aria-labelledby="nav-faq-tab"
+                        >
+                          <dl>
+                            {Array.from({ length: 5 }, (_, key) => (
+                              <QuestionAnswer key={key} />
+                            ))}
+                          </dl>
+                        </div>
+                      </>}
+                      <div
+                        className="tab-pane fade"
+                        id="nav-ship-returns"
+                        role="tabpanel"
+                        aria-labelledby="nav-ship-returns-tab"
+                      >
+                        <OurAssurance isEditMode={isEditMode ? (vehicleData && (vehicleData.inspection_status === 'completed' || vehicleData.inspection_status === 'accepted') ? false : isEditMode) : (isEditMode)} vehicleData={vehicleData} ref={inspectionRef} userRole={sessionData ? sessionData.role : ''} />
+                      </div>
+                      <div
+                        className="tab-pane fade"
+                        id="nav-size-chart"
+                        role="tabpanel"
+                        aria-labelledby="nav-size-chart-tab"
+                      >
+                        <SizeChart />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </>
+            }
           </div>
           <div className="col-md-4">
             <CardFeaturedProduct data={data.products} />
@@ -562,7 +726,7 @@ const ProductDetailView = () => {
         </div>
       </>
       }
-    </div>
+    </div >
   );
 };
 

@@ -12,12 +12,13 @@ const isNewHot = (dateString, daysGap) => {
 const CardProductList = (props) => {
   const ads = props.data;
   const role = props.role;
+  const files = (ads.files).length;
   return (
     <Link to={"/listing/" + ads._id} className="text-decoration-none">
       <div className="card">
         <div className="row g-0">
           <div className="col-md-3 text-center">
-            <img src={"../../images/products/vehicle.jpg"} className="img-fluid" alt="..." />
+            <img style={{ maxHeight: "250px" }} src={files !== 0 ? `${process.env.REACT_APP_API_URL}/uploads/300x300/${ads.files[0].new_filename}` : "../../images/products/vehicle.jpg"} className="card-img-top" alt="..." />
           </div>
           <div className="col-md-6">
             <div className="card-body">

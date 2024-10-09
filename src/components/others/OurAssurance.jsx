@@ -6,6 +6,7 @@ const ShippingReturns = forwardRef((props, ref) => {
   const { userRole } = props;
   const inspectionPostCode = useRef(null);
   const inspectionDate = useRef(null);
+  const inspectionTime = useRef(null);
   const inspectionRego = useRef(null);
   const additionalServices = useRef([]);
   const [, forceUpdate] = useReducer(x => x + 1, 0);
@@ -33,6 +34,7 @@ const ShippingReturns = forwardRef((props, ref) => {
       return {
         // inspectionPostCode: inspectionPostCode.current.value,
         inspectionDate: inspectionDate.current.value,
+        inspectionTime: inspectionTime.current.value,
         inspectionRego: inspectionRego.current.value,
       };
     }
@@ -62,6 +64,10 @@ const ShippingReturns = forwardRef((props, ref) => {
           <div className="col-md-3">
             <label htmlFor="inspectionDate">Inspection Date*</label><br></br>
             <input type="date" ref={inspectionDate} id="inspectionDate" placeholder="Inspection Date" />
+          </div>
+          <div className="col-md-3">
+            <label htmlFor="inspectionDate">Inspection Time*</label><br></br>
+            <input type="time" ref={inspectionTime} id="inspectionTime" placeholder="Inspection Time" />
           </div>
           <div className="col-md-3">
             <label htmlFor="vehicleRego">Vehicle Rego</label><br></br>
