@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { successDialog, errorDialog, confirmDialog } from '../../helpers/alerts';
 import './style.css'; // Assuming you still have the scoped CSS
 
 const Admin = () => {
@@ -83,55 +84,64 @@ const Admin = () => {
     };
 
     // Update a user
-    const updateUser = async (userId) => {
-        if (!validateForm()) return; // Prevent submission if validation fails
+const updateUser = async (userId) => {
+    if (!validateForm()) return; // Prevent submission if validation fails
 
-        try {
-            const response = await axios.put(
-                `${baseUrl}`,
-                { 
-                    _id: userId,
-                    name: updatedName, 
-                    role: updatedRole,
-                    email: updatedEmail,
-                    status: updatedStatus,
-                    phone: updatedPhone 
-                },
-                {
-                    headers: {
-                        'Authorization': authToken
-                    }
+    try {
+        const response = await axios.put(
+            `${baseUrl}`,
+            { 
+                _id: userId,
+                name: updatedName, 
+                role: updatedRole,
+                email: updatedEmail,
+                status: updatedStatus,
+                phone: updatedPhone 
+            },
+            {
+                headers: {
+                    'Authorization': authToken
                 }
-            );
-            alert(`User ${userId} updated successfully!`);
-            // Update the local state to reflect the changes
-            const updatedUsers = users.map((user) =>
-                user._id === userId ? { ...user, name: updatedName, role: updatedRole, email: updatedEmail, status: updatedStatus, phone: updatedPhone } : user
-            );
-            setUsers(updatedUsers);
-            closeEditModal();  // Close modal after updating
-        } catch (error) {
-            alert('Error updating user');
-        }
-    };
-
-    // Delete a user
-    const deleteUser = async (userId, userName) => {
-        if (window.confirm(`Are you sure you want to delete user "${userName}"?`)) {
-            try {
-                await axios.delete(`${baseUrl}${userId}`, {
-                    headers: {
-                        'Authorization': authToken
-                    }
-                });
-                alert(`User "${userName}" deleted successfully!`);
-                // Remove the user from the local state
-                setUsers(users.filter((user) => user._id !== userId));
-            } catch (error) {
-                alert('Error deleting user');
             }
+        );
+        
+        // Use SweetAlert for success notification
+        await successDialog(`User ${userId} updated successfully!`);
+        
+        // Update the local state to reflect the changes
+        const updatedUsers = users.map((user) =>
+            user._id === userId ? { ...user, name: updatedName, role: updatedRole, email: updatedEmail, status: updatedStatus, phone: updatedPhone } : user
+        );
+        setUsers(updatedUsers);
+        closeEditModal();  // Close modal after updating
+    } catch (error) {
+        // Use SweetAlert for error notification
+        errorDialog('Error updating user');
+    }
+};
+
+// Delete a user
+const deleteUser = async (userId, userName) => {
+    const result = await confirmDialog(`Are you sure you want to delete user "${userName}"?`);
+    if (result.isConfirmed) {
+        try {
+            await axios.delete(`${baseUrl}${userId}`, {
+                headers: {
+                    'Authorization': authToken
+                }
+            });
+
+            // Use SweetAlert for success notification
+            await successDialog(`User "${userName}" deleted successfully!`);
+            
+            // Remove the user from the local state
+            setUsers(users.filter((user) => user._id !== userId));
+        } catch (error) {
+            // Use SweetAlert for error notification
+            errorDialog('Error deleting user');
         }
-    };
+    }
+};
 
     if (loading) return <p>Loading...</p>;
     if (error) return <p>{error}</p>;
