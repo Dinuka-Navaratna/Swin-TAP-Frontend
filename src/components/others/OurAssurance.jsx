@@ -36,6 +36,7 @@ const ShippingReturns = forwardRef((props, ref) => {
         inspectionDate: inspectionDate.current.value,
         inspectionTime: inspectionTime.current.value,
         inspectionRego: inspectionRego.current.value,
+        additionalServices: additionalServices,
       };
     }
   }));

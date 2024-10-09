@@ -35,6 +35,10 @@ const ProductDetailView = () => {
   const [useAxiosDescription, setUseAxiosDescription] = useState(false);
   const [imageUploading, setImageUploading] = useState(false);
   const [uploadedImageIds, setUploadedImageIds] = useState([]);
+  const additional_services = [
+    { "id": 1, "name": "RWC Certification", "price": "50" },
+    { "id": 2, "name": "Rego Renewal", "price": "125" }
+  ];
 
   useEffect(() => {
     const session = getSession();
@@ -136,13 +140,24 @@ const ProductDetailView = () => {
             "status": details.inspection_status,
             "vehicle_rego": inspection.inspectionRego,
             "postal_code": details.postal_code,
-            "inspection_time": (inspection.inspectionDate).replace(/-/g, '/')
+            "inspection_time": (inspection.inspectionDate).replace(/-/g, '/'),
+            "additional_requests": []
           };
+          console.log(inspection.additionalServices);
+          // Replace IDs with their corresponding objects
+          if (inspection.additionalServices && inspection.additionalServices.length > 0) {
+            details.inspection_report.additional_requests = inspection.additionalServices.map(serviceId => {
+              alert(serviceId);
+              return additional_services.find(service => service.id === serviceId);
+            });
+          }
         } else {
           warningDialog("Inspection date cannot be today or before. Please try again with a future date.");
           return;
         }
       }
+      console.log(details);
+      return;
 
       var data = null;
       if (isNew) {
@@ -243,6 +258,7 @@ const ProductDetailView = () => {
       }
     });
   };
+
   const handleAssignInspection = (state) => {
     alert('Inspection ' + state + 'ing...');
 
@@ -503,9 +519,9 @@ const ProductDetailView = () => {
                         <img
                           key={`default-${index}`}
                           src="../../images/products/vehicle.jpg"
-                          className={defaultImagesNeeded === 4 && index == 0 ? "img-fluid mb-3" : "border border-secondary me-2"}
-                          width={!(defaultImagesNeeded === 4 && index == 0) && "75"}
-                          height={!(defaultImagesNeeded === 4 && index == 0) && "50"}
+                          className={defaultImagesNeeded === 4 && index === 0 ? "img-fluid mb-3" : "border border-secondary me-2"}
+                          width={!(defaultImagesNeeded === 4 && index === 0) && "75"}
+                          height={!(defaultImagesNeeded === 4 && index === 0) && "50"}
                           alt="..."
                           onClick={handleImageClick}
                           data-image-id=""
