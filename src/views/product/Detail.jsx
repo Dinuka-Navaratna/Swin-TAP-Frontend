@@ -4,7 +4,7 @@ import { data } from "../../data";
 import { getSession } from "../../actions/session";
 import { toTitleCase } from '../../helpers/letterCaseChange';
 import axios from "axios";
-import { successDialog, errorDialog, warningDialog, infoDialog } from "../../helpers/alerts.js";
+import { successDialog, errorDialog, warningDialog, infoDialog, confirmDialog } from "../../helpers/alerts.js";
 import uploadFile from '../../helpers/uploadFile.js';
 import './style.css';
 
@@ -89,7 +89,6 @@ const ProductDetailView = () => {
           infoDialog("Log in to post a new ad").then(() => {
             window.location.href = "/account/signin";
           });
-          window.location.href = "/account/signin";
         }
       }
     }
@@ -200,11 +199,14 @@ const ProductDetailView = () => {
           console.log(data);
           if (response.data.status) {
             if (id === "new") {
-              alert("Ad posted successfully.");
+              successDialog("Ad posted successfully.").then(() => {
+                window.location.href = "/listing/" + response.data.data._id;
+              });
             } else {
-              alert("Ad updated successfully.");
+              successDialog("Ad updated successfully.").then(() => {
+                window.location.href = "/listing/" + response.data.data._id;
+              });
             }
-            window.location.href = "/listing/" + response.data.data._id;
           } else {
             console.log(JSON.stringify(response.data));
             if (typeof response.data.msg === 'string' && response.data.msg.includes('not allowed to be empty')) {
@@ -223,18 +225,24 @@ const ProductDetailView = () => {
   };
 
   const handleCancelClick = () => {
-    alert('Cancelling edit mode...');
-    setIsEditMode(false);
-    if (id === "new") {
-      window.location.href = "/listing";
-    }
+    confirmDialog('Are you sure you want to cancel editing?').then((result) => {
+      if (result.isConfirmed) {
+        setIsEditMode(false);
+        if (id === "new") {
+          window.location.href = "/listing";
+        }
+      }
+    });
   };
 
   const handleDeleteClick = () => {
-    alert('Deleting ad...');
-    setIsEditMode(false);
+    confirmDialog('Are you sure you want to delete this ad?').then((result) => {
+      if (result.isConfirmed) {
+        setIsEditMode(false);
+        alert("Delete under development");
+      }
+    });
   };
-
   const handleAssignInspection = (state) => {
     alert('Inspection ' + state + 'ing...');
 
@@ -263,15 +271,16 @@ const ProductDetailView = () => {
     axios.request(config)
       .then((response) => {
         if (response.data.status) {
-          alert("Inspection " + state + "ed successfully!");
-          window.location.reload();
+          successDialog(`Inspection ${state}ed successfully!`).then(() => {
+            window.location.reload();
+          });
         } else {
-          alert("Error! Please try again.");
+          errorDialog("Error! Please try again.");
         }
         console.log(JSON.stringify(response.data));
       })
       .catch((error) => {
-        alert("Error! Please try again.");
+        errorDialog("Error! Please try again.");
         console.log(error);
       });
 
@@ -359,7 +368,7 @@ const ProductDetailView = () => {
             console.log(error);
           });
       } else {
-        alert('All vehicle details must be filled out to provide an accurate and detailed description using the AI writer. Please ensure no fields are left empty.')
+        warningDialog('All vehicle details must be filled out to provide an accurate and detailed description using the AI writer. Please ensure no fields are left empty.')
         return;
       }
     }
