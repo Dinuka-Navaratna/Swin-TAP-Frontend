@@ -2,7 +2,7 @@ import Swal from 'sweetalert2';
 
 // Alert Dialog
 export const alertDialog = (message) => {
-  Swal.fire({
+  return Swal.fire({
     title: 'Alert',
     text: message,
     icon: 'info',
@@ -50,7 +50,7 @@ export const successDialog = (message) => {
 
 // Error Dialog
 export const errorDialog = (message) => {
-  Swal.fire({
+  return Swal.fire({
     title: 'Error',
     text: message,
     icon: 'error',
@@ -60,7 +60,7 @@ export const errorDialog = (message) => {
 
 // Warning Dialog
 export const warningDialog = (message) => {
-  Swal.fire({
+  return Swal.fire({
     title: 'Warning',
     text: message,
     icon: 'warning',
@@ -70,7 +70,7 @@ export const warningDialog = (message) => {
 
 // Info Dialog
 export const infoDialog = (message) => {
-  Swal.fire({
+  return Swal.fire({
     title: 'Info',
     text: message,
     icon: 'info',
@@ -80,7 +80,7 @@ export const infoDialog = (message) => {
 
 // Question Dialog
 export const questionDialog = (message) => {
-  Swal.fire({
+  return Swal.fire({
     title: 'Question',
     text: message,
     icon: 'question',
