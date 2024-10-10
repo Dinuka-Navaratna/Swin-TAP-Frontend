@@ -20,6 +20,7 @@ const UserManagement = () => {
 
   const getUsers = useCallback(
     async (page, verification, email, name) => {
+      if (loading) return; // Prevent a new request if already loading
       setLoading(true);
       const finalVerification =
         verification === "clear" ? "" : verification || selectedVerification;
@@ -31,8 +32,7 @@ const UserManagement = () => {
           page !== null ? (page - 1) * 9 : ""
         }&limit=9&name=${name ? name : ""}&email=${email ? email : ""}`,
         headers: {
-          Authorization:
-            "Token eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNjZjMDRmODQwNWJhNDQ2NzNlYjE2NGZjIiwibmFtZSI6Imthc3VuIiwicm9sZSI6ImFkbWluIiwicGhvbmUiOiIwNzE3NjU2NjU3IiwiZW1haWwiOiJrbWthc3VubWFkdXNhbmthQGdtYWlsLmNvbSIsImV4cCI6MTc1NTQxODcyMCwiaWF0IjoxNzIzODgyNzIwfQ.3TOQUl1htrC9rxaYIDNPKgzASp3wJLgNcJ5nwLvGACw", //`Token ${session ? session.token : ""}`,
+          Authorization: `Token ${session ? session.token : ""}`, //`Token ${session ? session.token : ""}`,
         },
       };
 
@@ -44,12 +44,12 @@ const UserManagement = () => {
         setCurrentUsers(users);
         setTotalItems(totalItems);
         setTotalPages(totalPages);
-        setLoading(false);
         setCurrentPage(page);
       } catch (error) {
         setCurrentUsers([]);
         setTotalItems(0);
-        setLoading(false);
+      } finally {
+        setLoading(false); // Ensure loading is set to false when request is complete
       }
     },
     [selectedVerification, session]
@@ -57,11 +57,14 @@ const UserManagement = () => {
 
   // Ensure getUsers is called once when the component mounts, and when the filters change
   useEffect(() => {
-    getUsers(currentPage);
-  }, [currentPage, getUsers]);
+    if (!loading) {
+      // Only fetch if currentPage is not null and not already loading
+      getUsers(currentPage);
+    }
+  }, [currentPage]);
 
   const onPageChanged = (page) => {
-    if (page.currentPage !== currentPage) {
+    if (!loading && totalItems > 9) {
       setCurrentPage(page.currentPage);
     }
   };
