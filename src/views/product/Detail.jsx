@@ -138,6 +138,7 @@ const ProductDetailView = () => {
       }
 
       details.inspection_status = "not_requested";
+      details.inspection_report = {};
       const inspection = inspectionRef.current.getDetails();
       if (details.postal_code !== '' && inspection.inspectionDate !== '') {
         if (checkInspectionDate(new Date(inspection.inspectionDate))) {
@@ -182,13 +183,14 @@ const ProductDetailView = () => {
           "address": details.address,
           "state": details.state,
           "postal_code": details.postal_code,
-          "inspection_report": {
-            "status": details.inspection_status,
-            "vehicle_rego": inspection.inspectionRego,
-            "postal_code": details.postal_code,
-            "inspection_time": inspectionDateTimeConvert(inspection.inspectionDate, inspection.inspectionTime),
-            "additional_requests": inspection.additionalServices
-          }
+          "inspection_report": details.inspection_report
+          // "inspection_report": {
+          //   "status": details.inspection_status,
+          //   "vehicle_rego": inspection.inspectionRego,
+          //   "postal_code": details.postal_code,
+          //   "inspection_time": inspectionDateTimeConvert(inspection.inspectionDate, inspection.inspectionTime),
+          //   "additional_requests": inspection.additionalServices
+          // }
         });
       } else {
         data = createDataIfDifferent(details, vehicleData);
