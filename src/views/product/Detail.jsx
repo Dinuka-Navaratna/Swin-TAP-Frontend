@@ -4,7 +4,8 @@ import { data } from "../../data";
 import { getSession } from "../../actions/session";
 import { toTitleCase } from '../../helpers/letterCaseChange';
 import axios from "axios";
-import { successDialog, errorDialog, warningDialog, infoDialog } from "../../helpers/alerts.js"; // Import dialogs
+import { successDialog, errorDialog, warningDialog, infoDialog, confirmDialog } from "../../helpers/alerts.js";
+import uploadFile from '../../helpers/uploadFile.js';
 import './style.css';
 
 const CardFeaturedProduct = lazy(() => import("../../components/card/CardFeaturedProduct"));
@@ -32,6 +33,9 @@ const ProductDetailView = () => {
   const detailsState = useRef(null);
   const detailsPostalCode = useRef(null);
   const [useAxiosDescription, setUseAxiosDescription] = useState(false);
+  const [imageUploading, setImageUploading] = useState(false);
+  const [uploadedImageIds, setUploadedImageIds] = useState([]);
+  const additionalServicesList = JSON.parse(process.env.REACT_APP_ADDITIONAL_SERVICES);
 
   useEffect(() => {
     const session = getSession();
@@ -58,6 +62,10 @@ const ProductDetailView = () => {
               });
             } else {
               setVehicleData(response.data.data);
+              if (response.data.data.files) {
+                const initialImageIds = response.data.data.files.map(file => file._id);
+                setUploadedImageIds(initialImageIds);
+              }
               setIsLoading(false);
             }
           })
@@ -82,7 +90,6 @@ const ProductDetailView = () => {
           infoDialog("Log in to post a new ad").then(() => {
             window.location.href = "/account/signin";
           });
-          window.location.href = "/account/signin";
         }
       }
     }
@@ -104,8 +111,16 @@ const ProductDetailView = () => {
     }
   }
 
+  const inspectionDateTimeConvert = (datePart, timePart) => {
+    const [year, month, day] = datePart.split('-').map(part => parseInt(part, 10));
+    const [hours, minutes] = timePart.split(':').map(part => parseInt(part, 10));
+    const date = new Date(Date.UTC(year, month - 1, day, hours, minutes, 0));
+    const isoString = date.toISOString();
+    return isoString;
+  }
+
   const handleSaveClick = () => {
-    infoDialog('Saving changes...');
+    setIsLoading(true);
     if (detailsRef.current) {
       const details = detailsRef.current.getDetails();
       details.title = detailsTitle.current.value;
@@ -118,6 +133,7 @@ const ProductDetailView = () => {
 
       if (detailsDescription.current.value.length < 250) {
         warningDialog('Please enter a description with at least 250 characters!');
+        setIsLoading(false);
         return;
       }
 
@@ -130,10 +146,18 @@ const ProductDetailView = () => {
             "status": details.inspection_status,
             "vehicle_rego": inspection.inspectionRego,
             "postal_code": details.postal_code,
-            "inspection_time": (inspection.inspectionDate).replace(/-/g, '/')
+            "inspection_time": inspectionDateTimeConvert(inspection.inspectionDate, inspection.inspectionTime),
+            "additional_requests": inspection.additionalServices
           };
+          // Replace additional_requests IDs with their corresponding objects
+          // if (inspection.additionalServices && inspection.additionalServices.length > 0) {
+          //   details.inspection_report.additional_requests = inspection.additionalServices.map(serviceId => {
+          //     return additional_services.find(service => service.id === serviceId);
+          //   });
+          // }
         } else {
           warningDialog("Inspection date cannot be today or before. Please try again with a future date.");
+          setIsLoading(false);
           return;
         }
       }
@@ -162,7 +186,8 @@ const ProductDetailView = () => {
             "status": details.inspection_status,
             "vehicle_rego": inspection.inspectionRego,
             "postal_code": details.postal_code,
-            "inspection_time": (inspection.inspectionDate).replace(/-/g, '/')
+            "inspection_time": inspectionDateTimeConvert(inspection.inspectionDate, inspection.inspectionTime),
+            "additional_requests": inspection.additionalServices
           }
         });
       } else {
@@ -173,6 +198,9 @@ const ProductDetailView = () => {
           console.log("No differences found.");
         }
       }
+      let dataObject = JSON.parse(data);
+      dataObject["files"] = uploadedImageIds;
+      data = JSON.stringify(dataObject);
 
       let config = {
         method: isNew ? 'POST' : 'PUT',
@@ -187,13 +215,17 @@ const ProductDetailView = () => {
 
       axios.request(config)
         .then((response) => {
+          console.log(data);
           if (response.data.status) {
             if (id === "new") {
-              alert("Ad posted successfully.");
+              successDialog("Ad posted successfully.").then(() => {
+                window.location.href = "/listing/" + response.data.data._id;
+              });
             } else {
-              alert("Ad updated successfully.");
+              successDialog("Ad updated successfully.").then(() => {
+                window.location.href = "/listing/" + response.data.data._id;
+              });
             }
-            window.location.href = "/listing/" + response.data.data._id;
           } else {
             console.log(JSON.stringify(response.data));
             if (typeof response.data.msg === 'string' && response.data.msg.includes('not allowed to be empty')) {
@@ -209,19 +241,27 @@ const ProductDetailView = () => {
           console.log(error);
         });
     }
+    setIsLoading(false);
   };
 
   const handleCancelClick = () => {
-    alert('Cancelling edit mode...');
-    setIsEditMode(false);
-    if (id === "new") {
-      window.location.href = "/listing";
-    }
+    confirmDialog('Are you sure you want to cancel editing?').then((result) => {
+      if (result.isConfirmed) {
+        setIsEditMode(false);
+        if (id === "new") {
+          window.location.href = "/listing";
+        }
+      }
+    });
   };
 
   const handleDeleteClick = () => {
-    alert('Deleting ad...');
-    setIsEditMode(false);
+    confirmDialog('Are you sure you want to delete this ad?').then((result) => {
+      if (result.isConfirmed) {
+        setIsEditMode(false);
+        alert("Delete under development");
+      }
+    });
   };
 
   const handleAssignInspection = (state) => {
@@ -252,15 +292,16 @@ const ProductDetailView = () => {
     axios.request(config)
       .then((response) => {
         if (response.data.status) {
-          alert("Inspection " + state + "ed successfully!");
-          window.location.reload();
+          successDialog(`Inspection ${state}ed successfully!`).then(() => {
+            window.location.reload();
+          });
         } else {
-          alert("Error! Please try again.");
+          errorDialog("Error! Please try again.");
         }
         console.log(JSON.stringify(response.data));
       })
       .catch((error) => {
-        alert("Error! Please try again.");
+        errorDialog("Error! Please try again.");
         console.log(error);
       });
 
@@ -304,7 +345,6 @@ const ProductDetailView = () => {
   };
 
   const handleGenerateDescription = async () => {
-    alert("AI");
     if (detailsRef.current) {
       const details = detailsRef.current.getDetails();
       const isEmptyOrNull = (value) => value === null || value === '';
@@ -348,12 +388,76 @@ const ProductDetailView = () => {
             console.log(error);
           });
       } else {
-        alert('All vehicle details must be filled out to provide an accurate and detailed description using the AI writer. Please ensure no fields are left empty.')
+        warningDialog('All vehicle details must be filled out to provide an accurate and detailed description using the AI writer. Please ensure no fields are left empty.')
         return;
       }
     }
   };
 
+  const handleImageClick = (event) => {
+    if (imageUploading) return;
+
+    if (!isEditMode) {
+      // Swap images logic
+      const firstImage = document.querySelector('.img-fluid.mb-3');
+      const clickedImage = event.target;
+
+      if (firstImage && clickedImage && firstImage !== clickedImage) {
+        const tempSrc = firstImage.src;
+        firstImage.src = clickedImage.src;
+        clickedImage.src = tempSrc;
+      }
+    } else {
+      // Image upload logic
+      const input = document.createElement('input');
+      input.type = 'file';
+      input.accept = 'image/*';
+      input.onchange = async (inputEvent) => {
+        const file = inputEvent.target.files[0];
+        if (file && file.type.startsWith('image/')) {
+          setImageUploading(true);
+          try {
+            const response = await uploadFile(file, `${sessionData.token}`);
+            if (response.status) {
+              const newImageId = response.data._id;
+
+              const imageUrl = URL.createObjectURL(file);
+              event.target.src = imageUrl; // Replace the clicked image
+
+              // Update the data-image-id attribute of the clicked image before updating the state
+              const oldImageId = event.target.dataset.imageId;
+              event.target.dataset.imageId = newImageId;
+
+              // Update the state with the new image ID
+              setUploadedImageIds((prevIds) => {
+                // Remove the old image ID if it exists
+                const updatedIds = prevIds.filter(id => id !== oldImageId);
+                // Add the new image ID
+                const newIds = [...updatedIds, newImageId];
+                console.log('Updated IDs:', newIds); // Log the updated IDs
+                return newIds;
+              });
+
+              alert('Image uploaded successfully');
+            } else {
+              console.log(response);
+              alert('Image upload error!');
+            }
+          } catch (err) {
+            alert('Failed to upload image' + err);
+          } finally {
+            setImageUploading(false);
+          }
+        } else {
+          alert('Please select a valid image file');
+        }
+      };
+      input.click();
+    }
+  };
+
+  const fileCount = vehicleData?.files?.length || 0;
+  const defaultImagesNeeded = 4 - fileCount;
 
   return (
     <div className="container-fluid mt-3">
@@ -361,30 +465,76 @@ const ProductDetailView = () => {
         <div className="row">
           <div className="col-md-8">
             <div className="row mb-3">
-              <div className="col-md-5 text-center">
-                <img
-                  src="../../images/products/vehicle.jpg"
-                  className="img-fluid mb-3"
-                  alt=""
-                />
-                <img
-                  src="../../images/products/vehicle.jpg"
-                  className="border border-secondary me-2"
-                  width="75"
-                  alt="..."
-                />
-                <img
-                  src="../../images/products/vehicle.jpg"
-                  className="border border-secondary me-2"
-                  width="75"
-                  alt="..."
-                />
-                <img
-                  src="../../images/products/vehicle.jpg"
-                  className="border border-secondary me-2"
-                  width="75"
-                  alt="..."
-                />
+              <div className="col-md-5 text-center" style={{ position: "relative" }}>
+                {imageUploading && <div className="spinner-overlay" role="status"><span className="sr-only spinner-border"></span></div>}
+                {isNew ? (
+                  <>
+                    <img
+                      src="../../images/products/vehicle.jpg"
+                      className="img-fluid mb-3"
+                      width=""
+                      height="240"
+                      alt=""
+                      onClick={handleImageClick}
+                      data-image-id=""
+                    />
+                    <img
+                      src="../../images/products/vehicle.jpg"
+                      className="border border-secondary me-2"
+                      width="75"
+                      height="50"
+                      alt="..."
+                      onClick={handleImageClick}
+                      data-image-id=""
+                    />
+                    <img
+                      src="../../images/products/vehicle.jpg"
+                      className="border border-secondary me-2"
+                      width="75"
+                      height="50"
+                      alt="..."
+                      onClick={handleImageClick}
+                      data-image-id=""
+                    />
+                    <img
+                      src="../../images/products/vehicle.jpg"
+                      className="border border-secondary me-2"
+                      width="75"
+                      height="50"
+                      alt="..."
+                      onClick={handleImageClick}
+                      data-image-id=""
+                    />
+                  </>
+                ) : (
+                  <>
+                    {vehicleData.files.map((file, index) => (
+                      <img
+                        key={file._id}
+                        src={`${process.env.REACT_APP_API_URL}/uploads/300x300/${file.new_filename}`}
+                        className={`border border-secondary me-2 ${index === 0 ? 'img-fluid mb-3' : ''}`}
+                        width={index === 0 ? undefined : "75"}
+                        height={index === 0 ? undefined : "50"}
+                        alt=""
+                        onClick={handleImageClick}
+                        data-image-id={file._id}
+                      />
+                    ))}
+                    {(isEditMode || defaultImagesNeeded === 4) &&
+                      Array.from({ length: defaultImagesNeeded }).map((_, index) => (
+                        <img
+                          key={`default-${index}`}
+                          src="../../images/products/vehicle.jpg"
+                          className={defaultImagesNeeded === 4 && index === 0 ? "img-fluid mb-3" : "border border-secondary me-2"}
+                          width={!(defaultImagesNeeded === 4 && index === 0) ? "75" : "100%"}
+                          height={!(defaultImagesNeeded === 4 && index === 0) ? "50" : "240"}
+                          alt="..."
+                          onClick={handleImageClick}
+                          data-image-id=""
+                        />
+                      ))}
+                  </>
+                )}
               </div>
               <div className="col-md-7">
                 {sessionData && (isNew || sessionData.user_id === vehicleData.seller_id._id) && <>
@@ -402,7 +552,7 @@ const ProductDetailView = () => {
                 {!isEditMode && (
                   <>
                     <span className="badge bg-success me-2">New</span>
-                    <span className="badge bg-danger me-2">Hot</span>
+                    {/* <span className="badge bg-danger me-2">Hot</span> */}
                   </>
                 )}
                 <div className="">
@@ -474,110 +624,114 @@ const ProductDetailView = () => {
                 </div>
               </div>
             </div>
-            <div className="row">
-              <div className="col-md-12">
-                <nav>
-                  <div className="nav nav-tabs" id="nav-tab" role="tablist">
-                    <a
-                      className="nav-link active"
-                      id="nav-details-tab"
-                      data-bs-toggle="tab"
-                      href="#nav-details"
-                      role="tab"
-                      aria-controls="nav-details"
-                      aria-selected="true"
-                    >
-                      Vehicle Details
-                    </a>
-                    <a
-                      className="nav-link"
-                      id="nav-ship-returns-tab"
-                      data-bs-toggle="tab"
-                      href="#nav-ship-returns"
-                      role="tab"
-                      aria-controls="nav-ship-returns"
-                      aria-selected="false"
-                    >
-                      {isEditMode ? (vehicleData && (vehicleData.inspection_status === 'completed' || vehicleData.inspection_status === 'accepted') ? "Our Assurance" : "Book Inspection") : ("Our Assurance")}
-                    </a>
-                    {!isEditMode ? <>
-                      <a
-                        className="nav-link"
-                        id="nav-faq-tab"
-                        data-bs-toggle="tab"
-                        href="#nav-faq"
-                        role="tab"
-                        aria-controls="nav-faq"
-                        aria-selected="false"
+            {!isLoading &&
+              <>
+                <div className="row">
+                  <div className="col-md-12">
+                    <nav>
+                      <div className="nav nav-tabs" id="nav-tab" role="tablist">
+                        <a
+                          className="nav-link active"
+                          id="nav-details-tab"
+                          data-bs-toggle="tab"
+                          href="#nav-details"
+                          role="tab"
+                          aria-controls="nav-details"
+                          aria-selected="true"
+                        >
+                          Vehicle Details
+                        </a>
+                        <a
+                          className="nav-link"
+                          id="nav-ship-returns-tab"
+                          data-bs-toggle="tab"
+                          href="#nav-ship-returns"
+                          role="tab"
+                          aria-controls="nav-ship-returns"
+                          aria-selected="false"
+                        >
+                          {isEditMode ? (vehicleData && (vehicleData.inspection_status === 'completed' || vehicleData.inspection_status === 'accepted') ? "Our Assurance" : "Book Inspection") : ("Our Assurance")}
+                        </a>
+                        {!isEditMode ? <>
+                          <a
+                            className="nav-link"
+                            id="nav-faq-tab"
+                            data-bs-toggle="tab"
+                            href="#nav-faq"
+                            role="tab"
+                            aria-controls="nav-faq"
+                            aria-selected="false"
+                          >
+                            Questions and Answers
+                          </a>
+                        </> : <>
+                          <a
+                            className="nav-link"
+                            id="nav-randr-tab"
+                            data-bs-toggle="tab"
+                            href="#nav-randr"
+                            role="tab"
+                            aria-controls="nav-randr"
+                            aria-selected="false"
+                          >
+                            T & C
+                          </a>
+                        </>}
+                      </div>
+                    </nav>
+                    <div className="tab-content p-3 small" id="nav-tabContent">
+                      <div
+                        className="tab-pane fade show active"
+                        id="nav-details"
+                        role="tabpanel"
+                        aria-labelledby="nav-details-tab"
                       >
-                        Questions and Answers
-                      </a>
-                    </> : <>
-                      <a
-                        className="nav-link"
-                        id="nav-randr-tab"
-                        data-bs-toggle="tab"
-                        href="#nav-randr"
-                        role="tab"
-                        aria-controls="nav-randr"
-                        aria-selected="false"
+                        <Details isEditMode={isEditMode ? (vehicleData && (vehicleData.inspection_status === 'completed' || vehicleData.inspection_status === 'accepted') ? false : isEditMode) : (isEditMode)} vehicleData={vehicleData} ref={detailsRef} />
+                      </div>
+                      {isEditMode ? <>
+                        <div
+                          className="tab-pane fade"
+                          id="nav-randr"
+                          role="tabpanel"
+                          aria-labelledby="nav-randr-tab"
+                        >
+                          <TermsConditions />
+                        </div>
+                      </> : <>
+                        <div
+                          className="tab-pane fade"
+                          id="nav-faq"
+                          role="tabpanel"
+                          aria-labelledby="nav-faq-tab"
+                        >
+                          <dl>
+                            {Array.from({ length: 5 }, (_, key) => (
+                              <QuestionAnswer key={key} />
+                            ))}
+                          </dl>
+                        </div>
+                      </>}
+                      <div
+                        className="tab-pane fade"
+                        id="nav-ship-returns"
+                        role="tabpanel"
+                        aria-labelledby="nav-ship-returns-tab"
                       >
-                        T & C
-                      </a>
-                    </>}
-                  </div>
-                </nav>
-                <div className="tab-content p-3 small" id="nav-tabContent">
-                  <div
-                    className="tab-pane fade show active"
-                    id="nav-details"
-                    role="tabpanel"
-                    aria-labelledby="nav-details-tab"
-                  >
-                    <Details isEditMode={isEditMode ? (vehicleData && (vehicleData.inspection_status === 'completed' || vehicleData.inspection_status === 'accepted') ? false : isEditMode) : (isEditMode)} vehicleData={vehicleData} ref={detailsRef} />
-                  </div>
-                  {isEditMode ? <>
-                    <div
-                      className="tab-pane fade"
-                      id="nav-randr"
-                      role="tabpanel"
-                      aria-labelledby="nav-randr-tab"
-                    >
-                      <TermsConditions />
+                        <OurAssurance isEditMode={isEditMode ? (vehicleData && (vehicleData.inspection_status === 'completed' || vehicleData.inspection_status === 'accepted') ? false : isEditMode) : (isEditMode)} vehicleData={vehicleData} ref={inspectionRef} userRole={sessionData ? (sessionData.user_id === vehicleData.seller_id._id ? "owner" : sessionData.role) : ''} />
+                      </div>
+                      <div
+                        className="tab-pane fade"
+                        id="nav-size-chart"
+                        role="tabpanel"
+                        aria-labelledby="nav-size-chart-tab"
+                      >
+                        <SizeChart />
+                      </div>
                     </div>
-                  </> : <>
-                    <div
-                      className="tab-pane fade"
-                      id="nav-faq"
-                      role="tabpanel"
-                      aria-labelledby="nav-faq-tab"
-                    >
-                      <dl>
-                        {Array.from({ length: 5 }, (_, key) => (
-                          <QuestionAnswer key={key} />
-                        ))}
-                      </dl>
-                    </div>
-                  </>}
-                  <div
-                    className="tab-pane fade"
-                    id="nav-ship-returns"
-                    role="tabpanel"
-                    aria-labelledby="nav-ship-returns-tab"
-                  >
-                    <OurAssurance isEditMode={isEditMode ? (vehicleData && (vehicleData.inspection_status === 'completed' || vehicleData.inspection_status === 'accepted') ? false : isEditMode) : (isEditMode)} vehicleData={vehicleData} ref={inspectionRef} userRole={sessionData ? sessionData.role : ''} />
-                  </div>
-                  <div
-                    className="tab-pane fade"
-                    id="nav-size-chart"
-                    role="tabpanel"
-                    aria-labelledby="nav-size-chart-tab"
-                  >
-                    <SizeChart />
                   </div>
                 </div>
-              </div>
-            </div>
+              </>
+            }
           </div>
           <div className="col-md-4">
             <CardFeaturedProduct data={data.products} />
@@ -592,7 +746,7 @@ const ProductDetailView = () => {
         </div>
       </>
       }
-    </div>
+    </div >
   );
 };
 

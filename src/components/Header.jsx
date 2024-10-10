@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { getSession, clearSession } from "../actions/session";
-import { confirmDialog, warningDialog } from "../helpers/alerts.js";
+import { confirmDialog } from "../helpers/alerts.js";
 
 const Header = () => {
   const [session, setSession] = useState(null);
@@ -16,18 +16,17 @@ const Header = () => {
   const handleLogout = () => {
     confirmDialog("Are you sure you want to log out?")
       .then((result) => {
-        if (result.isConfirmed) { // If user clicks "OK"
+        if (result.isConfirmed) {
           clearSession();
           setSession(null);
           window.location.reload();
-        } else {
-          warningDialog("That's what I thought, you dummy!\nThink twice before clicking!");
         }
       })
       .catch((error) => {
         console.error("Error displaying the confirmation dialog:", error);
       });
   };
+  
 
   return (
     <header className="p-3 border-bottom bg-light">
