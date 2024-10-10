@@ -88,5 +88,5 @@
 }
 
 .img-fluid {
-  height: auto;
+  height: auto !important;
 }
