@@ -717,7 +717,7 @@ const ProductDetailView = () => {
                         role="tabpanel"
                         aria-labelledby="nav-ship-returns-tab"
                       >
-                        <OurAssurance isEditMode={isEditMode ? (vehicleData && (vehicleData.inspection_status === 'completed' || vehicleData.inspection_status === 'accepted') ? false : isEditMode) : (isEditMode)} vehicleData={vehicleData} ref={inspectionRef} userRole={sessionData ? (sessionData.user_id === vehicleData.seller_id._id ? "owner" : sessionData.role) : ''} />
+                        <OurAssurance isEditMode={isEditMode ? (vehicleData && (vehicleData.inspection_status === 'completed' || vehicleData.inspection_status === 'accepted') ? false : isEditMode) : (isEditMode)} vehicleData={vehicleData} ref={inspectionRef} userRole={sessionData && isNew ? (sessionData.user_id === vehicleData.seller_id._id ? "owner" : sessionData.role) : ''} />
                       </div>
                       <div
                         className="tab-pane fade"
