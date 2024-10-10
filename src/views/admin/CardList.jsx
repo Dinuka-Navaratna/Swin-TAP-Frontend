@@ -4,6 +4,7 @@ import axios from "axios";
 import { getSession } from "../../actions/session";
 
 const CardList = (props) => {
+  const session = getSession();
   const item = props.data;
 
   // State for modal visibility
@@ -34,8 +35,7 @@ const CardList = (props) => {
     try {
       await axios.put(`${process.env.REACT_APP_API_URL}/api/users`, formData, {
         headers: {
-          Authorization:
-            "Token eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNjZjMDRmODQwNWJhNDQ2NzNlYjE2NGZjIiwibmFtZSI6Imthc3VuIiwicm9sZSI6ImFkbWluIiwicGhvbmUiOiIwNzE3NjU2NjU3IiwiZW1haWwiOiJrbWthc3VubWFkdXNhbmthQGdtYWlsLmNvbSIsImV4cCI6MTc1NTQxODcyMCwiaWF0IjoxNzIzODgyNzIwfQ.3TOQUl1htrC9rxaYIDNPKgzASp3wJLgNcJ5nwLvGACw", //`Token ${session ? session.token : ""}`,
+          Authorization: `Token ${session ? session.token : ""}`, //`Token ${session ? session.token : ""}`,
         },
       });
       alert(`User ${formData.name} updated successfully!`);
@@ -53,8 +53,7 @@ const CardList = (props) => {
         `${process.env.REACT_APP_API_URL}/api/users/${userId}`,
         {
           headers: {
-            Authorization:
-              "Token eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNjZjMDRmODQwNWJhNDQ2NzNlYjE2NGZjIiwibmFtZSI6Imthc3VuIiwicm9sZSI6ImFkbWluIiwicGhvbmUiOiIwNzE3NjU2NjU3IiwiZW1haWwiOiJrbWthc3VubWFkdXNhbmthQGdtYWlsLmNvbSIsImV4cCI6MTc1NTQxODcyMCwiaWF0IjoxNzIzODgyNzIwfQ.3TOQUl1htrC9rxaYIDNPKgzASp3wJLgNcJ5nwLvGACw", //`Token ${session ? session.token : ""}`,
+            Authorization: `Token ${session ? session.token : ""}`,
           },
         }
       );
