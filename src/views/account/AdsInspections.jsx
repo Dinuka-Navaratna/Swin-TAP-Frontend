@@ -5,7 +5,7 @@ import { getSession } from "../../actions/session";
 import { toTitleCase } from '../../helpers/letterCaseChange'
 import { trimText } from '../../helpers/trimText'
 import './style.css';
-import {warningDialog, errorDialog} from "../../helpers/alerts.js";
+import { warningDialog, errorDialog } from "../../helpers/alerts.js";
 
 const AdsInspectionsView = () => {
   const [sessionData, setSessionData] = useState(null);
@@ -29,7 +29,7 @@ const AdsInspectionsView = () => {
     if (session) {
       setSessionData(session);
     } else {
-      warningDialog("Log in to view "+whatPage());
+      warningDialog("Log in to view " + whatPage());
       window.location.href = "/account/signin";
     }
 
@@ -134,88 +134,93 @@ const AdsInspectionsView = () => {
         ) : (
           <>
             {ads && ads.length > 0 ? (
-              ads.map(ad => (
-                <div className="col-md-6" key={ad._id}>
-                  <div className="card">
-                    <div className="row g-0">
-                      <div className="col-md-3 text-center">
-                        <img
-                          src="../../images/products/vehicle.jpg"
-                          className="img-fluid"
-                          alt="..."
-                        />
-                      </div>
-                      <div className="col-md-9">
-                        <div className="card-header">
-                          <div className="small">
-                            {/* <span className="border bg-secondary rounded-left px-2 text-white">
+              <>
+                {ads.map(ad => {
+                  const files = ad.files.length;
+                  return (
+                    <div className="col-md-6" key={ad._id}>
+                      <div className="card">
+                        <div className="row g-0">
+                          <div className="col-md-3 text-center">
+                            <img
+                              src={files !== 0 ? `${process.env.REACT_APP_API_URL}/uploads/300x300/${ad.files[0].new_filename}` : "../../images/products/vehicle.jpg"}
+                              className="img-fluid"
+                              alt="..."
+                            />
+                          </div>
+                          <div className="col-md-9">
+                            <div className="card-header">
+                              <div className="small">
+                                {/* <span className="border bg-secondary rounded-left px-2 text-white">
                           Inspection ID
                         </span>
                         <span className="border bg-white rounded-right px-2 me-2">
                           #123456
                         </span> */}
-                            <span className="border bg-secondary rounded-left px-2 text-white">
-                              Advertised on:
-                            </span>
-                            <span className="border bg-white rounded-right px-2">
-                              {formatDate(whatPage() === "inspections" ? ad.vehicle.created_at : ad.created_at)}
-                            </span>
-                            <span className="float-right px-2">
-                              <Link to={"/listing/" + (whatPage() === "inspections" ? ad.vehicle._id : ad._id)} className="text-decoration-none">More Details &gt;&gt;</Link>
-                            </span>
-                          </div>
-                        </div>
-                        <div className="card-body">
-                          <h6>
-                            <Link to={"/listing/" + (whatPage() === "inspections" ? ad.vehicle._id : ad._id)} className="text-decoration-none">
-                              {whatPage() === "inspections" ? toTitleCase(ad.vehicle.title) : toTitleCase(ad.title)}
-                            </Link>
-                          </h6>
-                          <span className="me-3 small">{whatPage() === "inspections" ? trimText(ad.vehicle.description, 30) : trimText(ad.description, 30)}</span>
-                          {
-                            /* <div className="small">
-                          <span className="text-muted me-2">Size:</span>
-                          <span className="me-3">M</span>
-                          <span className="text-muted me-2">Price:</span>
-                          <span className="me-3">$1234</span>
-                          <span className="text-muted me-2">Color:</span>
-                          <span className="me-3">
-                            <span className="bg-primary px-1 rounded">
-                              &nbsp;&nbsp;&nbsp;
-                            </span>
-                          </span>
-                        </div> */
-                          }
-                          <div className="mt-2"></div>
-                        </div>
-                        <div className="card-footer d-flex justify-content-between">
-                          <div>
-                            <span className="me-2"><b>Inspection:</b></span>
-                            {getStatusElement(whatPage() === "inspections" ? ad.vehicle.inspection_status : ad.inspection_status)}
-                          </div>
-                          <div>
-                            {ad.inspection_status === "completed" ? (
-                              <>
-                                <span className="me-2">Report:</span>
-                                <span className="text-success">
-                                  <Link to={`${process.env.REACT_APP_API_URL} + /uploads/`} target="_blank" rel="noopener noreferrer">
-                                    <i className="bi bi-receipt-cutoff me-1"></i>
-                                    Download
-                                  </Link>
+                                <span className="border bg-secondary rounded-left px-2 text-white">
+                                  Advertised on:
                                 </span>
-                              </>
-                            ) : (whatPage() === "inspections" &&
-                              <>
-                                <span className="me-2 small">Date: {ad.inspection_time}</span>
-                              </>
-                            )}
+                                <span className="border bg-white rounded-right px-2">
+                                  {formatDate(whatPage() === "inspections" ? ad.vehicle.created_at : ad.created_at)}
+                                </span>
+                                <span className="float-right px-2">
+                                  <Link to={"/listing/" + (whatPage() === "inspections" ? ad.vehicle._id : ad._id)} className="text-decoration-none">More Details &gt;&gt;</Link>
+                                </span>
+                              </div>
+                            </div>
+                            <div className="card-body">
+                              <h6>
+                                <Link to={"/listing/" + (whatPage() === "inspections" ? ad.vehicle._id : ad._id)} className="text-decoration-none">
+                                  {whatPage() === "inspections" ? toTitleCase(ad.vehicle.title) : toTitleCase(ad.title)}
+                                </Link>
+                              </h6>
+                              <span className="me-3 small">{whatPage() === "inspections" ? trimText(ad.vehicle.description, 30) : trimText(ad.description, 30)}</span>
+                              {
+                                /* <div className="small">
+                              <span className="text-muted me-2">Size:</span>
+                              <span className="me-3">M</span>
+                              <span className="text-muted me-2">Price:</span>
+                              <span className="me-3">$1234</span>
+                              <span className="text-muted me-2">Color:</span>
+                              <span className="me-3">
+                                <span className="bg-primary px-1 rounded">
+                                  &nbsp;&nbsp;&nbsp;
+                                </span>
+                              </span>
+                            </div> */
+                              }
+                              <div className="mt-2"></div>
+                            </div>
+                            <div className="card-footer d-flex justify-content-between">
+                              <div>
+                                <span className="me-2"><b>Inspection:</b></span>
+                                {getStatusElement(whatPage() === "inspections" ? ad.vehicle.inspection_status : ad.inspection_status)}
+                              </div>
+                              <div>
+                                {ad.inspection_status === "completed" ? (
+                                  <>
+                                    <span className="me-2">Report:</span>
+                                    <span className="text-success">
+                                      <Link to={`${process.env.REACT_APP_API_URL} + /uploads/`} target="_blank" rel="noopener noreferrer">
+                                        <i className="bi bi-receipt-cutoff me-1"></i>
+                                        Download
+                                      </Link>
+                                    </span>
+                                  </>
+                                ) : (whatPage() === "inspections" &&
+                                  <>
+                                    <span className="me-2 small">Date: {ad.inspection_time}</span>
+                                  </>
+                                )}
+                              </div>
+                            </div>
                           </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                </div>
-              ))
+                  )
+                })}
+              </>
             ) : (<><div className="col-md-6">No {whatPage()} found!</div><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /></>)}
           </>
         )}
