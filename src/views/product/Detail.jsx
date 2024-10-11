@@ -119,7 +119,7 @@ const ProductDetailView = () => {
     return isoString;
   }
 
-  const getPaymentLink = async (additional_services, inspection_report_id) => {
+  const getPaymentLink = async (status, additional_services, inspection_report_id) => {
     if (additional_services && additional_services.length > 0) {
       additional_services = additional_services.map(serviceId => {
         return additionalServicesList.find(service => service.id === serviceId);
@@ -127,8 +127,13 @@ const ProductDetailView = () => {
     }
     additional_services = additional_services.map(({ id, ...rest }) => rest);
 
+    var amount = "0";
+    if (status === "new") {
+      amount = "500";
+    }
+
     let data = JSON.stringify({
-      "amount": "500",
+      "amount": amount,
       "currency": "AUD",
       "inspection_report": inspection_report_id,
       "payment_email": sessionData.email,
@@ -254,19 +259,51 @@ const ProductDetailView = () => {
         .then((response) => {
           console.log(data);
           if (response.data.status) {
-            getPaymentLink(inspection.additionalServices, "67074db1cad0550387a19ee7").then(url => {
-              console.log("URL", url);
-              window.open(url, '_blank');
-              if (id === "new") {
+            if (id === "new") {
+              if (response.data.data.inspection_report) {
+                getPaymentLink("new", inspection.additionalServices, response.data.data.inspection_report._id).then(url => {
+                  window.open(url, '_blank');
+                  successDialog("Ad posted successfully.").then(() => {
+                    window.location.href = "/listing/" + response.data.data._id;
+                  });
+                });
+              } else {
                 successDialog("Ad posted successfully.").then(() => {
                   window.location.href = "/listing/" + response.data.data._id;
                 });
+              }
+            } else {
+              if (response.data.data.inspection_report) {
+                if (vehicleData.inspection_report) {
+                  var add_services = vehicleData.inspection_report.additional_requests;
+                  console.log("vehicleData.inspection_report", add_services);
+                  add_services = add_services.filter(item => typeof item === 'number');
+                  if (add_services.length > 0) {
+                    getPaymentLink("update", add_services, response.data.data.inspection_report._id).then(url => {
+                      window.open(url, '_blank');
+                      successDialog("Ad updated successfully.").then(() => {
+                        window.location.href = "/listing/" + response.data.data._id;
+                      });
+                    });
+                  } else {
+                    successDialog("Ad updated successfully.").then(() => {
+                      window.location.href = "/listing/" + response.data.data._id;
+                    });
+                  }
+                } else {
+                  getPaymentLink("new", inspection.additionalServices, response.data.data.inspection_report._id).then(url => {
+                    window.open(url, '_blank');
+                    successDialog("Ad updated successfully.").then(() => {
+                      window.location.href = "/listing/" + response.data.data._id;
+                    });
+                  });
+                }
               } else {
                 successDialog("Ad updated successfully.").then(() => {
                   window.location.href = "/listing/" + response.data.data._id;
                 });
               }
-            });
+            }
           } else {
             console.log(JSON.stringify(response.data));
             if (typeof response.data.msg === 'string' && response.data.msg.includes('not allowed to be empty')) {
