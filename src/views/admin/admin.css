@@ -336,3 +336,23 @@
     width: 8rem;
     height: 8rem;
 }
+
+.analytics-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .pie-charts-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .bar-chart-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-grow: 1;
+  }
