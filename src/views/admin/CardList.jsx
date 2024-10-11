@@ -70,7 +70,7 @@ const CardList = (props) => {
     <div className="list-item d-flex align-items-start p-3 border-bottom">
       {/* Image section */}
       <img
-        src={"../../images/products/vehicle.jpg"}
+        src={"../../images/category/male.webp"}
         alt="vehicle"
         className="img-fluid rounded me-3"
         style={{ width: "150px", height: "auto" }}
