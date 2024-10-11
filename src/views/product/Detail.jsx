@@ -119,6 +119,52 @@ const ProductDetailView = () => {
     return isoString;
   }
 
+  const getPaymentLink = async (status, additional_services, inspection_report_id) => {
+    if (additional_services && additional_services.length > 0) {
+      additional_services = additional_services.map(serviceId => {
+        return additionalServicesList.find(service => service.id === serviceId);
+      });
+    }
+    additional_services = additional_services.map(({ id, ...rest }) => rest);
+
+    var amount = "0";
+    if (status === "new") {
+      amount = "500";
+    }
+
+    let data = JSON.stringify({
+      "amount": amount,
+      "currency": "AUD",
+      "inspection_report": inspection_report_id,
+      "payment_email": sessionData.email,
+      "additional_requests": additional_services
+    });
+
+    let config = {
+      method: 'POST',
+      maxBodyLength: Infinity,
+      url: `${process.env.REACT_APP_API_URL}/api/payments/`,
+      headers: {
+        'Authorization': `Token ${sessionData.token}`,
+        'Content-Type': 'application/json'
+      },
+      data: data
+    };
+
+    try {
+      const response = await axios.request(config);
+      console.log(JSON.stringify(response.data));
+      if (response.data.status) {
+        return response.data.data.url;
+      } else {
+        return "error";
+      }
+    } catch (error) {
+      console.log(error);
+      return "error";
+    }
+  }
+
   const handleSaveClick = () => {
     setIsLoading(true);
     if (detailsRef.current) {
@@ -150,12 +196,6 @@ const ProductDetailView = () => {
             "inspection_time": inspectionDateTimeConvert(inspection.inspectionDate, inspection.inspectionTime),
             "additional_requests": inspection.additionalServices
           };
-          // Replace additional_requests IDs with their corresponding objects
-          // if (inspection.additionalServices && inspection.additionalServices.length > 0) {
-          //   details.inspection_report.additional_requests = inspection.additionalServices.map(serviceId => {
-          //     return additional_services.find(service => service.id === serviceId);
-          //   });
-          // }
         } else {
           warningDialog("Inspection date cannot be today or before. Please try again with a future date.");
           setIsLoading(false);
@@ -220,13 +260,49 @@ const ProductDetailView = () => {
           console.log(data);
           if (response.data.status) {
             if (id === "new") {
-              successDialog("Ad posted successfully.").then(() => {
-                window.location.href = "/listing/" + response.data.data._id;
-              });
+              if (response.data.data.inspection_report) {
+                getPaymentLink("new", inspection.additionalServices, response.data.data.inspection_report._id).then(url => {
+                  window.open(url, '_blank');
+                  successDialog("Ad posted successfully.").then(() => {
+                    window.location.href = "/listing/" + response.data.data._id;
+                  });
+                });
+              } else {
+                successDialog("Ad posted successfully.").then(() => {
+                  window.location.href = "/listing/" + response.data.data._id;
+                });
+              }
             } else {
-              successDialog("Ad updated successfully.").then(() => {
-                window.location.href = "/listing/" + response.data.data._id;
-              });
+              if (response.data.data.inspection_report) {
+                if (vehicleData.inspection_report) {
+                  var add_services = vehicleData.inspection_report.additional_requests;
+                  console.log("vehicleData.inspection_report", add_services);
+                  add_services = add_services.filter(item => typeof item === 'number');
+                  if (add_services.length > 0) {
+                    getPaymentLink("update", add_services, response.data.data.inspection_report._id).then(url => {
+                      window.open(url, '_blank');
+                      successDialog("Ad updated successfully.").then(() => {
+                        window.location.href = "/listing/" + response.data.data._id;
+                      });
+                    });
+                  } else {
+                    successDialog("Ad updated successfully.").then(() => {
+                      window.location.href = "/listing/" + response.data.data._id;
+                    });
+                  }
+                } else {
+                  getPaymentLink("new", inspection.additionalServices, response.data.data.inspection_report._id).then(url => {
+                    window.open(url, '_blank');
+                    successDialog("Ad updated successfully.").then(() => {
+                      window.location.href = "/listing/" + response.data.data._id;
+                    });
+                  });
+                }
+              } else {
+                successDialog("Ad updated successfully.").then(() => {
+                  window.location.href = "/listing/" + response.data.data._id;
+                });
+              }
             }
           } else {
             console.log(JSON.stringify(response.data));
@@ -359,6 +435,7 @@ const ProductDetailView = () => {
       const hasEmptyFields = fieldsToCheck.some(field => isEmptyOrNull(details[field]));
 
       if (!hasEmptyFields) {
+        setIsLoading(true);
         details.mileage = details.mileage + " Km";
         let config = {
           method: 'POST',
@@ -393,6 +470,7 @@ const ProductDetailView = () => {
         warningDialog('All vehicle details must be filled out to provide an accurate and detailed description using the AI writer. Please ensure no fields are left empty.')
         return;
       }
+      setIsLoading(false);
     }
   };
 
