@@ -13,7 +13,7 @@ const ShippingReturns = forwardRef((props, ref) => {
   const additionalServicesList = JSON.parse(process.env.REACT_APP_ADDITIONAL_SERVICES);
 
   useEffect(() => {
-    if (vehicleData.inspection_report && vehicleData.inspection_report.additional_requests) {
+    if (vehicleData?.inspection_report?.additional_requests) {
       additionalServices.current = vehicleData.inspection_report.additional_requests;
     }
   }, [vehicleData]);
@@ -72,27 +72,27 @@ const ShippingReturns = forwardRef((props, ref) => {
           </div> */}
           <div className="col-md-3">
             <label htmlFor="inspectionDate">Inspection Date*</label><br></br>
-            <input type="date" ref={inspectionDate} id="inspectionDate" placeholder="Inspection Date" defaultValue={vehicleData.inspection_report && vehicleData.inspection_report.inspection_time ? vehicleData.inspection_report.inspection_time.split('T')[0] : ""} />
+            <input type="date" ref={inspectionDate} id="inspectionDate" placeholder="Inspection Date" defaultValue={vehicleData?.inspection_report?.inspection_time ? vehicleData.inspection_report.inspection_time.split('T')[0] : ""} />
           </div>
           <div className="col-md-3">
             <label htmlFor="inspectionDate">Inspection Time*</label><br></br>
-            <input type="time" ref={inspectionTime} id="inspectionTime" placeholder="Inspection Time" defaultValue={vehicleData.inspection_report && vehicleData.inspection_report.inspection_time ? (vehicleData.inspection_report.inspection_time.split('T')[1]).split('.')[0] : ""} />
+            <input type="time" ref={inspectionTime} id="inspectionTime" placeholder="Inspection Time" defaultValue={vehicleData?.inspection_report?.inspection_time ? vehicleData.inspection_report.inspection_time.split('T')[1].split('.')[0] : ""} />
           </div>
           <div className="col-md-3">
             <label htmlFor="vehicleRego">Vehicle Rego</label><br></br>
-            <input type="text" ref={inspectionRego} id="vehicleRego" placeholder="Vehicle Rego" defaultValue={vehicleData.inspection_report && vehicleData.inspection_report.vehicle_rego ? vehicleData.inspection_report.vehicle_rego : ""} />
+            <input type="text" ref={inspectionRego} id="vehicleRego" placeholder="Vehicle Rego" defaultValue={vehicleData?.inspection_report?.vehicle_rego ? vehicleData.inspection_report.vehicle_rego : ""} />
           </div>
         </div>
         <br />
         <hr />
         <p className="fw-bold mb-2">Additional Services +</p>
         <ul>
-          <li>RWC Certification <span className="badge bg-dark me-2" onClick={() => addAdditionalServices(1)}>{additionalServices.current.includes(1) || additionalServices.current.includes("1") ? 'Added' : 'Add'}</span></li>
-          <li>Rego Renewal <span className="badge bg-dark me-2" onClick={() => addAdditionalServices(2)}>{additionalServices.current.includes(2) || additionalServices.current.includes("2") ? 'Added' : 'Add'}</span></li>
+          <li>RWC Certification ($50) <span className="badge bg-dark me-2" onClick={() => addAdditionalServices(1)}>{additionalServices.current.includes(1) || additionalServices.current.includes("1") ? 'Added' : 'Add'}</span></li>
+          <li>Rego Renewal ($125 - 3 months) <span className="badge bg-dark me-2" onClick={() => addAdditionalServices(2)}>{additionalServices.current.includes(2) || additionalServices.current.includes("2") ? 'Added' : 'Add'}</span></li>
         </ul>
       </> : <>
         <b>Inspection status:</b> {getInspectionStatusMessage(vehicleData.inspection_report && vehicleData.inspection_report.status ? vehicleData.inspection_report.status : vehicleData.inspection_status)}<br />
-        {userRole === "mechanic" || userRole === "owner" &&
+        {vehicleData.inspection_status !== "not_requested" && (userRole === "mechanic" || userRole === "owner") &&
           <>
             <ul className="small mt-2">
               <li><b>Date:</b> {(vehicleData.inspection_report.inspection_time).split('T')[0]}</li>
