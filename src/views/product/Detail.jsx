@@ -119,6 +119,47 @@ const ProductDetailView = () => {
     return isoString;
   }
 
+  const getPaymentLink = async (additional_services, inspection_report_id) => {
+    if (additional_services && additional_services.length > 0) {
+      additional_services = additional_services.map(serviceId => {
+        return additionalServicesList.find(service => service.id === serviceId);
+      });
+    }
+    additional_services = additional_services.map(({ id, ...rest }) => rest);
+
+    let data = JSON.stringify({
+      "amount": "500",
+      "currency": "AUD",
+      "inspection_report": inspection_report_id,
+      "payment_email": sessionData.email,
+      "additional_requests": additional_services
+    });
+
+    let config = {
+      method: 'POST',
+      maxBodyLength: Infinity,
+      url: `${process.env.REACT_APP_API_URL}/api/payments/`,
+      headers: {
+        'Authorization': `Token ${sessionData.token}`,
+        'Content-Type': 'application/json'
+      },
+      data: data
+    };
+
+    try {
+      const response = await axios.request(config);
+      console.log(JSON.stringify(response.data));
+      if (response.data.status) {
+        return response.data.data.url;
+      } else {
+        return "error";
+      }
+    } catch (error) {
+      console.log(error);
+      return "error";
+    }
+  }
+
   const handleSaveClick = () => {
     setIsLoading(true);
     if (detailsRef.current) {
@@ -150,12 +191,6 @@ const ProductDetailView = () => {
             "inspection_time": inspectionDateTimeConvert(inspection.inspectionDate, inspection.inspectionTime),
             "additional_requests": inspection.additionalServices
           };
-          // Replace additional_requests IDs with their corresponding objects
-          // if (inspection.additionalServices && inspection.additionalServices.length > 0) {
-          //   details.inspection_report.additional_requests = inspection.additionalServices.map(serviceId => {
-          //     return additional_services.find(service => service.id === serviceId);
-          //   });
-          // }
         } else {
           warningDialog("Inspection date cannot be today or before. Please try again with a future date.");
           setIsLoading(false);
@@ -219,15 +254,19 @@ const ProductDetailView = () => {
         .then((response) => {
           console.log(data);
           if (response.data.status) {
-            if (id === "new") {
-              successDialog("Ad posted successfully.").then(() => {
-                window.location.href = "/listing/" + response.data.data._id;
-              });
-            } else {
-              successDialog("Ad updated successfully.").then(() => {
-                window.location.href = "/listing/" + response.data.data._id;
-              });
-            }
+            getPaymentLink(inspection.additionalServices, "67074db1cad0550387a19ee7").then(url => {
+              console.log("URL", url);
+              window.open(url, '_blank');
+              if (id === "new") {
+                successDialog("Ad posted successfully.").then(() => {
+                  window.location.href = "/listing/" + response.data.data._id;
+                });
+              } else {
+                successDialog("Ad updated successfully.").then(() => {
+                  window.location.href = "/listing/" + response.data.data._id;
+                });
+              }
+            });
           } else {
             console.log(JSON.stringify(response.data));
             if (typeof response.data.msg === 'string' && response.data.msg.includes('not allowed to be empty')) {
@@ -359,6 +398,7 @@ const ProductDetailView = () => {
       const hasEmptyFields = fieldsToCheck.some(field => isEmptyOrNull(details[field]));
 
       if (!hasEmptyFields) {
+        setIsLoading(true);
         details.mileage = details.mileage + " Km";
         let config = {
           method: 'POST',
@@ -393,6 +433,7 @@ const ProductDetailView = () => {
         warningDialog('All vehicle details must be filled out to provide an accurate and detailed description using the AI writer. Please ensure no fields are left empty.')
         return;
       }
+      setIsLoading(false);
     }
   };
 
