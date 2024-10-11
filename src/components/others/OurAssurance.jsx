@@ -87,8 +87,8 @@ const ShippingReturns = forwardRef((props, ref) => {
         <hr />
         <p className="fw-bold mb-2">Additional Services +</p>
         <ul>
-          <li>RWC Certification <span className="badge bg-dark me-2" onClick={() => addAdditionalServices(1)}>{additionalServices.current.includes(1) || additionalServices.current.includes("1") ? 'Added' : 'Add'}</span></li>
-          <li>Rego Renewal <span className="badge bg-dark me-2" onClick={() => addAdditionalServices(2)}>{additionalServices.current.includes(2) || additionalServices.current.includes("2") ? 'Added' : 'Add'}</span></li>
+          <li>RWC Certification ($50) <span className="badge bg-dark me-2" onClick={() => addAdditionalServices(1)}>{additionalServices.current.includes(1) || additionalServices.current.includes("1") ? 'Added' : 'Add'}</span></li>
+          <li>Rego Renewal ($125 - 3 months) <span className="badge bg-dark me-2" onClick={() => addAdditionalServices(2)}>{additionalServices.current.includes(2) || additionalServices.current.includes("2") ? 'Added' : 'Add'}</span></li>
         </ul>
       </> : <>
         <b>Inspection status:</b> {getInspectionStatusMessage(vehicleData.inspection_report && vehicleData.inspection_report.status ? vehicleData.inspection_report.status : vehicleData.inspection_status)}<br />
