@@ -70,7 +70,7 @@ const CardGrid = (props) => {
   return (
     <div className="card">
       <img
-        src={"../../images/products/vehicle.jpg"}
+        src={"../../images/category/male.webp"}
         className="card-img-top"
         alt="..."
       />
