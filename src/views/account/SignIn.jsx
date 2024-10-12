@@ -21,15 +21,11 @@ const SignInView = () => {
       <div className="row border">
         <div className="col-md-6 bg-light bg-gradient p-3 d-none d-md-block">
           <img
-            src="../../images/banner/Banner_4.png"
+            src="../../images/banner/Banner_4.jpg"
             alt="..."
             className="img-fluid"
           />
-          <img
-            src="../../images/banner/Banner_5.png"
-            alt="..."
-            className="img-fluid"
-          />
+          
         </div>
         <div className="col-md-6 p-3">
           <h4 className="text-center">Sign In</h4>

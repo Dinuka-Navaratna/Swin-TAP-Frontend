@@ -2,21 +2,14 @@ import React, { lazy, Component } from "react";
 import './home.css';
 import { Link } from "react-router-dom";
 import { data } from "../../data";
-// import { ReactComponent as IconLaptop } from "bootstrap-icons/icons/laptop.svg";
-// import { ReactComponent as IconHeadset } from "bootstrap-icons/icons/headset.svg";
-// import { ReactComponent as IconPhone } from "bootstrap-icons/icons/phone.svg";
-// import { ReactComponent as IconTv } from "bootstrap-icons/icons/tv.svg";
-// import { ReactComponent as IconDisplay } from "bootstrap-icons/icons/display.svg";
-// import { ReactComponent as IconHdd } from "bootstrap-icons/icons/hdd.svg";
-// import { ReactComponent as IconUpcScan } from "bootstrap-icons/icons/upc-scan.svg";
-// import { ReactComponent as IconTools } from "bootstrap-icons/icons/tools.svg";
+
 
 const Support = lazy(() => import("../../components/Support"));
 const Banner = lazy(() => import("../../components/carousel/Banner"));
 const Carousel = lazy(() => import("../../components/carousel/Carousel"));
 const CardIcon = lazy(() => import("../../components/card/CardIcon"));
-// const CardLogin = lazy(() => import("../components/card/CardLogin"));
 const CardImage = lazy(() => import("../../components/card/CardImage"));
+const OurAssurance = lazy(() => import("../pages/OurAssurance"));
 const CardDealsOfTheDay = lazy(() =>
   import("../../components/card/CardDealsOfTheDay")
 );
@@ -61,9 +54,8 @@ class HomeView extends Component {
           <div className="row">
             <div className="col-md-12">
               <CardDealsOfTheDay
-                endDate={Date.now() + 1000 * 60 * 60 * 14}
-                title="Deals of the Day"
-                to="/"
+                title="Popular Brands"
+                to="/listing/"
               >
                 <Carousel id="elect-product-category1">
                   {carouselContent}
@@ -73,64 +65,7 @@ class HomeView extends Component {
           </div>
         </div>
 
-        <div className="bg-info bg-gradient p-3 text-center mb-3">
-          <h4 className="m-0">Our Brand Partners</h4>
-        </div>
-        <div className="container py-3">
-          <div className="row">
-            <div className="col-md-2  mx-3">
-              <Link to="/" className="text-decoration-none">
-                <img
-                  src="../../images/category/carsales.jpg"
-                  className="img-fluid rounded-circle"
-                  alt="..."
-                />
-                <div className="text-center mt-2">CarSales.com.au</div>
-              </Link>
-            </div>
-            <div className="col-md-2  mx-3">
-              <Link to="/" className="text-decoration-none">
-                <img
-                  src="../../images/category/carsales2.jpg"
-                  className="img-fluid rounded-circle"
-                  alt="..."
-                />
-                <div className="text-center mt-2">Autocars</div>
-              </Link>
-            </div>
-            <div className="col-md-2  mx-3">
-              <Link to="/" className="text-decoration-none">
-                <img
-                  src="../../images/category/carsales3.jpg"
-                  className="img-fluid rounded-circle"
-                  alt="..."
-                />
-                <div className="text-center mt-2">UsedCars.com</div>
-              </Link>
-            </div>
-            <div className="col-md-2  mx-3">
-              <Link to="/" className="text-decoration-none">
-                <img
-                  src="../../images/category/carsales4.jpg"
-                  className="img-fluid rounded-circle"
-                  alt="..."
-                />
-                <div className="text-center mt-2">Gumtree</div>
-              </Link>
-            </div>
-            <div className="col-md-2  mx-3">
-              <Link to="/" className="text-decoration-none">
-                <img
-                  src="../../images/category/carsales5.jpg"
-                  className="img-fluid rounded-circle"
-                  alt="..."
-                />
-                <div className="text-center mt-2">Michels Cars</div>
-              </Link>
-            </div>
-            
-          </div>
-        </div>
+       <OurAssurance/>
       </React.Fragment>
     );
   }
