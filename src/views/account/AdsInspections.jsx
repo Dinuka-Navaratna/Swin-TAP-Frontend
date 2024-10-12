@@ -136,14 +136,15 @@ const AdsInspectionsView = () => {
             {ads && ads.length > 0 ? (
               <>
                 {ads.map(ad => {
-                  const files = ad.files.length;
+                  const files = (whatPage() === "ads" ? ad.files.length : whatPage() === "inspections" ? ad.vehicle.files.length : 0);
+                  console.log("files", files);
                   return (
                     <div className="col-md-6" key={ad._id}>
                       <div className="card">
                         <div className="row g-0">
                           <div className="col-md-3 text-center">
                             <img
-                              src={files !== 0 ? `${process.env.REACT_APP_API_URL}/uploads/300x300/${ad.files[0].new_filename}` : "../../images/products/vehicle.jpg"}
+                              src={files !== 0 ? `${process.env.REACT_APP_API_URL}/uploads/300x300/${whatPage() === "ads" ? ad.files[0].new_filename : ad.vehicle.files[0].new_filename}` : "../../images/products/vehicle.jpg"}
                               className="img-fluid"
                               alt="..."
                             />
@@ -209,7 +210,7 @@ const AdsInspectionsView = () => {
                                   </>
                                 ) : (whatPage() === "inspections" &&
                                   <>
-                                    <span className="me-2 small">Date: {ad.inspection_time}</span>
+                                    <span className="me-2 small">Date: {ad?.inspection_time ? ad?.inspection_time.split('T')[0] : ""}</span>
                                   </>
                                 )}
                               </div>
