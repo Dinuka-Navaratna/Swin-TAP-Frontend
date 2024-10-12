@@ -33,7 +33,7 @@ const AboutUsDetailView = lazy(() => import("./views/aboutus/Detail"));
 
 //Admin Components
 const AdminPanel = lazy(() => import("./views/admin/AdminPanel"));
-const UserManagement = lazy(() => import("./views/admin/UserManagement"));
+const SellerManagement = lazy(() => import("./views/admin/SellerManagement"));
 const MechanicManagement = lazy(() =>
   import("./views/admin/MechanicManagement")
 );
@@ -89,8 +89,8 @@ function App() {
             <Route exact path="/admin" element={<AdminPanel />} />
             <Route
               exact
-              path="/admin/user-management"
-              element={<UserManagement />}
+              path="/admin/seller-management"
+              element={<SellerManagement />}
             />
             <Route
               exact

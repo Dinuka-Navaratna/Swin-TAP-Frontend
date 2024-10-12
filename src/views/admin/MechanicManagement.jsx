@@ -65,6 +65,12 @@ const MechanicManagement = () => {
     }
   }, [currentPage]);
 
+  useEffect(() => {
+    if (session?.role !== "admin") {
+      window.location.href = "/";
+    }
+  }, []);
+
   const onPageChanged = (page) => {
     if (!loading && totalItems > 9) {
       setCurrentPage(page.currentPage);
