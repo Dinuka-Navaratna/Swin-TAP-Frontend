@@ -112,9 +112,23 @@ const CardGrid = (props) => {
               <>
                 <b>Identity Verification Documents:</b>
                 <br />
-                {item.identity_verification_documents.size != null
-                  ? item.identity_verification_documents
-                  : "Not Provided"}
+                {item.identity_verification_documents.length > 0 ? (
+                  <>
+                    {item.identity_verification_documents.map((doc, index) => (
+                      <a
+                        href={`https://api.autoassure.me/uploads/${doc.new_filename}`}
+                        target="_blank"
+                        rel="noreferrer"
+                        key={index}
+                        className="text-decoration-none"
+                      >
+                        Doc-{index + 1}&nbsp;&nbsp;
+                      </a>
+                    ))}
+                  </>
+                ) : (
+                  "Not Provided"
+                )}
                 <br />
               </>
             )}
@@ -122,9 +136,23 @@ const CardGrid = (props) => {
               <>
                 <b>Skill Verification Documents: </b>
                 <br />
-                {item.skill_verification_documents.size != null
-                  ? item.skill_verification_documents
-                  : "Not Provided"}
+                {item.skill_verification_documents.length > 0 ? (
+                  <>
+                    {item.skill_verification_documents.map((doc, index) => (
+                      <a
+                        href={`https://api.autoassure.me/uploads/${doc.new_filename}`}
+                        target="_blank"
+                        rel="noreferrer"
+                        key={index}
+                        className="text-decoration-none"
+                      >
+                        Doc-{index + 1}&nbsp;&nbsp;
+                      </a>
+                    ))}
+                  </>
+                ) : (
+                  "Not Provided"
+                )}
               </>
             )}
           </p>
@@ -237,42 +265,6 @@ const CardGrid = (props) => {
                     <option value="verified">Verified</option>
                     <option value="not_verified">Not Verified</option>
                   </Form.Select>
-                </Form.Group>
-              </>
-            )}
-
-            {item.role === "mechanic" && (
-              <>
-                <Form.Group controlId="formIdentityDocuments" className="mt-3">
-                  <Form.Label>Identity Verification Documents</Form.Label>
-                  <Form.Control
-                    type="text"
-                    name="identity_verification_documents"
-                    value={
-                      item.identity_verification_documents.size != null
-                        ? item.identity_verification_documents
-                        : "Not Provided"
-                    }
-                    readOnly
-                  />
-                </Form.Group>
-              </>
-            )}
-
-            {item.role === "mechanic" && (
-              <>
-                <Form.Group controlId="formSkillDocuments" className="mt-3">
-                  <Form.Label>Skill Verification Documents</Form.Label>
-                  <Form.Control
-                    type="text"
-                    name="skill_verification_documents"
-                    value={
-                      item.skill_verification_documents.size != null
-                        ? item.skill_verification_documents
-                        : "Not Provided"
-                    }
-                    readOnly
-                  />
                 </Form.Group>
               </>
             )}
