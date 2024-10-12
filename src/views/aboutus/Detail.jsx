@@ -1,17 +1,20 @@
 import React from "react";
 import "./style.css";
 
-
 const AboutUsDetailView = () => {
   return (
     <div>
-      <header className="header">
-        <h1>AutoAssure </h1>
-        <h2>Revolutionizing Vehicle Inspection Partner</h2>
-        <p>
-          At AutoAssure, we enhance the vehicle selling and buying process
-          through trusted inspections.
-        </p>
+      <header className="headerStyle">
+        <div className="container">
+          <h1 className="headerTitleStyle">AutoAssure</h1>
+          <h2 className="headerSubtitleStyle">
+            Revolutionizing Vehicle Inspection Partner
+          </h2>
+          <p>
+            At AutoAssure, we enhance the vehicle selling and buying process
+            through trusted inspections.
+          </p>
+        </div>
       </header>
 
       <section className="about-section">
@@ -36,8 +39,6 @@ const AboutUsDetailView = () => {
           </p>
         </div>
       </section>
-
-     
 
       <section className="services-section">
         <div className="services-container">
@@ -69,7 +70,7 @@ const AboutUsDetailView = () => {
 
       <section className="section-container">
         <img
-          src="../../images/blog/person1.jpg"
+          src="../../images/blog/person1.jpeg"
           className="section-image"
           alt=""
         />
@@ -134,7 +135,6 @@ const AboutUsDetailView = () => {
         />
       </section>
 
-
       <section className="features-section">
         <h2 className="section-title">Features of AutoAssure</h2>
         <div className="features-content">
@@ -174,10 +174,9 @@ const AboutUsDetailView = () => {
       <br></br>
       <br></br>
 
-
       <section className="vision-section">
         <img
-          src="../../images/blog/vision.jpg"
+          src="../../images/blog/vision.avif"
           className="vision-image"
           alt=""
         />
@@ -194,7 +193,6 @@ const AboutUsDetailView = () => {
           </p>
         </div>
       </section>
-
 
       <section className="glance-section">
         <h2 className="section-title">AutoAssure at a Glance</h2>
@@ -226,3 +224,4 @@ const AboutUsDetailView = () => {
 };
 
 export default AboutUsDetailView;
+
