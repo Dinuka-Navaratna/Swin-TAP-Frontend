@@ -88,38 +88,44 @@ const CardGrid = (props) => {
                 <b>Role:</b> {item.role || "Not Provided"} <br />
               </>
             )}
-            <b>Email:</b> {item.email || "Not Provided"} <br />
-            <b>Phone:</b> {item.phone || "Not Provided"} <br />
-            <b>Address:</b> {item.address || "Not Provided"} <br />
-            <b>Joined Date:</b>{" "}
+            <b>Email:</b> <br /> {item.email || "Not Provided"} <br />
+            <b>Phone:</b>
+            <br /> {item.phone || "Not Provided"} <br />
+            <b>Address:</b> <br />
+            {item.address || "Not Provided"} <br />
+            <b>Joined Date:</b>
+            <br />
             {new Date(item.created_at).toLocaleDateString(undefined, options) ||
               "Not Provided"}{" "}
             <br />
-            <b>Mechanic Verification Status:</b>{" "}
-            {item.role === "mechanic" ? (
+            {item.role === "mechanic" && (
               <>
+                <b>Mechanic Verification Status:</b>
+                <br />
                 {(item.mechanic_verification === "verified"
                   ? "Verified"
                   : "Not Verified") || "Not Provided"}{" "}
+                <br />
               </>
-            ) : (
-              "N / A"
             )}
-            <br />
-            <b>Identity Verification Documents:</b>{" "}
-            {item.identity_verification_documents.size != null
-              ? item.identity_verification_documents
-              : "Not Provided"}
-            <br></br>
-            <b>Skill Verification Documents: </b>
-            {item.role === "mechanic" ? (
+            {item.role === "mechanic" && (
               <>
+                <b>Identity Verification Documents:</b>
+                <br />
+                {item.identity_verification_documents.size != null
+                  ? item.identity_verification_documents
+                  : "Not Provided"}
+                <br />
+              </>
+            )}
+            {item.role === "mechanic" && (
+              <>
+                <b>Skill Verification Documents: </b>
+                <br />
                 {item.skill_verification_documents.size != null
                   ? item.skill_verification_documents
                   : "Not Provided"}
               </>
-            ) : (
-              "N / A"
             )}
           </p>
         </div>
@@ -235,19 +241,23 @@ const CardGrid = (props) => {
               </>
             )}
 
-            <Form.Group controlId="formIdentityDocuments" className="mt-3">
-              <Form.Label>Identity Verification Documents</Form.Label>
-              <Form.Control
-                type="text"
-                name="identity_verification_documents"
-                value={
-                  item.identity_verification_documents.size != null
-                    ? item.identity_verification_documents
-                    : "Not Provided"
-                }
-                readOnly
-              />
-            </Form.Group>
+            {item.role === "mechanic" && (
+              <>
+                <Form.Group controlId="formIdentityDocuments" className="mt-3">
+                  <Form.Label>Identity Verification Documents</Form.Label>
+                  <Form.Control
+                    type="text"
+                    name="identity_verification_documents"
+                    value={
+                      item.identity_verification_documents.size != null
+                        ? item.identity_verification_documents
+                        : "Not Provided"
+                    }
+                    readOnly
+                  />
+                </Form.Group>
+              </>
+            )}
 
             {item.role === "mechanic" && (
               <>

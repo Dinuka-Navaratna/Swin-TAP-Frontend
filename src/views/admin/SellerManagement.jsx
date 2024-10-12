@@ -8,7 +8,7 @@ import CardGrid from "./CardGrid";
 import CardList from "./CardList";
 import Paging from "../../components/Paging";
 
-const UserManagement = () => {
+const SellerManagement = () => {
   const [currentUsers, setCurrentUsers] = useState([]);
   const [currentPage, setCurrentPage] = useState(null);
   const [totalPages, setTotalPages] = useState(null);
@@ -28,7 +28,7 @@ const UserManagement = () => {
       let config = {
         method: "get",
         maxBodyLength: Infinity,
-        url: `${process.env.REACT_APP_API_URL}/api/users?&offset=${
+        url: `${process.env.REACT_APP_API_URL}/api/users?role=seller&&offset=${
           page !== null ? (page - 1) * 9 : ""
         }&limit=9&name=${name ? name : ""}&email=${email ? email : ""}`,
         headers: {
@@ -63,6 +63,12 @@ const UserManagement = () => {
     }
   }, [currentPage]);
 
+  useEffect(() => {
+    if (session?.role !== "admin") {
+      window.location.href = "/";
+    }
+  }, []);
+
   const onPageChanged = (page) => {
     if (!loading && totalItems > 9) {
       setCurrentPage(page.currentPage);
@@ -79,7 +85,7 @@ const UserManagement = () => {
       >
         <div className="container text-center">
           <span className="display-5 px-3 bg-white rounded shadow">
-            User Management
+            Seller Management
           </span>
         </div>
       </div>
@@ -194,4 +200,4 @@ const UserManagement = () => {
     </React.Fragment>
   );
 };
-export default UserManagement;
+export default SellerManagement;

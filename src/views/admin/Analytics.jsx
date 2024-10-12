@@ -189,7 +189,7 @@ const Analytics = () => {
         <div className="card-header fw-bold text-uppercase text-center">
           Vehicle Ads Analytics
         </div>
-        <PieChart width={400} height={200}>
+        <PieChart width={400} height={210}>
           <Pie
             data={vehicleData}
             cx="50%"
@@ -213,7 +213,7 @@ const Analytics = () => {
         <div className="card-header fw-bold text-uppercase text-center mt-3">
           Inspection Data Analytics
         </div>
-        <PieChart width={400} height={200}>
+        <PieChart width={400} height={210}>
           <Pie
             data={inspectionComparison}
             cx="50%"
@@ -242,7 +242,7 @@ const Analytics = () => {
           </div>
           <BarChart
             width={500}
-            height={500}
+            height={480}
             data={userDataBar}
             margin={{
               top: 20,

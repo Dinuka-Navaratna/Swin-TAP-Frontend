@@ -97,22 +97,24 @@ const CardList = (props) => {
             {new Date(item.created_at).toLocaleDateString(undefined, options) ||
               "Not Provided"}{" "}
             <br />
-            <b>Mechanic Verification Status:</b>{" "}
-            {item.role === "mechanic" ? (
+            {item.role === "mechanic" && (
               <>
+                <b>Mechanic Verification Status:</b>{" "}
                 {(item.mechanic_verification === "verified"
                   ? "Verified"
                   : "Not Verified") || "Not Provided"}{" "}
+                <br />
               </>
-            ) : (
-              "N / A"
             )}
-            <br />
-            <b>Identity Verification Documents:</b>{" "}
-            {item.identity_verification_documents.size != null
-              ? item.identity_verification_documents
-              : "Not Provided"}
-            <br></br>
+            {item.role === "mechanic" && (
+              <>
+                <b>Identity Verification Documents:</b>{" "}
+                {item.identity_verification_documents.size != null
+                  ? item.identity_verification_documents
+                  : "Not Provided"}
+                <br />{" "}
+              </>
+            )}
             {item.role === "mechanic" && (
               <>
                 <b>Skill Verification Documents:</b>{" "}
@@ -235,20 +237,23 @@ const CardList = (props) => {
                 </Form.Group>
               </>
             )}
-
-            <Form.Group controlId="formIdentityDocuments" className="mt-3">
-              <Form.Label>Identity Verification Documents</Form.Label>
-              <Form.Control
-                type="text"
-                name="identity_verification_documents"
-                value={
-                  item.identity_verification_documents.size != null
-                    ? item.identity_verification_documents
-                    : "Not Provided"
-                }
-                readOnly
-              />
-            </Form.Group>
+            {item.role === "mechanic" && (
+              <>
+                <Form.Group controlId="formIdentityDocuments" className="mt-3">
+                  <Form.Label>Identity Verification Documents</Form.Label>
+                  <Form.Control
+                    type="text"
+                    name="identity_verification_documents"
+                    value={
+                      item.identity_verification_documents.size != null
+                        ? item.identity_verification_documents
+                        : "Not Provided"
+                    }
+                    readOnly
+                  />
+                </Form.Group>{" "}
+              </>
+            )}
 
             {item.role === "mechanic" && (
               <>
