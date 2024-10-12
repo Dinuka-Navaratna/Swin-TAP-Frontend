@@ -124,7 +124,7 @@ class ProductListView extends Component {
         <div
           className="p-5 bg-primary bs-cover"
           style={{
-            backgroundImage: "url(../../images/banner/Banner_listing.png)",
+            backgroundImage: "url(../../images/banner/Banner_listing.jpg)",
           }}
         >
           <div className="container text-center">
