@@ -331,3 +331,178 @@
         width: 90%; /* Full-width modal for smaller screens */
     }
 }
+
+.logo-size{
+    width: 8rem;
+    height: 8rem;
+}
+
+.analytics-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .pie-charts-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .bar-chart-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-grow: 1;
+  }
+
+  .container {
+    width: 100%;
+    max-width: 100%;
+}
+
+/* General Styles for Sections */
+.sellcar-section, .buycar-section, .mobilemechanic-section {
+  display: flex;
+  align-items: center; /* Vertically centers the content */
+  justify-content: space-between; /* Spaces the image and content */
+  background-color: #ffffff; /* Background color for the section */
+  padding: 2rem 3rem; /* Adds padding to the section */
+  margin-bottom: 2rem; /* Space below the section */
+  border-radius: 0; /* Remove rounded corners */
+  box-shadow: none; /* Remove shadow */
+}
+
+/* Specific Styles for SellCar Section */
+.sellcar-section {
+  flex-direction: row-reverse; /* Image on the right and content on the left */
+}
+
+/* Specific Styles for BuyCar Section */
+.buycar-section {
+  background-color: #f5f5f5; /* Light gray background color */
+  padding: 2rem; /* Padding for the section */
+  align-items: flex-start; /* Aligns content to the start */
+}
+
+/* Styles for the BuyCar image with smaller size */
+.buycar-img {
+  width: 30%; /* Smaller image width */
+  height: auto;
+  border-radius: 0; /* Remove rounded corners */
+  object-fit: cover; /* Ensures image fits nicely */
+  transition: transform 0.3s ease-in-out; /* Smooth zoom transition */
+  box-shadow: none; /* Remove shadow */
+}
+
+/* Styles for the Content */
+.sellcar-content, .buycar-content, .mobilemechanic-content {
+  width: 65%; /* Adjust content width to match image size */
+  padding-left: 2rem; /* Space between image and content */
+}
+
+.sellcar-content, .mobilemechanic-content {
+  padding-right: 2rem; /* Adjust for the reversed layout in sellcar-section and mobilemechanic-section */
+}
+
+/* Styles for the MobileMechanic Section */
+.mobilemechanic-section {
+  flex-direction: row-reverse; /* Image on the right and content on the left */
+}
+
+/* Styles for the Images */
+.sellcar-img, .mobilemechanic-img {
+  width: 50%; /* Image takes up half the section */
+  height: auto;
+  border-radius: 0; /* Remove rounded corners */
+  object-fit: cover; /* Ensures image fits nicely */
+  transition: transform 0.3s ease-in-out; /* Smooth zoom transition */
+  box-shadow: none; /* Remove shadow */
+}
+
+/* Styles for the headings and paragraphs in all sections */
+.sellcar-content h2, .buycar-content h2, .mobilemechanic-content h2 {
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+
+.sellcar-content p, .buycar-content p, .mobilemechanic-content p {
+  font-size: 1rem;
+  line-height: 1.6; /* Improves readability */
+  color: #333; /* Slightly darker text */
+  margin-bottom: 1rem;
+}
+
+/* Responsive Adjustments */
+
+/* For Medium Screens (Tablets) */
+@media (max-width: 991px) {
+  .sellcar-section, .buycar-section, .mobilemechanic-section {
+    flex-direction: column; /* Stack image and content vertically */
+    text-align: center; /* Center the text for smaller screens */
+    padding: 1.5rem 2rem; /* Adjust padding */
+  }
+  
+  .sellcar-img, .buycar-img, .mobilemechanic-img {
+    width: 80%; /* Reduce image width */
+    margin-bottom: 1rem; /* Space below the image */
+  }
+  
+  .sellcar-content, .buycar-content, .mobilemechanic-content {
+    width: 100%; /* Full width content */
+    padding: 0; /* Remove padding */
+  }
+}
+
+/* For Small Screens (Mobile Phones) */
+@media (max-width: 767px) {
+  .sellcar-section, .buycar-section, .mobilemechanic-section {
+    flex-direction: column; /* Stack image and content vertically */
+    text-align: center; /* Center the text for smaller screens */
+    padding: 1rem; /* Less padding for smaller screens */
+  }
+
+  .sellcar-img, .buycar-img, .mobilemechanic-img {
+    width: 100%; /* Full width image */
+    margin-bottom: 1rem; /* Space below the image */
+  }
+
+  .sellcar-content, .buycar-content, .mobilemechanic-content {
+    width: 100%; /* Full width content */
+    padding: 0; /* Remove padding */
+  }
+
+  /* Adjust font sizes for headings and paragraphs */
+  .sellcar-content h2, .buycar-content h2, .mobilemechanic-content h2 {
+    font-size: 1.5rem; /* Smaller heading font size */
+  }
+
+  .sellcar-content p, .buycar-content p, .mobilemechanic-content p {
+    font-size: 0.9rem; /* Smaller paragraph font size */
+  }
+}
+
+/* Image Zoom Effects Based on Screen Size */
+
+/* Default state for larger screens */
+@media (min-width: 992px) {
+  .sellcar-img, .buycar-img, .mobilemechanic-img {
+    transform: scale(1); /* No zoom */
+  }
+}
+
+/* Zoom out effect for medium screens */
+@media (max-width: 991px) and (min-width: 768px) {
+  .sellcar-img, .buycar-img, .mobilemechanic-img {
+    transform: scale(0.95); /* Slight zoom out */
+  }
+}
+
+/* Zoom in effect for small screens */
+@media (max-width: 767px) {
+  .sellcar-img, .buycar-img, .mobilemechanic-img {
+    transform: scale(1.05); /* Slight zoom in */
+  }
+}
