@@ -26,7 +26,6 @@ const Header = () => {
         console.error("Error displaying the confirmation dialog:", error);
       });
   };
-  
 
   return (
     <header className="p-3 border-bottom bg-light">
@@ -60,7 +59,10 @@ const Header = () => {
             >
               <span className="navbar-toggler-icon" />
             </button>
-            <div className="collapse navbar-collapse" id="navbarSupportedContent">
+            <div
+              className="collapse navbar-collapse"
+              id="navbarSupportedContent"
+            >
               <ul className="navbar-nav">
                 {/* <li className="nav-item dropdown">
                   <button
@@ -131,7 +133,7 @@ const Header = () => {
                     Vehicle Listing
                   </Link>
                 </li>
-                
+
                 <li className="nav-item">
                   <Link className="nav-link" to="about-us">
                     About Us
@@ -175,18 +177,30 @@ const Header = () => {
                         {session.name}
                       </Link>
                     </li>
-                    {session.role === "seller" ? (
+                    {session.role === "seller" && (
                       <li>
                         <Link className="dropdown-item" to="/account/ads">
                           <i className="bi bi-star-fill text-warning"></i>&nbsp;
                           My Ads
                         </Link>
                       </li>
-                    ) : (
+                    )}{" "}
+                    {session.role === "mechanic" && (
                       <li>
-                        <Link className="dropdown-item" to="/account/inspections">
-                          <i className="bi bi-list-check text-primary"></i>&nbsp;
-                          My Inspections
+                        <Link
+                          className="dropdown-item"
+                          to="/account/inspections"
+                        >
+                          <i className="bi bi-list-check text-primary"></i>
+                          &nbsp; My Inspections
+                        </Link>
+                      </li>
+                    )}
+                    {session.role === "admin" && (
+                      <li>
+                        <Link className="dropdown-item" to="/admin">
+                          <i className="bi bi-display text-primary"></i>
+                          &nbsp; Admin Panel
                         </Link>
                       </li>
                     )}
@@ -207,15 +221,15 @@ const Header = () => {
                     </li> */}
                     <li>
                       <Link className="dropdown-item" to="/support">
-                        <i className="bi bi-info-circle-fill text-success"></i>&nbsp;
-                        Support
+                        <i className="bi bi-info-circle-fill text-success"></i>
+                        &nbsp; Support
                       </Link>
                     </li>
                     {session.role === "seller" && (
                       <li>
                         <Link className="dropdown-item" to="/listing/new">
-                          <i className="bi bi-plus-circle-fill text-primary"></i>&nbsp;
-                          Post Ad
+                          <i className="bi bi-plus-circle-fill text-primary"></i>
+                          &nbsp; Post Ad
                         </Link>
                       </li>
                     )}
@@ -224,8 +238,8 @@ const Header = () => {
                     </li>
                     <li>
                       <Link className="dropdown-item" onClick={handleLogout}>
-                        <i className="bi bi-box-arrow-in-left text-danger"></i>&nbsp;
-                        Logout
+                        <i className="bi bi-box-arrow-in-left text-danger"></i>
+                        &nbsp; Logout
                       </Link>
                     </li>
                   </>
@@ -233,14 +247,14 @@ const Header = () => {
                   <>
                     <li>
                       <Link className="dropdown-item" to="/account/signin">
-                        <i className="bi bi-box-arrow-in-right text-primary"></i>&nbsp;
-                        Sign In
+                        <i className="bi bi-box-arrow-in-right text-primary"></i>
+                        &nbsp; Sign In
                       </Link>
                     </li>
                     <li>
                       <Link className="dropdown-item" to="/account/signup">
-                        <i className="bi bi-person-check text-success"></i>&nbsp;
-                        Sign Up
+                        <i className="bi bi-person-check text-success"></i>
+                        &nbsp; Sign Up
                       </Link>
                     </li>
                   </>
