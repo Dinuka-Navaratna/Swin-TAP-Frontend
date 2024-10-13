@@ -165,12 +165,12 @@ const CardList = (props) => {
             title="Update"
             onClick={handleShow}
           >
-            <i className="bi bi-code-square" />
+            <i className="bi bi-pencil-square" />
           </button>
 
           <a
             href={`mailto:${item.email}`}
-            className="btn btn-sm btn-info mx-1"
+            className="btn btn-sm btn-primary mx-1"
             title="Email"
           >
             <i className="bi bi-chat-left-text" />
