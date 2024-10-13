@@ -70,7 +70,11 @@ const CardList = (props) => {
     <div className="list-item d-flex align-items-start p-3 border-bottom">
       {/* Image section */}
       <img
-        src={"../../images/category/male.webp"}
+        src={
+          item?.image?.new_filename != null
+            ? `${process.env.REACT_APP_API_URL}/uploads/300x300/${item?.image?.new_filename}`
+            : "../../images/category/sample-user.jpg"
+        }
         alt="vehicle"
         className="img-fluid rounded me-3"
         style={{ width: "150px", height: "auto" }}
