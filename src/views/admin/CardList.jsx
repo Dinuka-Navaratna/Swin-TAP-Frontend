@@ -70,7 +70,11 @@ const CardList = (props) => {
     <div className="list-item d-flex align-items-start p-3 border-bottom">
       {/* Image section */}
       <img
-        src={"../../images/category/male.webp"}
+        src={
+          item?.image?.new_filename != null
+            ? `${process.env.REACT_APP_API_URL}/uploads/300x300/${item?.image?.new_filename}`
+            : "../../images/category/sample-user.jpg"
+        }
         alt="vehicle"
         className="img-fluid rounded me-3"
         style={{ width: "150px", height: "auto" }}
@@ -109,18 +113,46 @@ const CardList = (props) => {
             {item.role === "mechanic" && (
               <>
                 <b>Identity Verification Documents:</b>{" "}
-                {item.identity_verification_documents.size != null
-                  ? item.identity_verification_documents
-                  : "Not Provided"}
+                {item.identity_verification_documents.length > 0 ? (
+                  <>
+                    {item.identity_verification_documents.map((doc, index) => (
+                      <a
+                        href={`https://api.autoassure.me/uploads/${doc.new_filename}`}
+                        target="_blank"
+                        rel="noreferrer"
+                        key={index}
+                        className="text-decoration-none"
+                      >
+                        Doc-{index + 1}&nbsp;&nbsp;
+                      </a>
+                    ))}
+                  </>
+                ) : (
+                  "Not Provided"
+                )}
                 <br />{" "}
               </>
             )}
             {item.role === "mechanic" && (
               <>
                 <b>Skill Verification Documents:</b>{" "}
-                {item.skill_verification_documents.size != null
-                  ? item.skill_verification_documents
-                  : "Not Provided"}{" "}
+                {item.skill_verification_documents.length > 0 ? (
+                  <>
+                    {item.skill_verification_documents.map((doc, index) => (
+                      <a
+                        href={`https://api.autoassure.me/uploads/${doc.new_filename}`}
+                        target="_blank"
+                        rel="noreferrer"
+                        key={index}
+                        className="text-decoration-none"
+                      >
+                        Doc-{index + 1}&nbsp;&nbsp;
+                      </a>
+                    ))}
+                  </>
+                ) : (
+                  "Not Provided"
+                )}{" "}
               </>
             )}
           </p>
@@ -234,41 +266,6 @@ const CardList = (props) => {
                     <option value="verified">Verified</option>
                     <option value="not_verified">Not Verified</option>
                   </Form.Select>
-                </Form.Group>
-              </>
-            )}
-            {item.role === "mechanic" && (
-              <>
-                <Form.Group controlId="formIdentityDocuments" className="mt-3">
-                  <Form.Label>Identity Verification Documents</Form.Label>
-                  <Form.Control
-                    type="text"
-                    name="identity_verification_documents"
-                    value={
-                      item.identity_verification_documents.size != null
-                        ? item.identity_verification_documents
-                        : "Not Provided"
-                    }
-                    readOnly
-                  />
-                </Form.Group>{" "}
-              </>
-            )}
-
-            {item.role === "mechanic" && (
-              <>
-                <Form.Group controlId="formSkillDocuments" className="mt-3">
-                  <Form.Label>Skill Verification Documents</Form.Label>
-                  <Form.Control
-                    type="text"
-                    name="skill_verification_documents"
-                    value={
-                      item.skill_verification_documents.size != null
-                        ? item.skill_verification_documents
-                        : "Not Provided"
-                    }
-                    readOnly
-                  />
                 </Form.Group>
               </>
             )}
