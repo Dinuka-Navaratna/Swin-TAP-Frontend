@@ -100,3 +100,22 @@
     display: none;
   }
 }
+
+.headerStyle {
+  background-color: #285594;
+  color: white;
+  padding: 60px 20px;
+  text-align: center;
+  border-bottom: 3px solid #cccccc;
+}
+
+.headerTitleStyle {
+  font-size: 2.5rem; /* Title font size */
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+.headerSubtitleStyle {
+  font-size: 1.5rem; /* Subtitle font size */
+  margin-top: 0.5rem;
+}

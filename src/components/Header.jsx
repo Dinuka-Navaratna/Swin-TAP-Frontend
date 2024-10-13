@@ -131,14 +131,10 @@ const Header = () => {
                     Vehicle Listing
                   </Link>
                 </li>
-                <li className="nav-item">
-                  <Link className="nav-link" to="/assurance">
-                    Our Assurance
-                  </Link>
-                </li>
+                
                 <li className="nav-item">
                   <Link className="nav-link" to="about-us">
-                    About
+                    About Us
                   </Link>
                 </li>
                 <li className="nav-item">
