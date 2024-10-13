@@ -24,11 +24,11 @@ const CardDealsOfTheDay = (props) => {
     <div className="card">
       <div className="card-body">
         <h5 className="card-title pb-3 border-bottom">
-          {props.title} <i className="bi bi-stopwatch text-primary" />{" "}
+          {props.title} {" "}
           <Countdown date={props.endDate} renderer={renderer} />
           <span className="float-end">
             <Link to={props.to} className="btn btn-sm btn-outline-primary">
-              View All
+               Vehicle Listing <i className="bi bi-chevron-double-right" />
             </Link>
           </span>
         </h5>
