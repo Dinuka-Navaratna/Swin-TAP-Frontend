@@ -68,15 +68,20 @@ const CardGrid = (props) => {
   const options = { year: "numeric", month: "long", day: "numeric" };
 
   return (
-    <div className="card">
+    <div className="card justify-content-center text-center">
       <img
-        style={{ maxHeight: "250px" }}
+        style={{
+          maxHeight: "150px",
+          borderRadius: "50%",
+          width: "150px", // "100%",
+          margin: "auto",
+        }}
         src={
           item?.image?.new_filename != null
             ? `${process.env.REACT_APP_API_URL}/uploads/300x300/${item?.image?.new_filename}`
-            : "../../images/category/sample-user.png"
+            : "../../images/category/sample-user.jpg"
         }
-        className="card-img-top"
+        className="card-img-top mt-3"
         alt="..."
       />
       <div className="card-body">
@@ -87,34 +92,40 @@ const CardGrid = (props) => {
         </h6>
         <div className="my-2">
           <p className="small mt-2">
-            {!props.mechanic && (
-              <>
-                {" "}
-                <b>Role:</b> {item.role || "Not Provided"} <br />
-              </>
-            )}
-            <b>Email:</b> <br /> {item.email || "Not Provided"} <br />
-            <b>Phone:</b>
-            <br /> {item.phone || "Not Provided"} <br />
-            <b>Address:</b> <br />
-            {item.address || "Not Provided"} <br />
-            <b>Joined Date:</b>
-            <br />
-            {new Date(item.created_at).toLocaleDateString(undefined, options) ||
-              "Not Provided"}{" "}
-            <br />
+            <div className="mb-2">
+              <b>Email:</b> <br /> {item.email || "Not Provided"} <br />
+            </div>
+            <div className="mb-2">
+              <b>Phone:</b>
+              <br /> {item.phone || "Not Provided"} <br />
+            </div>
+            <div className="mb-2">
+              {" "}
+              <b>Address:</b> <br />
+              {item.address || "Not Provided"} <br />
+            </div>
+            <div className="mb-2">
+              <b>Joined Date:</b>
+              <br />
+              {new Date(item.created_at).toLocaleDateString(
+                undefined,
+                options
+              ) || "Not Provided"}{" "}
+              <br />
+            </div>
+
             {item.role === "mechanic" && (
-              <>
+              <div className="mb-2">
                 <b>Mechanic Verification Status:</b>
                 <br />
                 {(item.mechanic_verification === "verified"
                   ? "Verified"
                   : "Not Verified") || "Not Provided"}{" "}
                 <br />
-              </>
+              </div>
             )}
             {item.role === "mechanic" && (
-              <>
+              <div className="mb-2">
                 <b>Identity Verification Documents:</b>
                 <br />
                 {item.identity_verification_documents.length > 0 ? (
@@ -135,7 +146,7 @@ const CardGrid = (props) => {
                   "Not Provided"
                 )}
                 <br />
-              </>
+              </div>
             )}
             {item.role === "mechanic" && (
               <>
