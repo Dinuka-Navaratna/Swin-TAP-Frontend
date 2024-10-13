@@ -68,10 +68,20 @@ const CardGrid = (props) => {
   const options = { year: "numeric", month: "long", day: "numeric" };
 
   return (
-    <div className="card">
+    <div className="card justify-content-center text-center">
       <img
-        src={"../../images/category/male.webp"}
-        className="card-img-top"
+        style={{
+          maxHeight: "150px",
+          borderRadius: "50%",
+          width: "150px", // "100%",
+          margin: "auto",
+        }}
+        src={
+          item?.image?.new_filename != null
+            ? `${process.env.REACT_APP_API_URL}/uploads/300x300/${item?.image?.new_filename}`
+            : "../../images/category/sample-user.jpg"
+        }
+        className="card-img-top mt-3"
         alt="..."
       />
       <div className="card-body">
@@ -82,49 +92,83 @@ const CardGrid = (props) => {
         </h6>
         <div className="my-2">
           <p className="small mt-2">
-            {!props.mechanic && (
-              <>
-                {" "}
-                <b>Role:</b> {item.role || "Not Provided"} <br />
-              </>
-            )}
-            <b>Email:</b> <br /> {item.email || "Not Provided"} <br />
-            <b>Phone:</b>
-            <br /> {item.phone || "Not Provided"} <br />
-            <b>Address:</b> <br />
-            {item.address || "Not Provided"} <br />
-            <b>Joined Date:</b>
-            <br />
-            {new Date(item.created_at).toLocaleDateString(undefined, options) ||
-              "Not Provided"}{" "}
-            <br />
+            <div className="mb-2">
+              <b>Email:</b> <br /> {item.email || "Not Provided"} <br />
+            </div>
+            <div className="mb-2">
+              <b>Phone:</b>
+              <br /> {item.phone || "Not Provided"} <br />
+            </div>
+            <div className="mb-2">
+              {" "}
+              <b>Address:</b> <br />
+              {item.address || "Not Provided"} <br />
+            </div>
+            <div className="mb-2">
+              <b>Joined Date:</b>
+              <br />
+              {new Date(item.created_at).toLocaleDateString(
+                undefined,
+                options
+              ) || "Not Provided"}{" "}
+              <br />
+            </div>
+
             {item.role === "mechanic" && (
-              <>
+              <div className="mb-2">
                 <b>Mechanic Verification Status:</b>
                 <br />
                 {(item.mechanic_verification === "verified"
                   ? "Verified"
                   : "Not Verified") || "Not Provided"}{" "}
                 <br />
-              </>
+              </div>
             )}
             {item.role === "mechanic" && (
-              <>
+              <div className="mb-2">
                 <b>Identity Verification Documents:</b>
                 <br />
-                {item.identity_verification_documents.size != null
-                  ? item.identity_verification_documents
-                  : "Not Provided"}
+                {item.identity_verification_documents.length > 0 ? (
+                  <>
+                    {item.identity_verification_documents.map((doc, index) => (
+                      <a
+                        href={`https://api.autoassure.me/uploads/${doc.new_filename}`}
+                        target="_blank"
+                        rel="noreferrer"
+                        key={index}
+                        className="text-decoration-none"
+                      >
+                        Doc-{index + 1}&nbsp;&nbsp;
+                      </a>
+                    ))}
+                  </>
+                ) : (
+                  "Not Provided"
+                )}
                 <br />
-              </>
+              </div>
             )}
             {item.role === "mechanic" && (
               <>
                 <b>Skill Verification Documents: </b>
                 <br />
-                {item.skill_verification_documents.size != null
-                  ? item.skill_verification_documents
-                  : "Not Provided"}
+                {item.skill_verification_documents.length > 0 ? (
+                  <>
+                    {item.skill_verification_documents.map((doc, index) => (
+                      <a
+                        href={`https://api.autoassure.me/uploads/${doc.new_filename}`}
+                        target="_blank"
+                        rel="noreferrer"
+                        key={index}
+                        className="text-decoration-none"
+                      >
+                        Doc-{index + 1}&nbsp;&nbsp;
+                      </a>
+                    ))}
+                  </>
+                ) : (
+                  "Not Provided"
+                )}
               </>
             )}
           </p>
@@ -237,42 +281,6 @@ const CardGrid = (props) => {
                     <option value="verified">Verified</option>
                     <option value="not_verified">Not Verified</option>
                   </Form.Select>
-                </Form.Group>
-              </>
-            )}
-
-            {item.role === "mechanic" && (
-              <>
-                <Form.Group controlId="formIdentityDocuments" className="mt-3">
-                  <Form.Label>Identity Verification Documents</Form.Label>
-                  <Form.Control
-                    type="text"
-                    name="identity_verification_documents"
-                    value={
-                      item.identity_verification_documents.size != null
-                        ? item.identity_verification_documents
-                        : "Not Provided"
-                    }
-                    readOnly
-                  />
-                </Form.Group>
-              </>
-            )}
-
-            {item.role === "mechanic" && (
-              <>
-                <Form.Group controlId="formSkillDocuments" className="mt-3">
-                  <Form.Label>Skill Verification Documents</Form.Label>
-                  <Form.Control
-                    type="text"
-                    name="skill_verification_documents"
-                    value={
-                      item.skill_verification_documents.size != null
-                        ? item.skill_verification_documents
-                        : "Not Provided"
-                    }
-                    readOnly
-                  />
                 </Form.Group>
               </>
             )}
