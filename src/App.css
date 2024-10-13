@@ -119,3 +119,7 @@
   font-size: 1.5rem; /* Subtitle font size */
   margin-top: 0.5rem;
 }
+
+.no-underline {
+  text-decoration: none;
+}
