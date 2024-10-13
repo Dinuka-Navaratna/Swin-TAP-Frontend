@@ -70,7 +70,12 @@ const CardGrid = (props) => {
   return (
     <div className="card">
       <img
-        src={"../../images/category/male.webp"}
+        style={{ maxHeight: "250px" }}
+        src={
+          item?.image?.new_filename != null
+            ? `${process.env.REACT_APP_API_URL}/uploads/300x300/${item?.image?.new_filename}`
+            : "../../images/category/sample-user.png"
+        }
         className="card-img-top"
         alt="..."
       />
