@@ -10,6 +10,15 @@
   overflow: hidden;
 }
 
+.clickable{
+  cursor: pointer;
+}
+
+.login-img{
+  width: 500px;
+  height: auto;
+}
+
 .google-maps iframe {
   position: absolute;
   top: 0;

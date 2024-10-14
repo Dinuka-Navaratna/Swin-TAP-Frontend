@@ -19,10 +19,10 @@ class HomeView extends Component {
 
   render() {
     const iconProducts = data.iconProducts;
-    const rows = [...Array(Math.ceil(iconProducts.length / 4))];
+    const rows = [...Array(Math.ceil(iconProducts.length / 6))];
     // chunk the products into the array of rows
     const productRows = rows.map((row, idx) =>
-      iconProducts.slice(idx * 4, idx * 4 + 4)
+      iconProducts.slice(idx * 6, idx * 6 + 6)
     );
     // map the rows as div.row
     const carouselContent = productRows.map((row, idx) => (
@@ -30,12 +30,8 @@ class HomeView extends Component {
         <div className="row g-3">
           {row.map((product, idx) => {
             return (
-              <div key={idx} className="col-md-3">
+              <div key={idx} className="col-md-2">
                 <CardIcon
-                  title={product.title}
-                  text={product.text}
-                  tips={product.tips}
-                  to={product.to}
                 >
                   <img src={product.img} className="logo-size" />
                 </CardIcon>
