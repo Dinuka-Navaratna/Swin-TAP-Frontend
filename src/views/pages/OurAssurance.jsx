@@ -71,7 +71,7 @@ const OurAssurance = () => {
                   </ul>
                 </p>
                 <Link
-                  to="/"
+                  to="/listing/new"
                   className="stretched-link btn btn-sm btn-light"
                   style={stretchedLinkStyle}
                 >
@@ -103,7 +103,7 @@ const OurAssurance = () => {
                   </ul>
                 </p>
                 <Link
-                  to="/"
+                  to="/listing/new"
                   className="stretched-link btn btn-sm btn-light"
                   style={stretchedLinkStyle}
                 >
