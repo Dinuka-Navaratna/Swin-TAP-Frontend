@@ -27,6 +27,9 @@ const NotFoundView = lazy(() => import("./views/pages/404"));
 const InternalServerErrorView = lazy(() => import("./views/pages/500"));
 const ContactUsView = lazy(() => import("./views/pages/ContactUs"));
 const SupportView = lazy(() => import("./views/pages/Support"));
+const TermsCondition = lazy(() =>
+  import("./views/pages/TermsCondition/TermsCondition")
+);
 const BlogView = lazy(() => import("./views/blog/Blog"));
 const AboutUsDetailView = lazy(() => import("./views/aboutus/Detail"));
 
@@ -45,7 +48,12 @@ function App() {
         {/* <TopMenu /> */}
         <Suspense
           fallback={
-            <div className="text-white text-center mt-3">Loading...</div>
+            <div class="centered">
+              <img
+                src="../images/loading/preloader.gif"
+                className="loading-img"
+              />
+            </div>
           }
         >
           <Routes>
@@ -83,6 +91,7 @@ function App() {
             />
             <Route exact path="/contact-us" element={<ContactUsView />} />
             <Route exact path="/support" element={<SupportView />} />
+            <Route exact path="/terms-condition" element={<TermsCondition />} />
             <Route exact path="/blog" element={<BlogView />} />
             <Route exact path="/about-us" element={<AboutUsDetailView />} />
             <Route exact path="/admin" element={<AdminPanel />} />
@@ -99,8 +108,8 @@ function App() {
             <Route exact path="/500" element={<InternalServerErrorView />} />
             <Route path="*" element={<NotFoundView />} />
           </Routes>
+          <Footer />
         </Suspense>
-        <Footer />
       </React.Fragment>
     </BrowserRouter>
   );

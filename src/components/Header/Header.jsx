@@ -37,9 +37,8 @@ const Header = () => {
               <img alt="logo" src="../../images/logo.webp" />
             </Link>
           </div>
-          
+
           <div className="col-md-6 navbar navbar-expand-lg navbar-light bg-light p-0">
-           
             <button
               className="navbar-toggler"
               type="button"
@@ -56,45 +55,46 @@ const Header = () => {
               id="navbarSupportedContent"
             >
               <ul className="navbar-nav">
-                
                 <li className="nav-item">
                   <Link className="nav-link " to="/">
-                  <h6> Home </h6>
+                    <h6> Home </h6>
                   </Link>
                 </li>
                 <li className="nav-item">
                   <Link className="nav-link" to="/listing/">
-                  <h6>Vehicle Listing</h6>
+                    <h6>Vehicle Listing</h6>
                   </Link>
                 </li>
 
                 <li className="nav-item">
                   <Link className="nav-link" to="about-us">
-                  <h6>About Us</h6>
+                    <h6>About Us</h6>
                   </Link>
                 </li>
                 <li className="nav-item">
                   <Link className="nav-link" to="/contact-us">
-                  <h6> Contact Us </h6>
+                    <h6> Contact Us </h6>
                   </Link>
                 </li>
                 <li className="nav-item">
-                  <Link className="nav-link" to="/">
-                   <h6> T & C</h6>
+                  <Link className="nav-link" to="/terms-condition">
+                    <h6> T & C</h6>
                   </Link>
                 </li>
               </ul>
             </div>
             <div className="btn-group">
-            
               <div
-              className="clickable"
+                className="clickable"
                 data-toggle="dropdown"
                 aria-expanded="false"
                 aria-label="Profile"
                 data-bs-toggle="dropdown"
               >
-               <img src="../../../images/navbar/user.png" className="user-icon clickable" />
+                <img
+                  src="../../../images/navbar/user.png"
+                  className="user-icon clickable"
+                />
               </div>
               <ul className="dropdown-menu">
                 {session ? (
