@@ -52,7 +52,7 @@ const CheckListView = () => {
   const [advancedChecksCount, setAdvancedChecksCount] = useState();
 
   const handleSubmit = () => {
-    const getSectionData = (sectionRef) => {
+    const getSectionData = (sectionRef, isAdvanced = false) => {
       const sectionElements = sectionRef.current.querySelectorAll('.checkItem');
       const sectionTotalChecks = sectionElements.length;
       let sectionCompletedChecks = 0;
@@ -64,11 +64,16 @@ const CheckListView = () => {
         const passChecked = item.querySelector('.pass-check').checked;
         const failChecked = item.querySelector('.fail-check').checked;
         const notes = item.querySelector('textarea').value;
-
+        
         if (passChecked || failChecked) {
           sectionCompletedChecks += 1;
+        } else {
+          if (isAdvanced) {
+            return;
+          }
         }
-        sectionChecks[`${id}. ${description}`] = `${passChecked ? 'Passed' : failChecked ? 'Failed' : 'N/A'}${notes ? ` [${notes}]` : ''}`;
+        
+        sectionChecks[`${id}`] = `${passChecked ? 'Passed' : failChecked ? 'Failed' : 'N/A'}${notes ? ` [${notes}]` : ''} <br><small><i>${description}</i></small>`;
       });
 
       return { sectionChecks, sectionCompletedChecks, sectionTotalChecks };
@@ -80,7 +85,7 @@ const CheckListView = () => {
     const underTheHoodData = getSectionData(underTheHoodRef);
     const testDriveData = getSectionData(testDriveRef);
     const documentationData = getSectionData(documentationRef);
-    const advancedChecksData = getSectionData(advancedChecksRef);
+    const advancedChecksData = getSectionData(advancedChecksRef, true);
 
     const sectionsData = [exteriorData, interiorData, mechanicalData, underTheHoodData, testDriveData, documentationData, advancedChecksData];
     const totalCompletedChecks = sectionsData.reduce((acc, data) => acc + data.sectionCompletedChecks, 0);
@@ -127,13 +132,14 @@ const CheckListView = () => {
       "vehicle": vid,
       "seller": sid,
       "inspection_time": getCurrentTime(),
-      "additional_note": "",
+      "additional_note": " ",
       "images": [],
       "status": "completed",
       // "vehicle_rego":"1VR2UD",
       // "postal_code":"3171",
       "checklist": checklist
     });
+    console.log(data);
     let config = {
       method: 'POST',
       maxBodyLength: Infinity,
@@ -148,15 +154,41 @@ const CheckListView = () => {
     axios.request(config)
       .then((response) => {
         if (response.data.status === false) {
+          console.log(response.data.msg);
           errorDialog(response.data.msg);
         } else {
           if (response.data.data._id) {
-            alert(response.data.data._id);
+            let data = JSON.stringify({
+              "_id": response.data.data._id
+            });
+            let config = {
+              method: 'POST',
+              maxBodyLength: Infinity,
+              url: `${process.env.REACT_APP_API_URL}/api/inspection-report/generate-report`,
+              headers: {
+                'Authorization': `Token ${session.token}`,
+                'Content-Type': 'application/json'
+              },
+              data: data
+            };
+
+            axios.request(config)
+              .then((response1) => {
+                if (response1.data.status === false) {
+                  errorDialog(response1.data.msg);
+                } else {
+                  window.open(`https://api.autoassure.me/uploads/${response.data.data._id}.pdf`, '_self');
+                }
+              })
+              .catch((error) => {
+                errorDialog("An error occurred while generating the report.");
+                console.log(error);
+              });
           }
         }
       })
       .catch((error) => {
-        errorDialog("An error occurred while fetching the vehicle data.");
+        errorDialog("An error occurred while creating the report.");
         console.log(error);
       });
   }
