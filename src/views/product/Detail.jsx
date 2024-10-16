@@ -14,7 +14,6 @@ const Details = lazy(() => import("../../components/others/Details"));
 const TermsConditions = lazy(() => import("../../components/others/TermsConditions"));
 const QuestionAnswer = lazy(() => import("../../components/others/QuestionAnswer"));
 const OurAssurance = lazy(() => import("../../components/others/OurAssurance"));
-const SizeChart = lazy(() => import("../../components/others/SizeChart"));
 
 const ProductDetailView = () => {
   const [sessionData, setSessionData] = useState(null);
@@ -798,14 +797,6 @@ const ProductDetailView = () => {
                         aria-labelledby="nav-ship-returns-tab"
                       >
                         <OurAssurance isEditMode={isEditMode ? (vehicleData && (vehicleData.inspection_status === 'completed' || vehicleData.inspection_status === 'accepted') ? false : isEditMode) : (isEditMode)} vehicleData={vehicleData} ref={inspectionRef} userRole={sessionData && !isNew ? (sessionData.user_id === vehicleData.seller_id._id ? "owner" : sessionData.role) : ''} />
-                      </div>
-                      <div
-                        className="tab-pane fade"
-                        id="nav-size-chart"
-                        role="tabpanel"
-                        aria-labelledby="nav-size-chart-tab"
-                      >
-                        <SizeChart />
                       </div>
                     </div>
                   </div>
