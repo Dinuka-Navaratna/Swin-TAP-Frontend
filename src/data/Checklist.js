@@ -18,7 +18,7 @@ export const ChecklistData = {
     "M2": "Check the engine oil level and condition",
     "M3": "Inspect the coolant level and condition",
     "M4": "Examine the brake fluid level and condition",
-    "M5": "Check the transmission fluid level and condition (if applicable)",
+    "M5": "Check the transmission fluid level and condition",
     "M6": "Inspect the battery and its connections for any corrosion or damage"
   },
   "UnderTheHood": {
@@ -33,7 +33,7 @@ export const ChecklistData = {
     "T3": "Check the steering for any unusual vibrations or noises",
     "T4": "Listen for any unusual noises from the suspension or drivetrain",
     "T5": "Test the acceleration and overall performance of the engine",
-    "T6": "Ensure the transmission shifts smoothly and without hesitation (if applicable)"
+    "T6": "Ensure the transmission shifts smoothly and without hesitation"
   },
   "Documentation": {
     "D1": "Verify the vehicle's identification number (VIN) matches the paperwork",
