@@ -7,33 +7,33 @@ const ContactUsForm = lazy(() => import("../../components/ContactUsForm"));
 
 // Header styles
 const headerStyle = {
-  backgroundColor: '#285594', // Blue background
-  color: 'white',
-  padding: '60px 20px',
-  textAlign: 'center',
+  backgroundColor: "#285594", // Blue background
+  color: "white",
+  padding: "60px 20px",
+  textAlign: "center",
 };
 
 const headerTitleStyle = {
-  fontSize: '3rem', // Title font size
-  fontWeight: 'bold',
-  marginBottom: '1rem',
+  fontSize: "3rem", // Title font size
+  fontWeight: "bold",
+  marginBottom: "1rem",
 };
 
 const headerSubtitleStyle = {
-  fontSize: '1.5rem', // Subtitle font size
-  marginBottom: '1rem',
+  fontSize: "1.5rem", // Subtitle font size
+  marginBottom: "1rem",
 };
 
 const headerDescriptionStyle = {
-  fontSize: '1rem', // Description text size
-  maxWidth: '800px', // Max width for centered text block
-  margin: '0 auto', // Centering the text
-  lineHeight: '1.6', // Line height for better readability
+  fontSize: "1rem", // Description text size
+  maxWidth: "800px", // Max width for centered text block
+  margin: "0 auto", // Centering the text
+  lineHeight: "1.6", // Line height for better readability
 };
 
 const ContactUsView = () => {
   const onSubmit = async (values, dispatch, props) => {
-    successDialog(JSON.stringify(values.name));  // Test alert
+    successDialog(JSON.stringify(values.name)); // Test alert
 
     // Create the data structure required by the API
     const data = JSON.stringify({
@@ -46,11 +46,11 @@ const ContactUsView = () => {
 
     // Define the axios request configuration
     const config = {
-      method: 'post',
+      method: "post",
       maxBodyLength: Infinity,
-      url: `${process.env.REACT_APP_API_URL}/api/users/contact-us`,  // Use environment variable
-      headers: { 
-        'Content-Type': 'application/json'
+      url: `${process.env.REACT_APP_API_URL}/api/users/contact-us`,
+      headers: {
+        "Content-Type": "application/json",
       },
       data: data,
     };
@@ -66,7 +66,7 @@ const ContactUsView = () => {
       } else {
         successDialog("Form submitted successfully!");
         // Reset the form fields after a successful submission
-        props.reset();  // Call reset
+        props.reset(); // Call reset
       }
     } catch (error) {
       console.error("There was an error submitting the form!", error);
@@ -75,18 +75,23 @@ const ContactUsView = () => {
   };
 
   return (
-    <div className="container-fluid my-3"> {/* Changed to container-fluid for full-width */}
-      <div className="row g-3">
-        <div className="col-md-12">
+    <div className="container-fluid px-2">
+      {" "}
+      {/* Changed to container-fluid for full-width */}
+      <div className="row g-3 mb-3">
+        <div className="col-md-12 px-0 mx-0">
           {/* Header Section */}
-          <header style={headerStyle}>
-            <h1 style={headerTitleStyle}>CONTACT US</h1>
-            <h2 style={headerSubtitleStyle}>
-            Our team of customer service is ready to help you.  
-            </h2>
-            <p style={headerDescriptionStyle}>
-           
-            </p>
+          <header className="headerStyle">
+            <div className="container">
+              <h1 className="headerTitleStyle">AutoAssure</h1>
+              <h2 className="headerSubtitleStyle">
+                Revolutionizing Vehicle Inspection Partner
+              </h2>
+              <p>
+                At AutoAssure, we enhance the vehicle selling and buying process
+                through trusted inspections.
+              </p>
+            </div>
           </header>
         </div>
       </div>
@@ -98,8 +103,13 @@ const ContactUsView = () => {
             </div>
             <div className="card-body">
               <p>
-                Have suggestions on how we can improve your experience online and mobile mechanic services? Let us know by completing the form below or call 
-                <strong><a href="tel:(123) 456-7890">(123) 456-7890</a></strong>.
+                Have suggestions on how we can improve your experience online
+                and mobile mechanic services? Let us know by completing the form
+                below or call
+                <strong>
+                  <a href="tel:(123) 456-7890">(123) 456-7890</a>
+                </strong>
+                .
               </p>
               <Suspense fallback={<div>Loading...</div>}>
                 <ContactUsForm onSubmit={onSubmit} />
@@ -115,19 +125,6 @@ const ContactUsView = () => {
             <div className="card-body">
               <h6 className="card-title border-bottom border-dark pb-2">
                 Head Office
-              </h6>
-              <address>
-                <strong>AutoAssure, Inc.</strong>
-                <br />
-                35 Wakefield St
-                <br />
-                Hawthorn VIC 3122
-                <br />
-                <i className="bi bi-telephone"></i>{" "}
-                <abbr title="Phone">P:</abbr> (123) 456-7890
-              </address>
-              <h6 className="card-title border-bottom border-dark pb-2">
-                Development Office
               </h6>
               <address>
                 <strong>AutoAssure, Inc.</strong>
