@@ -79,18 +79,12 @@ const MechanicManagement = () => {
 
   return (
     <React.Fragment>
-      <div
-        className="p-5 bg-primary bs-cover"
-        style={{
-          backgroundImage: "url(../../images/banner/Banner_listing.png)",
-        }}
-      >
-        <div className="container text-center">
-          <span className="display-5 px-3 bg-white rounded shadow">
-            Mechanic Management
-          </span>
+      <header className="headerStyle">
+        <div className="container">
+          <h1 className="headerTitleStyle">AutoAssure</h1>
+          <h2 className="headerSubtitleStyle">Mechanic Management Section</h2>
         </div>
-      </div>
+      </header>
 
       <div className="container-fluid my-4">
         <div className="row">

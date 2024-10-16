@@ -44,12 +44,8 @@ const AdminPanel = () => {
         <div className="container">
           <h1 className="headerTitleStyle">AutoAssure</h1>
           <h2 className="headerSubtitleStyle">
-            Revolutionizing Vehicle Inspection Partner
-          </h2>
-          <p>
             Admin panel, for managing sellers, mechanics and to view analytical
-            details.
-          </p>
+          </h2>
         </div>
       </header>
 
@@ -59,7 +55,7 @@ const AdminPanel = () => {
           <div className="col-md-6 mb-3">
             <div className="card shadow-sm" style={cardStyle}>
               <img
-                src="/images/assurance/sellCar.jpg"
+                src="/images/admin/seller-back.jpg"
                 alt="Sell Car"
                 style={imgStyle}
               />
@@ -91,7 +87,7 @@ const AdminPanel = () => {
           <div className="col-md-6 mb-3">
             <div className="card shadow-sm" style={cardStyle}>
               <img
-                src="/images/assurance/mobileMechanic.jpg"
+                src="/images/admin/mechanic-back.jpg"
                 alt="Mobile Mechanic"
                 style={imgStyle}
               />

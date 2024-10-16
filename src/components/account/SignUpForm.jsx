@@ -5,16 +5,25 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import renderFormGroupField from "../../helpers/renderFormGroupField";
 import renderFormField from "../../helpers/renderFormField";
-import { required, maxLength20, minLength8, email, name } from "../../helpers/validation";
+import {
+  required,
+  maxLength20,
+  minLength8,
+  email,
+  name,
+} from "../../helpers/validation";
 import { ReactComponent as IconEmail } from "bootstrap-icons/icons/envelope.svg";
 import { ReactComponent as IconShieldLock } from "bootstrap-icons/icons/shield-lock.svg";
-import { successDialog, errorDialog, warningDialog } from "../../helpers/alerts.js";
+import {
+  successDialog,
+  errorDialog,
+  warningDialog,
+} from "../../helpers/alerts.js";
 
 const SignUpForm = (props) => {
   const { handleSubmit, submitting, submitFailed } = props;
 
   const onSubmit = async (formValues) => {
-
     const mechanic = formValues.mechanic;
     var role = "seller";
     if (mechanic && mechanic === true) {
@@ -25,17 +34,17 @@ const SignUpForm = (props) => {
       name: `${formValues.firstName} ${formValues.lastName}`,
       email: formValues.email,
       password: formValues.password,
-      role: role
+      role: role,
     });
 
     const config = {
-      method: 'post',
+      method: "post",
       maxBodyLength: Infinity,
       url: `${process.env.REACT_APP_API_URL}/api/users`,
       headers: {
-        'Content-Type': 'application/json'
+        "Content-Type": "application/json",
       },
-      data: data
+      data: data,
     };
 
     try {
@@ -43,9 +52,11 @@ const SignUpForm = (props) => {
       const response = await axios.request(config);
       if (response.data.status) {
         // console.log(response.data.data);
-        successDialog("Sign up successful!\nPlease sign in to continue.").then(() => {
-          window.location.href = "/account/signin";
-        });
+        successDialog("Sign up successful!\nPlease sign in to continue.").then(
+          () => {
+            window.location.href = "/account/signin";
+          }
+        );
       } else {
         warningDialog("Sign up failed. Please check your details.");
         console.log("User registration failed: " + response.data.msg);
@@ -138,23 +149,6 @@ const SignUpForm = (props) => {
         Forgot password?
       </Link>
       <div className="clearfix"></div>
-      <hr></hr>
-      <div className="row">
-        <div className="col- text-center">
-          <p className="text-muted small">Or you can join with</p>
-        </div>
-        <div className="col- text-center">
-          <Link to="/" className="btn btn-light text-white bg-twitter me-3">
-            <i className="bi bi-twitter-x" />
-          </Link>
-          <Link to="/" className="btn btn-light text-white me-3 bg-facebook">
-            <i className="bi bi-facebook mx-1" />
-          </Link>
-          <Link to="/" className="btn btn-light text-white me-3 bg-google">
-            <i className="bi bi-google mx-1" />
-          </Link>
-        </div>
-      </div>
     </form>
   );
 };

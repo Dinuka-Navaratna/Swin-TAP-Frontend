@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { getSession, clearSession } from "../actions/session";
-import { confirmDialog } from "../helpers/alerts.js";
+import { getSession, clearSession } from "../../actions/session.js";
+import { confirmDialog } from "../../helpers/alerts.js";
+import "./Header.css";
 
 const Header = () => {
   const [session, setSession] = useState(null);
@@ -26,7 +27,6 @@ const Header = () => {
         console.error("Error displaying the confirmation dialog:", error);
       });
   };
-  
 
   return (
     <header className="p-3 border-bottom bg-light">
@@ -37,18 +37,8 @@ const Header = () => {
               <img alt="logo" src="../../images/logo.webp" />
             </Link>
           </div>
-          {/* <div className="col-md-5">
-            <Search />
-          </div> */}
+
           <div className="col-md-6 navbar navbar-expand-lg navbar-light bg-light p-0">
-            {/* <div className="position-relative d-inline me-3">
-              <Link to="/cart" className="btn btn-primary">
-                <i className="bi bi-cart3"></i>&nbsp;
-                <div className="position-absolute top-0 start-100 translate-middle badge bg-danger rounded-circle">
-                  2
-                </div>
-              </Link>
-            </div> */}
             <button
               className="navbar-toggler"
               type="button"
@@ -60,112 +50,52 @@ const Header = () => {
             >
               <span className="navbar-toggler-icon" />
             </button>
-            <div className="collapse navbar-collapse" id="navbarSupportedContent">
+            <div
+              className="collapse navbar-collapse"
+              id="navbarSupportedContent"
+            >
               <ul className="navbar-nav">
-                {/* <li className="nav-item dropdown">
-                  <button
-                    className="btn nav-link dropdown-toggle fw-bold"
-                    id="navbarDropdown"
-                    data-toggle="dropdown"
-                    aria-expanded="false"
-                    data-bs-toggle="dropdown"
-                  >
-                    All Pages
-                  </button>
-                  <ul className="dropdown-menu" aria-labelledby="navbarDropdown">
-                    <li>
-                      <Link className="dropdown-item" to="/account/signin">
-                        Sign In
-                      </Link>
-                    </li>
-                    <li>
-                      <Link className="dropdown-item" to="/account/signup">
-                        Sign Up
-                      </Link>
-                    </li>
-                    <li>
-                      <hr className="dropdown-divider" />
-                    </li>
-                    <li>
-                      <Link className="dropdown-item" to="/checkout">
-                        Checkout Page
-                      </Link>
-                    </li>
-                    <li>
-                      <Link className="dropdown-item" to="/contact-us">
-                        Contact Us
-                      </Link>
-                    </li>
-                    <li>
-                      <Link className="dropdown-item" to="/blog">
-                        Blog
-                      </Link>
-                    </li>
-                    <li>
-                      <Link className="dropdown-item" to="/blog/detail">
-                        Blog Detail
-                      </Link>
-                    </li>
-                    <li>
-                      <hr className="dropdown-divider" />
-                    </li>
-                    <li>
-                      <Link className="dropdown-item" to="/fsafasf">
-                        404 Page Not Found
-                      </Link>
-                    </li>
-                    <li>
-                      <Link className="dropdown-item" to="/500">
-                        500 Internal Server Error
-                      </Link>
-                    </li>
-                  </ul>
-                </li> */}
                 <li className="nav-item">
-                  <Link className="nav-link" to="/">
-                    Home
+                  <Link className="nav-link " to="/">
+                    <h6> Home </h6>
                   </Link>
                 </li>
                 <li className="nav-item">
                   <Link className="nav-link" to="/listing/">
-                    Vehicle Listing
+                    <h6>Vehicle Listing</h6>
                   </Link>
                 </li>
-                
+
                 <li className="nav-item">
                   <Link className="nav-link" to="about-us">
-                    About Us
+                    <h6>About Us</h6>
                   </Link>
                 </li>
                 <li className="nav-item">
                   <Link className="nav-link" to="/contact-us">
-                    Contact Us
+                    <h6> Contact Us </h6>
                   </Link>
                 </li>
                 <li className="nav-item">
-                  <Link className="nav-link" to="/">
-                    T & C
+                  <Link className="nav-link" to="/terms-condition">
+                    <h6> T & C</h6>
                   </Link>
                 </li>
-
-                {/* <li className="nav-item">
-                  <Link className="nav-link" to="/documentation">
-                    Documentation
-                  </Link>
-                </li> */}
               </ul>
             </div>
             <div className="btn-group">
-              <button
-                type="button"
-                className="btn btn-secondary rounded-circle border me-3"
+              <div
+                className="clickable"
                 data-toggle="dropdown"
                 aria-expanded="false"
                 aria-label="Profile"
                 data-bs-toggle="dropdown"
               >
-                <i className="bi bi-person-fill text-light"></i>
-              </button>
+                <img
+                  src="../../../images/navbar/user.png"
+                  className="user-icon clickable"
+                />
+              </div>
               <ul className="dropdown-menu">
                 {session ? (
                   <>
@@ -175,18 +105,30 @@ const Header = () => {
                         {session.name}
                       </Link>
                     </li>
-                    {session.role === "seller" ? (
+                    {session.role === "seller" && (
                       <li>
                         <Link className="dropdown-item" to="/account/ads">
                           <i className="bi bi-star-fill text-warning"></i>&nbsp;
                           My Ads
                         </Link>
                       </li>
-                    ) : (
+                    )}{" "}
+                    {session.role === "mechanic" && (
                       <li>
-                        <Link className="dropdown-item" to="/account/inspections">
-                          <i className="bi bi-list-check text-primary"></i>&nbsp;
-                          My Inspections
+                        <Link
+                          className="dropdown-item"
+                          to="/account/inspections"
+                        >
+                          <i className="bi bi-list-check text-primary"></i>
+                          &nbsp; My Inspections
+                        </Link>
+                      </li>
+                    )}
+                    {session.role === "admin" && (
+                      <li>
+                        <Link className="dropdown-item" to="/admin">
+                          <i className="bi bi-display text-primary"></i>
+                          &nbsp; Admin Panel
                         </Link>
                       </li>
                     )}
@@ -207,15 +149,15 @@ const Header = () => {
                     </li> */}
                     <li>
                       <Link className="dropdown-item" to="/support">
-                        <i className="bi bi-info-circle-fill text-success"></i>&nbsp;
-                        Support
+                        <i className="bi bi-info-circle-fill text-success"></i>
+                        &nbsp; Support
                       </Link>
                     </li>
                     {session.role === "seller" && (
                       <li>
                         <Link className="dropdown-item" to="/listing/new">
-                          <i className="bi bi-plus-circle-fill text-primary"></i>&nbsp;
-                          Post Ad
+                          <i className="bi bi-plus-circle-fill text-primary"></i>
+                          &nbsp; Post Ad
                         </Link>
                       </li>
                     )}
@@ -224,8 +166,8 @@ const Header = () => {
                     </li>
                     <li>
                       <Link className="dropdown-item" onClick={handleLogout}>
-                        <i className="bi bi-box-arrow-in-left text-danger"></i>&nbsp;
-                        Logout
+                        <i className="bi bi-box-arrow-in-left text-danger"></i>
+                        &nbsp; Logout
                       </Link>
                     </li>
                   </>
@@ -233,14 +175,14 @@ const Header = () => {
                   <>
                     <li>
                       <Link className="dropdown-item" to="/account/signin">
-                        <i className="bi bi-box-arrow-in-right text-primary"></i>&nbsp;
-                        Sign In
+                        <i className="bi bi-box-arrow-in-right text-primary"></i>
+                        &nbsp; Sign In
                       </Link>
                     </li>
                     <li>
                       <Link className="dropdown-item" to="/account/signup">
-                        <i className="bi bi-person-check text-success"></i>&nbsp;
-                        Sign Up
+                        <i className="bi bi-person-check text-success"></i>
+                        &nbsp; Sign Up
                       </Link>
                     </li>
                   </>
