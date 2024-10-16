@@ -23,7 +23,7 @@
 /* Specific Styles for BuyCar Section */
 .buycar-section {
   background-color: #f5f5f5; /* Light gray background color */
-  padding: 2rem; /* Padding for the section */
+  padding: 0.5rem; /* Padding for the section */
   align-items: flex-start; /* Aligns content to the start */
 }
 

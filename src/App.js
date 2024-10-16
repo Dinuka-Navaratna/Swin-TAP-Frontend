@@ -3,7 +3,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.js";
 import "bootstrap-icons/font/bootstrap-icons.css";
-import Header from "./components/Header";
+import Header from "./components/Header/Header";
 import Footer from "./components/Footer";
 import "./App.css";
 //const Header = lazy(() => import("./components/Header"));
@@ -27,10 +27,18 @@ const NotFoundView = lazy(() => import("./views/pages/404"));
 const InternalServerErrorView = lazy(() => import("./views/pages/500"));
 const ContactUsView = lazy(() => import("./views/pages/ContactUs"));
 const SupportView = lazy(() => import("./views/pages/Support"));
+const TermsCondition = lazy(() =>
+  import("./views/pages/TermsCondition/TermsCondition")
+);
 const BlogView = lazy(() => import("./views/blog/Blog"));
-const OurAssurance = lazy(() => import("./views/pages/OurAssurance"));
 const AboutUsDetailView = lazy(() => import("./views/aboutus/Detail"));
-const AdminPanel = lazy(() => import("./views/admin/admin"));
+
+//Admin Components
+const AdminPanel = lazy(() => import("./views/admin/AdminPanel"));
+const SellerManagement = lazy(() => import("./views/admin/SellerManagement"));
+const MechanicManagement = lazy(() =>
+  import("./views/admin/MechanicManagement")
+);
 
 function App() {
   return (
@@ -40,7 +48,9 @@ function App() {
         {/* <TopMenu /> */}
         <Suspense
           fallback={
-            <div className="text-white text-center mt-3">Loading...</div>
+            <div class="centered">
+              <img src="images/loading/preloader.gif" className="loading-img" />
+            </div>
           }
         >
           <Routes>
@@ -78,16 +88,25 @@ function App() {
             />
             <Route exact path="/contact-us" element={<ContactUsView />} />
             <Route exact path="/support" element={<SupportView />} />
+            <Route exact path="/terms-condition" element={<TermsCondition />} />
             <Route exact path="/blog" element={<BlogView />} />
             <Route exact path="/about-us" element={<AboutUsDetailView />} />
             <Route exact path="/admin" element={<AdminPanel />} />
-            
+            <Route
+              exact
+              path="/admin/seller-management"
+              element={<SellerManagement />}
+            />
+            <Route
+              exact
+              path="/admin/mechanic-management"
+              element={<MechanicManagement />}
+            />
             <Route exact path="/500" element={<InternalServerErrorView />} />
-            <Route exact path="/assurance" element={<OurAssurance />} />
             <Route path="*" element={<NotFoundView />} />
           </Routes>
+          <Footer />
         </Suspense>
-        <Footer />
       </React.Fragment>
     </BrowserRouter>
   );
