@@ -14,7 +14,6 @@ const Details = lazy(() => import("../../components/others/Details"));
 const TermsConditions = lazy(() => import("../../components/others/TermsConditions"));
 const QuestionAnswer = lazy(() => import("../../components/others/QuestionAnswer"));
 const OurAssurance = lazy(() => import("../../components/others/OurAssurance"));
-const SizeChart = lazy(() => import("../../components/others/SizeChart"));
 
 const ProductDetailView = () => {
   const [sessionData, setSessionData] = useState(null);
@@ -36,6 +35,7 @@ const ProductDetailView = () => {
   const [imageUploading, setImageUploading] = useState(false);
   const [uploadedImageIds, setUploadedImageIds] = useState([]);
   const additionalServicesList = JSON.parse(process.env.REACT_APP_ADDITIONAL_SERVICES);
+  const [isInspectionToday, setIsInspectionToday] = useState(false);
 
   useEffect(() => {
     const session = getSession();
@@ -65,6 +65,9 @@ const ProductDetailView = () => {
               if (response.data.data.files) {
                 const initialImageIds = response.data.data.files.map(file => file._id);
                 setUploadedImageIds(initialImageIds);
+              }
+              if (response?.data?.data?.inspection_report?.inspection_time) {
+                setIsInspectionToday(isToday((response.data.data.inspection_report.inspection_time).split('T')[0]));
               }
               setIsLoading(false);
             }
@@ -536,6 +539,17 @@ const ProductDetailView = () => {
     }
   };
 
+  const isToday = (dateString) => {
+    const givenDate = new Date(dateString);
+    const today = new Date();
+
+    return (
+      givenDate.getFullYear() === today.getFullYear() &&
+      givenDate.getMonth() === today.getMonth() &&
+      givenDate.getDate() === today.getDate()
+    );
+  };
+
   const fileCount = vehicleData?.files?.length || 0;
   const defaultImagesNeeded = 4 - fileCount;
 
@@ -626,7 +640,11 @@ const ProductDetailView = () => {
                   <span className="badge bg-primary me-2 float-right" onClick={() => handleAssignInspection("assign")}>Assign Inspection</span>
                 </>}
                 {sessionData && (!isNew && vehicleData.inspection_report && vehicleData.inspection_report.status === "assigned" && vehicleData.inspection_report.mechanic === sessionData.user_id) && <>
-                  <span className="badge bg-dark me-2 float-right" onClick={() => handleAssignInspection("unassign")}>Unassign Inspection</span>
+                  {isInspectionToday ?
+                    <span className="badge bg-danger me-2 float-right" onClick={() => window.open(`/checklist?vehicle=${vehicleData.brand + " " + vehicleData.model}&seller=${vehicleData.seller_id.name}&vid=${vehicleData._id}&sid=${vehicleData.seller_id._id}`, '_blank')}>Start Inspection</span>
+                    :
+                    <span className="badge bg-dark me-2 float-right" onClick={() => handleAssignInspection("unassign")}>Unassign Inspection</span>
+                  }
                 </>}
                 <h1 className="fw-bold h5 d-inline me-2">{isEditMode ? <><label style={{ fontSize: "small", fontWeight: "normal" }}>Ad Title</label><br></br><input type="text" className="form-control mw-180" ref={detailsTitle} defaultValue={vehicleData !== null ? vehicleData.title : ''} placeholder="Title" /></> : <>{vehicleData !== null ? toTitleCase(vehicleData.title) : ''}</>}</h1>
                 {!isEditMode && (
@@ -798,14 +816,6 @@ const ProductDetailView = () => {
                         aria-labelledby="nav-ship-returns-tab"
                       >
                         <OurAssurance isEditMode={isEditMode ? (vehicleData && (vehicleData.inspection_status === 'completed' || vehicleData.inspection_status === 'accepted') ? false : isEditMode) : (isEditMode)} vehicleData={vehicleData} ref={inspectionRef} userRole={sessionData && !isNew ? (sessionData.user_id === vehicleData.seller_id._id ? "owner" : sessionData.role) : ''} />
-                      </div>
-                      <div
-                        className="tab-pane fade"
-                        id="nav-size-chart"
-                        role="tabpanel"
-                        aria-labelledby="nav-size-chart-tab"
-                      >
-                        <SizeChart />
                       </div>
                     </div>
                   </div>

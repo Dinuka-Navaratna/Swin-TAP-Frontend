@@ -26,10 +26,8 @@ const DocumentationView = lazy(() => import("./views/Documentation"));
 const NotFoundView = lazy(() => import("./views/pages/404"));
 const InternalServerErrorView = lazy(() => import("./views/pages/500"));
 const ContactUsView = lazy(() => import("./views/pages/ContactUs"));
-const SupportView = lazy(() => import("./views/pages/Support"));
-const TermsCondition = lazy(() =>
-  import("./views/pages/TermsCondition/TermsCondition")
-);
+const InspectionChecklist = lazy(() => import("./views/pages/InspectionChecklist/Checklist"));
+const TermsCondition = lazy(() => import("./views/pages/TermsCondition/TermsCondition"));
 const BlogView = lazy(() => import("./views/blog/Blog"));
 const AboutUsDetailView = lazy(() => import("./views/aboutus/Detail"));
 
@@ -48,7 +46,7 @@ function App() {
         {/* <TopMenu /> */}
         <Suspense
           fallback={
-            <div class="centered">
+            <div className="centered">
               <img src="images/loading/preloader.gif" className="loading-img" />
             </div>
           }
@@ -71,7 +69,7 @@ function App() {
             <Route exact path="/invoice" element={<InvoiceView />} />
             <Route exact path="/documentation" element={<DocumentationView />} />
             <Route exact path="/contact-us" element={<ContactUsView />} />
-            <Route exact path="/support" element={<SupportView />} />
+            <Route exact path="/checklist" element={<InspectionChecklist />} />
             <Route exact path="/terms-condition" element={<TermsCondition />} />
             <Route exact path="/blog" element={<BlogView />} />
             <Route exact path="/about-us" element={<AboutUsDetailView />} />
