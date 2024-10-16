@@ -57,51 +57,27 @@ function App() {
             <Route exact path="/" element={<HomeView />} />
             <Route exact path="/account/signin" element={<SignInView />} />
             <Route exact path="/account/signup" element={<SignUpView />} />
-            <Route
-              exact
-              path="/account/forgotpassword"
-              element={<ForgotPasswordView />}
-            />
+            <Route exact path="/account/forgotpassword" element={<ForgotPasswordView />} />
             <Route exact path="/account/profile" element={<MyProfileView />} />
-            <Route
-              exact
-              path="/account/inspections"
-              element={<AdsInspections />}
-            />
+            <Route exact path="/account/inspections" element={<AdsInspections />} />
             <Route exact path="/account/ads" element={<AdsInspections />} />
             <Route exact path="/account/wishlist" element={<WishlistView />} />
-            <Route
-              exact
-              path="/account/notification"
-              element={<NotificationView />}
-            />
+            <Route exact path="/account/notification" element={<NotificationView />} />
             <Route exact path="/listing" element={<ProductListView />} />
             <Route exact path="/listing/:id" element={<ProductDetailView />} />
             <Route exact path="/star/zone" element={<StarZoneView />} />
             <Route exact path="/cart" element={<CartView />} />
             <Route exact path="/checkout" element={<CheckoutView />} />
             <Route exact path="/invoice" element={<InvoiceView />} />
-            <Route
-              exact
-              path="/documentation"
-              element={<DocumentationView />}
-            />
+            <Route exact path="/documentation" element={<DocumentationView />} />
             <Route exact path="/contact-us" element={<ContactUsView />} />
             <Route exact path="/support" element={<SupportView />} />
             <Route exact path="/terms-condition" element={<TermsCondition />} />
             <Route exact path="/blog" element={<BlogView />} />
             <Route exact path="/about-us" element={<AboutUsDetailView />} />
             <Route exact path="/admin" element={<AdminPanel />} />
-            <Route
-              exact
-              path="/admin/seller-management"
-              element={<SellerManagement />}
-            />
-            <Route
-              exact
-              path="/admin/mechanic-management"
-              element={<MechanicManagement />}
-            />
+            <Route exact path="/admin/seller-management" element={<SellerManagement />} />
+            <Route exact path="/admin/mechanic-management" element={<MechanicManagement />} />
             <Route exact path="/500" element={<InternalServerErrorView />} />
             <Route path="*" element={<NotFoundView />} />
           </Routes>
