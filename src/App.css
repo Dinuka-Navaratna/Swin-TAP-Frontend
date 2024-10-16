@@ -10,6 +10,27 @@
   overflow: hidden;
 }
 
+.clickable{
+  cursor: pointer;
+}
+
+.loading-img{
+  max-width: 100%;
+  height: auto; 
+}
+
+.centered {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh; /* Full viewport height */
+}
+
+.login-img{
+  width: 500px;
+  height: auto;
+}
+
 .google-maps iframe {
   position: absolute;
   top: 0;
@@ -36,6 +57,7 @@
 
 .bs-cover {
   background-size: cover;
+  min-height: 25vh;
 }
 
 .r-0 {
@@ -118,4 +140,8 @@
 .headerSubtitleStyle {
   font-size: 1.5rem; /* Subtitle font size */
   margin-top: 0.5rem;
+}
+
+.no-underline {
+  text-decoration: none;
 }

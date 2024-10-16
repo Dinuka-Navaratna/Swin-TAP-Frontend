@@ -1,73 +1,42 @@
 export const data = {
   banner: [
     {
-      to: "#",
       img: "../../images/banner/banner01.jpg",
-      title: "",
-      description: "",
     },
     {
-      to: "#",
       img: "../../images/banner/banner02.jpg",
-      title: "",
-      description: "",
     },
     {
-      to: "#",
       img: "../../images/banner/banner03.jpg",
-      title: "",
-      description: "",
     },
   ],
   iconProducts: [
     {
       to: "/listing/",
-      img: "../../images/brands/alfa-roma.png",
-      title: "Alfa Roma",
-      text: "",
-      tips: "Alfa to the best",
-      cssClass: "text-primary",
+      img: "../../images/brands/toyota.png",
     },
     {
       to: "/listing/",
       img: "../../images/brands/kia.png",
-      title: "KIA",
-      text: "",
-      tips: "Technology is the world",
-      cssClass: "text-primary",
-    },
-    {
-      to: "/listing/",
-      img: "../../images/brands/bmw.png",
-      title: "BMW",
-      text: "",
-      tips: "best of the world",
-      cssClass: "text-primary",
-    },
-    {
-      to: "/listing/",
-      img: "../../images/brands/ford.png",
-      title: "FORD",
-      text: "",
-      tips: "To be Forward",
-      cssClass: "text-primary",
-    },
-    {
-      to: "/listing/",
-      img: "../../images/brands/honda.png",
-      title: "HONDA",
-      text: "",
-      tips: "Honda is the best",
-      cssClass: "text-primary",
     },
 
     {
       to: "/listing/",
-      img: "../../images/brands/amg.png",
-      title: "AMG",
-      text: "",
-      tips: "Hello to AMG",
-      cssClass: "text-primary",
+      img: "../../images/brands/honda.png",
+      title: "HONDA",
+    },
+    {
+      to: "/listing/",
+      img: "../../images/brands/ford.png",
+    },
+    {
+      to: "/listing/",
+      img: "../../images/brands/bmw.png",
+    },
+
+    {
+      to: "/listing/",
+      img: "../../images/brands/mazda.png",
     },
   ],
   products: [
