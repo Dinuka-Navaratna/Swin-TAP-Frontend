@@ -1,6 +1,9 @@
 import { lazy, useRef, useState } from "react";
+import { useLocation } from 'react-router-dom';
 import "./style.css";
-import { warningDialog } from "../../../helpers/alerts.js";
+import { warningDialog, errorDialog } from "../../../helpers/alerts.js";
+import axios from "axios";
+import { getSession } from "../../../actions/session";
 
 const Exterior = lazy(() => import("./Exterior"));
 const Interior = lazy(() => import("./Interior"));
@@ -10,7 +13,29 @@ const TestDrive = lazy(() => import("./TestDrive"));
 const Documentation = lazy(() => import("./Documentation"));
 const AdvancedChecks = lazy(() => import("./AdvancedChecks"));
 
+const useQuery = () => {
+  return new URLSearchParams(useLocation().search);
+}
+
 const CheckListView = () => {
+  const session = getSession();
+  if (!session || session.role !== "mechanic") {
+    warningDialog("Sign in using mechanic account to proceed!").then(() => {
+      window.location.href = "/account/signin";
+    });
+  }
+
+  const query = useQuery();
+  const vehicle = query.get('vehicle');
+  const seller = query.get('seller');
+  const sid = query.get('sid');
+  const vid = query.get('vid');
+  if (sid === null || vid === null || vehicle === null || seller === null) {
+    warningDialog("Inspection details not found!").then(() => {
+      window.location.href = "/account/inspections";
+    });
+  }
+
   const exteriorRef = useRef();
   const interiorRef = useRef();
   const mechanicalRef = useRef();
@@ -72,7 +97,7 @@ const CheckListView = () => {
         <br>Documentation checks: ${documentationCount}
         </small>`);
     } else {
-      const allChecks = {
+      const checklist = {
         ...exteriorData.sectionChecks,
         ...interiorData.sectionChecks,
         ...mechanicalData.sectionChecks,
@@ -82,14 +107,66 @@ const CheckListView = () => {
         ...advancedChecksData.sectionChecks
       };
 
-      console.log(allChecks);
+      createReport(checklist);
     }
   };
 
+  const getCurrentTime = () => {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0'); // Months are zero-indexed
+    const day = String(now.getDate()).padStart(2, '0');
+    const hours = String(now.getHours()).padStart(2, '0');
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    return `${year}/${month}/${day} ${hours}:${minutes}`;
+  };
+
+  const createReport = (checklist) => {
+    let data = JSON.stringify({
+      "mechanic": session.user_id,
+      "vehicle": vid,
+      "seller": sid,
+      "inspection_time": getCurrentTime(),
+      "additional_note": "",
+      "images": [],
+      "status": "completed",
+      // "vehicle_rego":"1VR2UD",
+      // "postal_code":"3171",
+      "checklist": checklist
+    });
+    let config = {
+      method: 'POST',
+      maxBodyLength: Infinity,
+      url: `${process.env.REACT_APP_API_URL}/api/inspection-report/`,
+      headers: {
+        'Authorization': `Token ${session.token}`,
+        'Content-Type': 'application/json'
+      },
+      data: data
+    };
+
+    axios.request(config)
+      .then((response) => {
+        if (response.data.status === false) {
+          errorDialog(response.data.msg);
+        } else {
+          if (response.data.data._id) {
+            alert(response.data.data._id);
+          }
+        }
+      })
+      .catch((error) => {
+        errorDialog("An error occurred while fetching the vehicle data.");
+        console.log(error);
+      });
+  }
+
   return (
     <div>
+      <div className="loading"></div>
       <div className="bg-dark bg-gradient p-5 text-white text-center">
         <div className="display-5 mb-4">Inspection Checklist</div>
+        <p>for {vehicle} owned by {seller}</p>
       </div>
       <div className="bg-secondary py-4">
         <div className="container">
