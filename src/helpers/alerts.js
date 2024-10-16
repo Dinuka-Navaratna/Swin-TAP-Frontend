@@ -62,7 +62,7 @@ export const errorDialog = (message) => {
 export const warningDialog = (message) => {
   return Swal.fire({
     title: 'Warning',
-    text: message,
+    html: message,
     icon: 'warning',
     confirmButtonText: 'OK'
   });
