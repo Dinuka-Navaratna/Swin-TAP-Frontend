@@ -1,0 +1,61 @@
+.nav {
+    justify-content: center;
+}
+
+.nav-tabs .nav-link {
+    color: #fff;
+}
+
+.nav-tabs .nav-link:hover {
+    color: #fff;
+}
+
+.nav-tabs .nav-link:active,
+.nav-tabs .nav-link:focus {
+    color: #000;
+}
+
+.sublists {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+p {
+    margin: 0;
+}
+
+.row {
+    display: flex;
+    align-items: center;
+}
+
+textarea {
+    margin-top: 10px;
+    width: 100%;
+    border: 1px solid #cacaca;
+    border-radius: 5px;
+    padding: 5px;
+}
+
+.checkbox-container {
+    display: inline-block;
+    position: relative;
+}
+
+.checkbox-container input[type="checkbox"] {
+    display: none;
+}
+
+.checkbox-container .checkmark {
+    transform: translateY(-50%);
+    font-size: 1.5em;
+    color: rgba(0, 0, 0, 0.2);
+}
+
+.checkbox-container .pass-check:checked+.checkmark {
+    color: green;
+}
+
+.checkbox-container .fail-check:checked+.checkmark {
+    color: red;
+}
