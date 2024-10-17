@@ -42,22 +42,23 @@ class MyProfileView extends Component {
       reader.onerror = (error) => reject(error);
     });
   };
+  
   render() {
     return (
       <div className="container-fluid my-3">
         <div className="row">
           <div className="col-md-4">
+            <ChangePasswordForm onSubmit={this.onSubmitChangePassword} />
+          </div>
+          <div className="col-md-8">
             <ProfileForm
               onSubmit={this.onSubmitProfile}
               onImageChange={this.onImageChange}
               imagePreview={this.state.imagePreview}
+              session={session}
             />
-          </div>
-          <div className="col-md-8">
-            <ChangePasswordForm onSubmit={this.onSubmitChangePassword} />
             <br></br>
-            <SettingForm />
-            <br></br>
+            {/* <SettingForm /> */}
             <CardListForm />
           </div>
         </div>
