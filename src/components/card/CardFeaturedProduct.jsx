@@ -35,37 +35,37 @@ const CardFeaturedProduct = (props) => {
         Other AutoAssured Vehicles
       </div>
       <div className="card-body">
-        {products.map((product, idx) => (
-          <>
-            {product._id !== vid &&
-              <div className={`row ${idx + 1 === products.length ? "" : "mb-3"}`} key={idx}>
-                <div className="col-md-4">
-                  <img src={`${process.env.REACT_APP_API_URL}/uploads/300x300/${product.files[0]?.new_filename || 'default_image.png'}`} className="img-fluid" alt="..." />
-                </div>
-                <div className="col-md-8">
-                  <h6 className="text-capitalize mb-1">
-                    <Link to={`/listing/${product._id}`} className="text-decoration-none">
-                      {product.title}
-                    </Link>
-                  </h6>
-                  <div className="mb-2">
-                    <span className="fw-bold h5">${product.price}</span>&nbsp;&nbsp;&nbsp;
-                    {product.inspection_status === "completed" ? (
-                      <>
-                        <i className="bi bi-patch-check-fill text-success me-1" />
-                        AutoAssured
-                      </>
-                    ) : (
-                      null
-                    )}
-                  </div>
-                  <p className="small">
-                    {product.address}
-                  </p>
-                </div>
+        {products.filter(product => product._id !== vid).map((product, idx) => (
+          <div className={`row ${idx + 1 === products.length ? "" : "mb-3"}`} key={product._id}>
+            <div className="col-md-4">
+              <img
+                src={product.files[0]?.new_filename ? `${process.env.REACT_APP_API_URL}/uploads/300x300/${product.files[0].new_filename}` : '../../images/products/vehicle.jpg'}
+                className="img-fluid"
+                alt="..."
+              />
+            </div>
+            <div className="col-md-8">
+              <h6 className="text-capitalize mb-1">
+                <Link to={`/listing/${product._id}`} className="text-decoration-none">
+                  {product.title}
+                </Link>
+              </h6>
+              <div className="mb-2">
+                <span className="fw-bold h5">${product.price}</span>&nbsp;&nbsp;&nbsp;
+                {product.inspection_status === "completed" ? (
+                  <>
+                    <i className="bi bi-patch-check-fill text-success me-1" />
+                    AutoAssured
+                  </>
+                ) : (
+                  null
+                )}
               </div>
-            }
-          </>
+              <p className="small">
+                {product.address}
+              </p>
+            </div>
+          </div>
         ))}
       </div>
     </div>
