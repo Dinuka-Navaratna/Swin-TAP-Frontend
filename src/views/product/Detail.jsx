@@ -35,7 +35,7 @@ const ProductDetailView = () => {
   const [imageUploading, setImageUploading] = useState(false);
   const [uploadedImageIds, setUploadedImageIds] = useState([]);
   const additionalServicesList = JSON.parse(process.env.REACT_APP_ADDITIONAL_SERVICES);
-  const [isInspectionToday, setIsInspectionToday] = useState(false);
+  const [startInspection, setStartInspection] = useState(false);
 
   useEffect(() => {
     const session = getSession();
@@ -67,7 +67,7 @@ const ProductDetailView = () => {
                 setUploadedImageIds(initialImageIds);
               }
               if (response?.data?.data?.inspection_report?.inspection_time) {
-                setIsInspectionToday(isToday((response.data.data.inspection_report.inspection_time).split('T')[0]));
+                setStartInspection(isStartInspection((response.data.data.inspection_report.inspection_time).split('T')[0]));
               }
               setIsLoading(false);
             }
@@ -539,14 +539,16 @@ const ProductDetailView = () => {
     }
   };
 
-  const isToday = (dateString) => {
+  const isStartInspection = (dateString) => {
     const givenDate = new Date(dateString);
     const today = new Date();
-
+    const threeDaysBefore = new Date();
+    
+    threeDaysBefore.setDate(today.getDate() + 7);
+  
     return (
-      givenDate.getFullYear() === today.getFullYear() &&
-      givenDate.getMonth() === today.getMonth() &&
-      givenDate.getDate() === today.getDate()
+      givenDate <= threeDaysBefore &&
+      givenDate >= today
     );
   };
 
@@ -640,8 +642,8 @@ const ProductDetailView = () => {
                   <span className="badge bg-primary me-2 float-right" onClick={() => handleAssignInspection("assign")}>Assign Inspection</span>
                 </>}
                 {sessionData && (!isNew && vehicleData.inspection_report && vehicleData.inspection_report.status === "assigned" && vehicleData.inspection_report.mechanic === sessionData.user_id) && <>
-                  {isInspectionToday ?
-                    <span className="badge bg-danger me-2 float-right" onClick={() => window.open(`/checklist?vehicle=${vehicleData.brand + " " + vehicleData.model}&seller=${vehicleData.seller_id.name}&vid=${vehicleData._id}&sid=${vehicleData.seller_id._id}`, '_blank')}>Start Inspection</span>
+                  {startInspection ?
+                    <span className="badge bg-danger me-2 float-right" onClick={() => window.open(`/checklist?vehicle=${vehicleData.brand + " " + vehicleData.model}&seller=${vehicleData.seller_id.name}&id=${vehicleData.inspection_report._id}`, '_blank')}>Start Inspection</span>
                     :
                     <span className="badge bg-dark me-2 float-right" onClick={() => handleAssignInspection("unassign")}>Unassign Inspection</span>
                   }
