@@ -99,7 +99,7 @@ const CheckListView = () => {
         <br>Under the Hood checks: ${underTheHoodCount}
         <br>Test Drive checks: ${testDriveCount}
         <br>Documentation checks: ${documentationCount}
-        <br>Advanced checks (optional): ${documentationCount}
+        <br>Advanced checks (optional): ${advancedChecksCount}
         </small>`);
     } else {
       const checklist = {
