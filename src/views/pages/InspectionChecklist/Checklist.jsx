@@ -28,9 +28,8 @@ const CheckListView = () => {
   const query = useQuery();
   const vehicle = query.get('vehicle');
   const seller = query.get('seller');
-  const sid = query.get('sid');
-  const vid = query.get('vid');
-  if (sid === null || vid === null || vehicle === null || seller === null) {
+  const inspectionId = query.get('id');
+  if (inspectionId === null || vehicle === null || seller === null) {
     warningDialog("Inspection details not found!").then(() => {
       window.location.href = "/account/inspections";
     });
@@ -64,7 +63,7 @@ const CheckListView = () => {
         const passChecked = item.querySelector('.pass-check').checked;
         const failChecked = item.querySelector('.fail-check').checked;
         const notes = item.querySelector('textarea').value;
-        
+
         if (passChecked || failChecked) {
           sectionCompletedChecks += 1;
         } else {
@@ -72,8 +71,8 @@ const CheckListView = () => {
             return;
           }
         }
-        
-        sectionChecks[`${id}`] = `${passChecked ? 'Passed' : failChecked ? 'Failed' : 'N/A'}${notes ? ` [${notes}]` : ''} <br><small><i>${description}</i></small>`;
+
+        sectionChecks[`${id}`] = `${passChecked ? 'Passed' : failChecked ? 'Failed' : 'N/A'}${notes ? ` <small>[${notes}]</small>` : ''} <br><small>? <i>${description}</i></small>`;
       });
 
       return { sectionChecks, sectionCompletedChecks, sectionTotalChecks };
@@ -91,7 +90,7 @@ const CheckListView = () => {
     const totalCompletedChecks = sectionsData.reduce((acc, data) => acc + data.sectionCompletedChecks, 0);
     const totalChecks = sectionsData.reduce((acc, data) => acc + data.sectionTotalChecks, 0);
 
-    if (totalCompletedChecks === totalChecks) {
+    if (totalCompletedChecks !== totalChecks) {
       warningDialog(`Following checks needs to be fully completed!<br>
         <small>
         <br>Exterior checks: ${exteriorCount}
@@ -100,6 +99,7 @@ const CheckListView = () => {
         <br>Under the Hood checks: ${underTheHoodCount}
         <br>Test Drive checks: ${testDriveCount}
         <br>Documentation checks: ${documentationCount}
+        <br>Advanced checks (optional): ${advancedChecksCount}
         </small>`);
     } else {
       const checklist = {
@@ -116,32 +116,16 @@ const CheckListView = () => {
     }
   };
 
-  const getCurrentTime = () => {
-    const now = new Date();
-    const year = now.getFullYear();
-    const month = String(now.getMonth() + 1).padStart(2, '0'); // Months are zero-indexed
-    const day = String(now.getDate()).padStart(2, '0');
-    const hours = String(now.getHours()).padStart(2, '0');
-    const minutes = String(now.getMinutes()).padStart(2, '0');
-    return `${year}/${month}/${day} ${hours}:${minutes}`;
-  };
-
   const createReport = (checklist) => {
     let data = JSON.stringify({
-      "mechanic": session.user_id,
-      "vehicle": vid,
-      "seller": sid,
-      "inspection_time": getCurrentTime(),
-      "additional_note": " ",
+      "_id": inspectionId,
       "images": [],
       "status": "completed",
-      // "vehicle_rego":"1VR2UD",
-      // "postal_code":"3171",
       "checklist": checklist
     });
     console.log(data);
     let config = {
-      method: 'POST',
+      method: 'PUT',
       maxBodyLength: Infinity,
       url: `${process.env.REACT_APP_API_URL}/api/inspection-report/`,
       headers: {
@@ -159,7 +143,7 @@ const CheckListView = () => {
         } else {
           if (response.data.data._id) {
             let data = JSON.stringify({
-              "_id": response.data.data._id
+              "_id": inspectionId
             });
             let config = {
               method: 'POST',
@@ -175,9 +159,10 @@ const CheckListView = () => {
             axios.request(config)
               .then((response1) => {
                 if (response1.data.status === false) {
+                  console.log(response1);
                   errorDialog(response1.data.msg);
                 } else {
-                  window.open(`https://api.autoassure.me/uploads/${response.data.data._id}.pdf`, '_self');
+                  window.open(`https://api.autoassure.me/uploads/${inspectionId}.pdf`, '_self');
                 }
               })
               .catch((error) => {
