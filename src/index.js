@@ -1,18 +1,22 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-//import "./index.css";
 import App from "./App";
 import * as serviceWorker from "./serviceWorker";
-import { createStore } from "redux";
+import { configureStore } from "@reduxjs/toolkit";
 import { Provider } from "react-redux";
 import rootReducer from "./reducers";
 import { loadState, saveState } from "./localStorage";
+
 const persistedState = loadState();
-const store = createStore(rootReducer, persistedState);
+const store = configureStore({
+  reducer: rootReducer,
+  preloadedState: persistedState,
+});
 
 store.subscribe(() => {
-  saveState(store);
+  saveState(store.getState());
 });
+
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <Provider store={store}>
