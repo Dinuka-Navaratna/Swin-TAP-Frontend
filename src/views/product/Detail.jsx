@@ -346,8 +346,6 @@ const ProductDetailView = () => {
   };
 
   const handleAssignInspection = (state) => {
-    alert('Inspection ' + state + 'ing...');
-
     let data = {
       _id: vehicleData.inspection_report._id
     };
@@ -521,18 +519,18 @@ const ProductDetailView = () => {
                 return newIds;
               });
 
-              alert('Image uploaded successfully');
+              successDialog('Image uploaded successfully');
             } else {
               console.log(response);
-              alert('Image upload error!');
+              errorDialog('Image upload error!<br>' + response.msg);
             }
           } catch (err) {
-            alert('Failed to upload image' + err);
+            errorDialog('Failed to upload image' + err);
           } finally {
             setImageUploading(false);
           }
         } else {
-          alert('Please select a valid image file');
+          warningDialog('Please select a valid image file');
         }
       };
       input.click();
@@ -543,9 +541,9 @@ const ProductDetailView = () => {
     const givenDate = new Date(dateString);
     const today = new Date();
     const threeDaysBefore = new Date();
-    
+
     threeDaysBefore.setDate(today.getDate() + 7);
-  
+
     return (
       givenDate <= threeDaysBefore &&
       givenDate >= today
