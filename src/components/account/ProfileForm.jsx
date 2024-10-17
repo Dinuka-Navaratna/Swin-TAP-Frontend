@@ -9,6 +9,7 @@ import { ReactComponent as IconPerson } from "bootstrap-icons/icons/person.svg";
 import { ReactComponent as IconPhone } from "bootstrap-icons/icons/phone.svg";
 import { ReactComponent as IconEnvelop } from "bootstrap-icons/icons/envelope.svg";
 import { ReactComponent as IconGeoAlt } from "bootstrap-icons/icons/geo-alt.svg";
+import uploadFile from '../../helpers/uploadFile.js';
 
 const capitalizeWords = (value) =>
   value && value.replace(/\b\w/g, char => char.toUpperCase());
@@ -41,7 +42,7 @@ const handlePasswordReset = async (userEmail) => {
 };
 
 const ProfileForm = (props) => {
-  const { handleSubmit, submitting, submitFailed, onImageChange, imagePreview, userEmail } = props;
+  const { handleSubmit, userEmail } = props;
 
   return (
     <form onSubmit={handleSubmit}>
@@ -73,7 +74,7 @@ const ProfileForm = (props) => {
           </li>
           <li className="list-group-item">
             <Field
-              name="mobileNo"
+              name="phone"
               type="number"
               component={renderFormGroupField}
               placeholder="Mobile Number"
@@ -99,7 +100,7 @@ const ProfileForm = (props) => {
           </li>
           <li className="list-group-item">
             <Field
-              name="location"
+              name="address"
               type="text"
               component={renderFormGroupField}
               placeholder="Address"
