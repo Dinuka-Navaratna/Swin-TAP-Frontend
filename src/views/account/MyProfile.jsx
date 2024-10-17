@@ -1,66 +1,208 @@
 import { lazy, Component } from "react";
+import axios from "axios";
 import { getSession } from "../../actions/session";
-import { infoDialog } from "../../helpers/alerts.js";
+import { successDialog, errorDialog } from "../../helpers/alerts.js";
+import uploadFile from '../../helpers/uploadFile.js';
+import './style.css';
 const ProfileForm = lazy(() => import("../../components/account/ProfileForm"));
-const ChangePasswordForm = lazy(() => import("../../components/account/ChangePasswordForm"));
-const SettingForm = lazy(() => import("../../components/account/SettingForm"));
-const CardListForm = lazy(() => import("../../components/account/CardListForm"));
+const DocumentUpload = lazy(() => import("../../components/account/DocumentUpload"));
 
 class MyProfileView extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      userDetails: null,
+      session: null,
+      imagePreview: "",
+      isDeleting: false
+    };
+  }
+
+  componentDidMount() {
     const session = getSession();
     if (!session) {
       window.location.href = "/account/signin";
+    } else {
+      this.setState({ session });
+
+      let config = {
+        method: 'GET',
+        maxBodyLength: Infinity,
+        url: `${process.env.REACT_APP_API_URL}/api/users/${session.user_id}`
+      };
+
+      axios.request(config)
+        .then((response) => {
+          if (response.data.status === false) {
+            errorDialog("Error fetching user data");
+            console.log(response);
+          } else {
+            this.setState({ userDetails: response.data.data });
+            console.log(response.data.data);
+          }
+        })
+        .catch((error) => {
+          errorDialog("An error occurred while fetching the user data.");
+          console.log(error);
+        });
     }
   }
 
-  state = { imagePreview: "", isDeleting: false };
-
-  onSubmitProfile = async (values) => {
-    infoDialog(JSON.stringify(values));
-  };
-
-  onSubmitChangePassword = async (values) => {
-    infoDialog(JSON.stringify(values));
-  };
-
-  onImageChange = async (obj) => {
-    if (obj) {
-      const val = await this.getBase64(obj);
-      this.setState({ imagePreview: val });
+  handleProfileSubmit = async (values) => {
+    const session = getSession();
+    if (!session) {
+      window.location.href = "/account/signin";
     } else {
-      this.setState({ imagePreview: "" });
+      values['_id'] = session.user_id;
+      Object.keys(values).forEach(key => {
+        if (values[key] === '') {
+          delete values[key];
+        }
+      });
+      const data = JSON.stringify(values);
+
+      const config = {
+        method: 'PUT',
+        maxBodyLength: Infinity,
+        url: `${process.env.REACT_APP_API_URL}/api/users/`,
+        headers: {
+          'Authorization': `Token ${session.token}`,
+          'Content-Type': 'application/json'
+        },
+        data: data
+      };
+
+      try {
+        const response = await axios.request(config);
+        if (response.data.status === false) {
+          errorDialog(response.data.msg);
+        } else {
+          successDialog("Profile details updated successfully.").then(() => {
+            window.location.reload();
+          });
+        }
+      } catch (error) {
+        errorDialog("An error occurred while updating the details: " + error);
+      }
     }
   };
 
-  getBase64 = (file) => {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => resolve(reader.result);
-      reader.readAsDataURL(file);
-      reader.onerror = (error) => reject(error);
-    });
+  handleProfilePicture = async () => {
+    const { session } = this.state;
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
+    input.onchange = async (inputEvent) => {
+      const file = inputEvent.target.files[0];
+      if (file) {
+        try {
+          const response = await uploadFile(file, session.token);
+          if (response.status) {
+            this.updateUserFiles(response.data._id).catch(err => errorDialog('Failed to update user files: ' + err));
+            successDialog('Profile picture uploaded successfully').then(() => {
+              window.location.reload();
+            });
+          } else {
+            errorDialog('Profile picture upload error!');
+          }
+        } catch (err) {
+          errorDialog('Failed to upload profile picture: ' + err);
+        }
+      }
+    };
+    input.click();
   };
+
+  updateUserFiles = async (imageId) => {
+    const { session } = this.state;
+    const data = JSON.stringify({
+      "_id": session.user_id,
+      "image": imageId
+    });
+
+    const config = {
+      method: 'PUT',
+      maxBodyLength: Infinity,
+      url: `${process.env.REACT_APP_API_URL}/api/users/`,
+      headers: {
+        'Authorization': `Token ${session.token}`,
+        'Content-Type': 'application/json'
+      },
+      data: data
+    };
+
+    try {
+      const response = await axios.request(config);
+      if (response.data.status === false) {
+        return response.data.msg;
+      } else {
+        return true;
+      }
+    } catch (error) {
+      return ("An error occurred while updating the profile picture: " + error);
+    }
+  };
+
   render() {
+    const { session, userDetails } = this.state;
+    if (!session || userDetails === null) {
+      return null;
+    }
+
     return (
       <div className="container-fluid my-3">
+        <br></br>
         <div className="row">
-          <div className="col-md-4">
+          {session.role !== "mechanic" &&
+            <div className="col-md-1"></div>
+          }
+          <div className="col-md-3" style={{ textAlign: "center" }}>
+            <div className="dp-image-container" onClick={() => this.handleProfilePicture()}>
+              <img
+                src={userDetails?.image?.new_filename ? `${process.env.REACT_APP_API_URL}/uploads/300x300/${userDetails.image.new_filename}` : "../../images/dp.png"}
+                className="img-fluid mb-3"
+                width=""
+                height="240"
+                alt=""
+                data-image-id=""
+              />
+              <span className="hover-text">Click to Update</span>
+            </div>
+          </div>
+          {session.role !== "mechanic" &&
+            <div className="col-md-1"></div>
+          }
+          <div className="col-md-5">
             <ProfileForm
-              onSubmit={this.onSubmitProfile}
+              handleProfileSubmit={this.handleProfileSubmit}
               onImageChange={this.onImageChange}
               imagePreview={this.state.imagePreview}
+              userEmail={session.email}
+              initialValues={{
+                name: userDetails.name,
+                phone: userDetails.phone !== "Not Provided" ? userDetails.phone : '',
+                email: userDetails.email || '',
+                address: userDetails.address || ''
+              }}
             />
           </div>
-          <div className="col-md-8">
-            <ChangePasswordForm onSubmit={this.onSubmitChangePassword} />
-            <br></br>
-            <SettingForm />
-            <br></br>
-            <CardListForm />
-          </div>
+          {session.role === "mechanic" &&
+            <div className="col-md-4">
+              <DocumentUpload
+                type={"identity_verification_documents"}
+                uploadedDocs={userDetails.identity_verification_documents}
+                token={session.token}
+              />
+              <br></br>
+              <DocumentUpload
+                type={"skill_verification_documents"}
+                uploadedDocs={userDetails.skill_verification_documents}
+                token={session.token}
+              />
+            </div>
+          }
         </div>
+        <br></br>
       </div>
     );
   }

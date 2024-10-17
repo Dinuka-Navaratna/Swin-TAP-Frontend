@@ -7,7 +7,9 @@ const renderFormGroupField = (props) => {
     tips,
     required,
     type,
+    placeholder,
     meta: { touched, error, warning },
+    disabled,
   } = props;
   const Icon = props.icon;
 
@@ -48,6 +50,8 @@ const renderFormGroupField = (props) => {
               {...input}
               type={type}
               id={input.name}
+              placeholder={placeholder}
+              disabled={disabled}
               className={`form-control ${touched && error ? "is-invalid" : ""} ${touched && !error ? "is-valid" : ""}`}
             />
           </div>

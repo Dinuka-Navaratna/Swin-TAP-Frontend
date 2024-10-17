@@ -11,6 +11,7 @@
     "@fortawesome/react-fontawesome": "^0.2.0",
     "@geoapify/geocoder-autocomplete": "^2.0.3",
     "@geoapify/react-geocoder-autocomplete": "^2.0.1",
+    "@reduxjs/toolkit": "^2.3.0",
     "@stripe/react-stripe-js": "^2.8.0",
     "@stripe/stripe-js": "^4.5.0",
     "@testing-library/jest-dom": "^6.1.3",

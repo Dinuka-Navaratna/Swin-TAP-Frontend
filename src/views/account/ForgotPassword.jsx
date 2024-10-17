@@ -24,7 +24,7 @@ const ForgotPasswordView = () => {
           <img
             src="../../images/banner/Banner_4.jpg"
             alt="..."
-            className="img-fluid"
+            className="login-img"
           />
           
         </div>

@@ -3,10 +3,10 @@ import { Field, reduxForm } from "redux-form";
 import { compose } from "redux";
 import { Link } from "react-router-dom";
 import axios from "axios";
-import jwtDecode from 'jwt-decode';
+import jwtDecode from "jwt-decode";
 import renderFormGroupField from "../../helpers/renderFormGroupField";
 import { setSession } from "../../actions/session";
-import { required, email, maxLength20, minLength8 } from "../../helpers/validation";
+import { required, email, maxLength20, minLength8, } from "../../helpers/validation";
 import { ReactComponent as IconEmail } from "bootstrap-icons/icons/envelope.svg";
 import { ReactComponent as IconShieldLock } from "bootstrap-icons/icons/shield-lock.svg";
 import { alertDialog, errorDialog, warningDialog } from "../../helpers/alerts.js";
@@ -18,24 +18,24 @@ const SignInForm = (props) => {
     const data = JSON.stringify(formValues);
 
     const config = {
-      method: 'post',
+      method: "post",
       maxBodyLength: Infinity,
       url: `${process.env.REACT_APP_API_URL}/api/users/login`,
       headers: {
-        'Content-Type': 'application/json'
+        "Content-Type": "application/json",
       },
-      data: data
+      data: data,
     };
 
     try {
       const response = await axios.request(config);
-      console.log('Response:', response.data);
+      console.log("Response:", response.data);
 
       if (response.data.status) {
         const decoded = jwtDecode(response.data.data);
         const sessionData = {
           ...decoded,
-          token: response.data.data
+          token: response.data.data,
         };
         setSession(sessionData);
 
@@ -114,23 +114,6 @@ const SignInForm = (props) => {
         Forgot password?
       </Link>
       <div className="clearfix"></div>
-      <hr></hr>
-      <div className="row">
-        <div className="col- text-center">
-          <p className="text-muted small">Or you can join with</p>
-        </div>
-        <div className="col- text-center">
-          <Link to="/" className="btn btn-light text-white bg-twitter me-3">
-            <i className="bi bi-twitter-x" />
-          </Link>
-          <Link to="/" className="btn btn-light text-white me-3 bg-facebook">
-            <i className="bi bi-facebook mx-1" />
-          </Link>
-          <Link to="/" className="btn btn-light text-white me-3 bg-google">
-            <i className="bi bi-google mx-1" />
-          </Link>
-        </div>
-      </div>
     </form>
   );
 };
