@@ -3,7 +3,38 @@ import { Link } from "react-router-dom";
 const Footer = () => {
   return (
     <footer>
-    
+      {/* <div className="container-fluid bg-primary">
+        <div className="row ">
+          <div className="col-md-9 py-3 text-white">
+            Get connected with us on social networks!
+          </div>
+          <div className="col-md-3 py-3 text-center text-white">
+            <Link to="/" title="Apple">
+              <i className="bi bi-apple text-light me-3"></i>
+            </Link>
+            <Link to="/" title="Windows">
+              <i className="bi bi-windows text-light me-3"></i>
+            </Link>
+            <Link to="/" title="Android">
+              <i className="bi bi-android2 text-light me-3"></i>
+            </Link>
+            |
+            <Link to="/" title="Twitter">
+              <i className="bi bi-twitter-x text-light ms-3 me-3"></i>
+            </Link>
+            <Link to="/" title="Facebook">
+              <i className="bi bi-facebook text-light me-3"></i>
+            </Link>
+            <Link to="/" title="Instagram">
+              <i className="bi bi-instagram text-light me-3"></i>
+            </Link>
+            <Link to="/" title="Youtube">
+              <i className="bi bi-youtube text-light me-3"></i>
+            </Link>
+          </div>
+        </div>
+      </div> */}
+
       <div className="container-fluid bg-dark text-white">
         <div className="row ">
           <div className="col-md-3 py-3">
