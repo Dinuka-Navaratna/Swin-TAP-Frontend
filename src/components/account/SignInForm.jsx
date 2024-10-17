@@ -38,7 +38,16 @@ const SignInForm = (props) => {
           token: response.data.data,
         };
         setSession(sessionData);
-        window.location.href = "/account/profile";
+
+        const userRole = decoded.role; 
+        console.log("User role: " + userRole);
+
+        if(userRole === 'seller' || userRole === 'mechanic'){
+          window.location.href = "/listing";
+        }
+        else if(userRole === 'admin'){
+          window.location.href = "/admin";
+        }
       } else {
         warningDialog("Login failed!<br>" + response.data.msg);
         console.log("Login failed: " + response.data.msg);
