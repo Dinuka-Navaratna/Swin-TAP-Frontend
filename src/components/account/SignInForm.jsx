@@ -38,9 +38,23 @@ const SignInForm = (props) => {
           token: response.data.data
         };
         setSession(sessionData);
-        window.location.href = "/account/profile";
+
+        // Log or show the user role in a popup
+        const userRole = decoded.role; 
+
+        //display userrole
+        console.log("User role: " + userRole);
+
+        if(userRole === 'seller' || userRole === 'mechanic'){
+          window.location.href = "/";
+        }
+        else if(userRole === 'admin'){
+          window.location.href = "/admin";
+        }
+
+        
       } else {
-        warningDialog("Login failed. Please check your credentials.");
+        warningDialog(response.data.msg);
         console.log("Login failed: " + response.data.msg);
       }
     } catch (error) {
