@@ -39,22 +39,17 @@ const SignInForm = (props) => {
         };
         setSession(sessionData);
 
-        // Log or show the user role in a popup
         const userRole = decoded.role; 
-
-        //display userrole
         console.log("User role: " + userRole);
 
         if(userRole === 'seller' || userRole === 'mechanic'){
-          window.location.href = "/";
+          window.location.href = "/listing";
         }
         else if(userRole === 'admin'){
           window.location.href = "/admin";
         }
-
-        
       } else {
-        warningDialog(response.data.msg);
+        warningDialog("Login failed!<br>" + response.data.msg);
         console.log("Login failed: " + response.data.msg);
       }
     } catch (error) {
