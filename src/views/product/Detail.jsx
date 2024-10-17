@@ -14,7 +14,6 @@ const Details = lazy(() => import("../../components/others/Details"));
 const TermsConditions = lazy(() => import("../../components/others/TermsConditions"));
 const QuestionAnswer = lazy(() => import("../../components/others/QuestionAnswer"));
 const OurAssurance = lazy(() => import("../../components/others/OurAssurance"));
-const SizeChart = lazy(() => import("../../components/others/SizeChart"));
 
 const ProductDetailView = () => {
   const [sessionData, setSessionData] = useState(null);
@@ -36,6 +35,7 @@ const ProductDetailView = () => {
   const [imageUploading, setImageUploading] = useState(false);
   const [uploadedImageIds, setUploadedImageIds] = useState([]);
   const additionalServicesList = JSON.parse(process.env.REACT_APP_ADDITIONAL_SERVICES);
+  const [startInspection, setStartInspection] = useState(false);
 
   useEffect(() => {
     const session = getSession();
@@ -65,6 +65,9 @@ const ProductDetailView = () => {
               if (response.data.data.files) {
                 const initialImageIds = response.data.data.files.map(file => file._id);
                 setUploadedImageIds(initialImageIds);
+              }
+              if (response?.data?.data?.inspection_report?.inspection_time) {
+                setStartInspection(isStartInspection((response.data.data.inspection_report.inspection_time).split('T')[0]));
               }
               setIsLoading(false);
             }
@@ -334,17 +337,41 @@ const ProductDetailView = () => {
   };
 
   const handleDeleteClick = () => {
-    confirmDialog('Are you sure you want to delete this ad?').then((result) => {
+    confirmDialog('Are you sure you want to delete this ad?').then(async (result) => {
       if (result.isConfirmed) {
+        setIsLoading(true);
         setIsEditMode(false);
-        alert("Delete under development");
+        const config = {
+          method: 'DELETE',
+          maxBodyLength: Infinity,
+          url: `${process.env.REACT_APP_API_URL}/api/vehicle/${id}`,
+          headers: {
+            'Authorization': `Token ${sessionData.token}`,
+            'Content-Type': 'application/json'
+          }
+        };
+        try {
+          const response = await axios.request(config);
+          if (response.data.status) {
+            setIsLoading(false);
+            successDialog('Ad deleted successfully!').then(() => {
+              window.location.href = "/account/ads";
+            });
+          } else {
+            setIsLoading(false);
+            errorDialog("Error deleting ad!<br>" + response.data.msg);
+          }
+        } catch (error) {
+          console.log(error);
+          setIsLoading(false);
+          errorDialog("Error deleting ad!<br>" + error);
+        }
       }
     });
   };
+  
 
   const handleAssignInspection = (state) => {
-    alert('Inspection ' + state + 'ing...');
-
     let data = {
       _id: vehicleData.inspection_report._id
     };
@@ -518,22 +545,35 @@ const ProductDetailView = () => {
                 return newIds;
               });
 
-              alert('Image uploaded successfully');
+              successDialog('Image uploaded successfully');
             } else {
               console.log(response);
-              alert('Image upload error!');
+              errorDialog('Image upload error!<br>' + response.msg);
             }
           } catch (err) {
-            alert('Failed to upload image' + err);
+            errorDialog('Failed to upload image' + err);
           } finally {
             setImageUploading(false);
           }
         } else {
-          alert('Please select a valid image file');
+          warningDialog('Please select a valid image file');
         }
       };
       input.click();
     }
+  };
+
+  const isStartInspection = (dateString) => {
+    const givenDate = new Date(dateString);
+    const today = new Date();
+    const threeDaysBefore = new Date();
+
+    threeDaysBefore.setDate(today.getDate() + 7);
+
+    return (
+      givenDate <= threeDaysBefore &&
+      givenDate >= today
+    );
   };
 
   const fileCount = vehicleData?.files?.length || 0;
@@ -626,7 +666,11 @@ const ProductDetailView = () => {
                   <span className="badge bg-primary me-2 float-right" onClick={() => handleAssignInspection("assign")}>Assign Inspection</span>
                 </>}
                 {sessionData && (!isNew && vehicleData.inspection_report && vehicleData.inspection_report.status === "assigned" && vehicleData.inspection_report.mechanic === sessionData.user_id) && <>
-                  <span className="badge bg-dark me-2 float-right" onClick={() => handleAssignInspection("unassign")}>Unassign Inspection</span>
+                  {startInspection ?
+                    <span className="badge bg-danger me-2 float-right" onClick={() => window.open(`/checklist?vehicle=${vehicleData.brand + " " + vehicleData.model}&seller=${vehicleData.seller_id.name}&id=${vehicleData.inspection_report._id}`, '_blank')}>Start Inspection</span>
+                    :
+                    <span className="badge bg-dark me-2 float-right" onClick={() => handleAssignInspection("unassign")}>Unassign Inspection</span>
+                  }
                 </>}
                 <h1 className="fw-bold h5 d-inline me-2">{isEditMode ? <><label style={{ fontSize: "small", fontWeight: "normal" }}>Ad Title</label><br></br><input type="text" className="form-control mw-180" ref={detailsTitle} defaultValue={vehicleData !== null ? vehicleData.title : ''} placeholder="Title" /></> : <>{vehicleData !== null ? toTitleCase(vehicleData.title) : ''}</>}</h1>
                 {!isEditMode && (
@@ -799,14 +843,6 @@ const ProductDetailView = () => {
                       >
                         <OurAssurance isEditMode={isEditMode ? (vehicleData && (vehicleData.inspection_status === 'completed' || vehicleData.inspection_status === 'accepted') ? false : isEditMode) : (isEditMode)} vehicleData={vehicleData} ref={inspectionRef} userRole={sessionData && !isNew ? (sessionData.user_id === vehicleData.seller_id._id ? "owner" : sessionData.role) : ''} />
                       </div>
-                      <div
-                        className="tab-pane fade"
-                        id="nav-size-chart"
-                        role="tabpanel"
-                        aria-labelledby="nav-size-chart-tab"
-                      >
-                        <SizeChart />
-                      </div>
                     </div>
                   </div>
                 </div>
@@ -814,7 +850,7 @@ const ProductDetailView = () => {
             }
           </div>
           <div className="col-md-4">
-            <CardFeaturedProduct data={data.products} />
+            <CardFeaturedProduct vid={id} />
             <CardServices />
           </div>
         </div>
