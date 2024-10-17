@@ -337,13 +337,39 @@ const ProductDetailView = () => {
   };
 
   const handleDeleteClick = () => {
-    confirmDialog('Are you sure you want to delete this ad?').then((result) => {
+    confirmDialog('Are you sure you want to delete this ad?').then(async (result) => {
       if (result.isConfirmed) {
+        setIsLoading(true);
         setIsEditMode(false);
-        alert("Delete under development");
+        const config = {
+          method: 'DELETE',
+          maxBodyLength: Infinity,
+          url: `${process.env.REACT_APP_API_URL}/api/vehicle/${id}`,
+          headers: {
+            'Authorization': `Token ${sessionData.token}`,
+            'Content-Type': 'application/json'
+          }
+        };
+        try {
+          const response = await axios.request(config);
+          if (response.data.status) {
+            setIsLoading(false);
+            successDialog('Ad deleted successfully!').then(() => {
+              window.location.href = "/account/ads";
+            });
+          } else {
+            setIsLoading(false);
+            errorDialog("Error deleting ad!<br>" + response.data.msg);
+          }
+        } catch (error) {
+          console.log(error);
+          setIsLoading(false);
+          errorDialog("Error deleting ad!<br>" + error);
+        }
       }
     });
   };
+  
 
   const handleAssignInspection = (state) => {
     let data = {
