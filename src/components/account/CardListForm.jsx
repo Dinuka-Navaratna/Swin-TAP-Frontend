@@ -3,8 +3,10 @@ import React from "react";
 const CardListForm = () => {
   return (
     <div className="card border-primary">
-      <h6 className="card-header">
-        <i className="bi bi-credit-card-2-front-fill text-primary"></i> Verification Documents
+      <h6 className="card-header d-flex align-items-center justify-content-between">
+        <span>
+          <i className="bi bi-file-text-fill"></i> Verification Documents
+        </span>
         <button className="btn btn-sm btn-primary float-end">
           <i className="bi bi-plus-lg text-light"></i>
         </button>
