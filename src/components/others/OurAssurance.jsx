@@ -23,7 +23,7 @@ const ShippingReturns = forwardRef((props, ref) => {
     if (status === 'completed') {
       return (
         <>
-          Completed - <a href="https://dinuka.site" target="_blank" rel="noopener noreferrer">Click here to view the report</a>
+          Completed - <a href={`${process.env.REACT_APP_API_URL}/uploads/${vehicleData.inspection_report._id}.pdf`} target="_blank" rel="noopener noreferrer">Click here to view the report</a>
         </>
       );
     } else if (status === 'requested') {
