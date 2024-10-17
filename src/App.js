@@ -47,7 +47,7 @@ function App() {
         <Suspense
           fallback={
             <div className="centered">
-              <img src="images/loading/preloader.gif" className="loading-img" />
+              <img src="/images/loading/preloader.gif" className="loading-img" />
             </div>
           }
         >

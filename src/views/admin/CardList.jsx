@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
 import axios from "axios";
 import { getSession } from "../../actions/session";
+import { alertDialog, errorDialog, successDialog, warningDialog } from "../../helpers/alerts.js";
 
 const CardList = (props) => {
   const session = getSession();
@@ -38,10 +39,10 @@ const CardList = (props) => {
           Authorization: `Token ${session ? session.token : ""}`, //`Token ${session ? session.token : ""}`,
         },
       });
-      alert(`User ${formData.name} updated successfully!`);
+      successDialog(`User ${formData.name} updated successfully!`);
       props.getUsers(props.currentPage);
     } catch (error) {
-      alert("Error updating user");
+      errorDialog("Error updating user");
     }
     handleClose(); // Close the modal after updating
   };
@@ -57,10 +58,10 @@ const CardList = (props) => {
           },
         }
       );
-      alert(`User ${name} deleted successfully!`);
+      successDialog(`User ${name} deleted successfully!`);
       props.getUsers(props.currentPage);
     } catch (error) {
-      alert("Error deleting user");
+      errorDialog("Error deleting user");
     }
   };
 
@@ -190,9 +191,8 @@ const CardList = (props) => {
       {/* Modal for editing */}
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
-          <Modal.Title>{`Edit ${
-            item.role === "mechanic" ? "Mechanic" : "User"
-          }`}</Modal.Title>
+          <Modal.Title>{`Edit ${item.role === "mechanic" ? "Mechanic" : "User"
+            }`}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form>
