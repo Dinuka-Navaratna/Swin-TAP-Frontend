@@ -4,7 +4,7 @@ import Swal from 'sweetalert2';
 export const alertDialog = (message) => {
   return Swal.fire({
     title: 'Alert',
-    text: message,
+    html: message,
     icon: 'info',
     confirmButtonText: 'OK'
   });
@@ -14,7 +14,7 @@ export const alertDialog = (message) => {
 export const confirmDialog = (message) => {
   return Swal.fire({
     title: 'Confirm',
-    text: message,
+    html: message,
     icon: 'warning',
     showCancelButton: true,
     confirmButtonColor: '#3085d6',
@@ -38,7 +38,7 @@ export const promptDialog = () => {
 export const successDialog = (message) => {
   return Swal.fire({
     title: 'Success',
-    text: message,
+    html: message,
     icon: 'success',
     confirmButtonText: 'OK',
     allowOutsideClick: false,  // Prevent closing by clicking outside
@@ -52,7 +52,7 @@ export const successDialog = (message) => {
 export const errorDialog = (message) => {
   return Swal.fire({
     title: 'Error',
-    text: message,
+    html: message,
     icon: 'error',
     confirmButtonText: 'OK'
   });
@@ -72,7 +72,7 @@ export const warningDialog = (message) => {
 export const infoDialog = (message) => {
   return Swal.fire({
     title: 'Info',
-    text: message,
+    html: message,
     icon: 'info',
     confirmButtonText: 'OK'
   });
@@ -82,7 +82,7 @@ export const infoDialog = (message) => {
 export const questionDialog = (message) => {
   return Swal.fire({
     title: 'Question',
-    text: message,
+    html: message,
     icon: 'question',
     confirmButtonText: 'Yes',
     showCancelButton: true,
