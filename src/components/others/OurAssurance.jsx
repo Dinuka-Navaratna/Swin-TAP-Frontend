@@ -87,6 +87,7 @@ const ShippingReturns = forwardRef((props, ref) => {
         <hr />
         <p className="fw-bold mb-2">Additional Services +</p>
         <ul>
+        <li>Advanced Check ($250) <span className="badge bg-dark me-2" onClick={() => addAdditionalServices(3)}>{additionalServices.current.includes(3) || additionalServices.current.includes("3") ? 'Added' : 'Add'}</span></li>
           <li>RWC Certification ($50) <span className="badge bg-dark me-2" onClick={() => addAdditionalServices(1)}>{additionalServices.current.includes(1) || additionalServices.current.includes("1") ? 'Added' : 'Add'}</span></li>
           <li>Rego Renewal ($125 - 3 months) <span className="badge bg-dark me-2" onClick={() => addAdditionalServices(2)}>{additionalServices.current.includes(2) || additionalServices.current.includes("2") ? 'Added' : 'Add'}</span></li>
         </ul>
