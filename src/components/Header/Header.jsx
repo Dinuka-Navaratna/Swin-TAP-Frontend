@@ -148,7 +148,7 @@ const Header = () => {
                       </Link>
                     </li> */}
                     <li>
-                      <Link className="dropdown-item" to="/support">
+                      <Link className="dropdown-item" to="#" onClick={(e) => { e.preventDefault(); window.location.href = "mailto:support@autoassure.me"; }}>
                         <i className="bi bi-info-circle-fill text-success"></i>
                         &nbsp; Support
                       </Link>
