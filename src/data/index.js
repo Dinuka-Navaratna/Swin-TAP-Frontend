@@ -91,23 +91,6 @@ export const data = {
       description:
         "Ad Description. Ad Description. Ad Description. Ad Description. Ad Description. Ad Description.",
     },
-    {
-      id: 4,
-      sku: "FAS-04",
-      link: "/listing/243t34qts",
-      name: "Advertisement Title",
-      img: "../../images/products/vehicle.jpg",
-      price: 5000,
-      originPrice: 0,
-      discountPrice: 0,
-      discountPercentage: 0,
-      isNew: false,
-      isHot: false,
-      star: 1,
-      isFreeShipping: false,
-      description:
-        "Ad Description. Ad Description. Ad Description. Ad Description. Ad Description. Ad Description.",
-    },
   ],
   blogBanner: [
     {
