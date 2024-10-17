@@ -826,7 +826,7 @@ const ProductDetailView = () => {
             }
           </div>
           <div className="col-md-4">
-            <CardFeaturedProduct data={data.products} />
+            <CardFeaturedProduct vid={id} />
             <CardServices />
           </div>
         </div>
