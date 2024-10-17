@@ -5,20 +5,10 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import renderFormGroupField from "../../helpers/renderFormGroupField";
 import renderFormField from "../../helpers/renderFormField";
-import {
-  required,
-  maxLength20,
-  minLength8,
-  email,
-  name,
-} from "../../helpers/validation";
+import { required, maxLength20, minLength8, email, name } from "../../helpers/validation";
 import { ReactComponent as IconEmail } from "bootstrap-icons/icons/envelope.svg";
 import { ReactComponent as IconShieldLock } from "bootstrap-icons/icons/shield-lock.svg";
-import {
-  successDialog,
-  errorDialog,
-  warningDialog,
-} from "../../helpers/alerts.js";
+import { successDialog, errorDialog, warningDialog } from "../../helpers/alerts.js";
 
 const SignUpForm = (props) => {
   const { handleSubmit, submitting, submitFailed } = props;
@@ -58,7 +48,7 @@ const SignUpForm = (props) => {
           }
         );
       } else {
-        warningDialog("Sign up failed. Please check your details.");
+        warningDialog("Sign up failed!<br>" + response.data.msg);
         console.log("User registration failed: " + response.data.msg);
       }
     } catch (error) {

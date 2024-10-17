@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
 import axios from "axios";
 import { getSession } from "../../actions/session";
+import { alertDialog, errorDialog, successDialog, warningDialog } from "../../helpers/alerts.js";
 
 const CardGrid = (props) => {
   const session = getSession();
@@ -38,10 +39,10 @@ const CardGrid = (props) => {
           Authorization: `Token ${session ? session.token : ""}`, //`Token ${session ? session.token : ""}`,
         },
       });
-      alert(`User ${formData.name} updated successfully!`);
+      successDialog(`User ${formData.name} updated successfully!`);
       props.getUsers(props.currentPage);
     } catch (error) {
-      alert("Error updating user");
+      errorDialog("Error updating user");
     }
     handleClose(); // Close the modal after updating
   };
@@ -57,10 +58,10 @@ const CardGrid = (props) => {
           },
         }
       );
-      alert(`User ${name} deleted successfully!`);
+      successDialog(`User ${name} deleted successfully!`);
       props.getUsers(props.currentPage);
     } catch (error) {
-      alert("Error deleting user");
+      errorDialog("Error deleting user");
     }
   };
 

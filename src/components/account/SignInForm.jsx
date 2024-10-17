@@ -6,19 +6,10 @@ import axios from "axios";
 import jwtDecode from "jwt-decode";
 import renderFormGroupField from "../../helpers/renderFormGroupField";
 import { setSession } from "../../actions/session";
-import {
-  required,
-  email,
-  maxLength20,
-  minLength8,
-} from "../../helpers/validation";
+import { required, email, maxLength20, minLength8, } from "../../helpers/validation";
 import { ReactComponent as IconEmail } from "bootstrap-icons/icons/envelope.svg";
 import { ReactComponent as IconShieldLock } from "bootstrap-icons/icons/shield-lock.svg";
-import {
-  alertDialog,
-  errorDialog,
-  warningDialog,
-} from "../../helpers/alerts.js";
+import { alertDialog, errorDialog, warningDialog } from "../../helpers/alerts.js";
 
 const SignInForm = (props) => {
   const { handleSubmit, submitting, submitFailed } = props;
@@ -49,7 +40,7 @@ const SignInForm = (props) => {
         setSession(sessionData);
         window.location.href = "/account/profile";
       } else {
-        warningDialog("Login failed. Please check your credentials.");
+        warningDialog("Login failed!<br>" + response.data.msg);
         console.log("Login failed: " + response.data.msg);
       }
     } catch (error) {

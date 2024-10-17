@@ -70,7 +70,7 @@ const ContactUsView = () => {
       }
     } catch (error) {
       console.error("There was an error submitting the form!", error);
-      alert("Error submitting the form.");
+      errorDialog("Error submitting the form!<br>" + error);
     }
   };
 
