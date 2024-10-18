@@ -592,8 +592,8 @@ const ProductDetailView = () => {
                     <img
                       src="../../images/products/vehicle.jpg"
                       className="img-fluid mb-3"
-                      width=""
-                      height="240"
+                      width="100%"
+                      height="240px"
                       alt=""
                       onClick={handleImageClick}
                       data-image-id=""
@@ -632,7 +632,7 @@ const ProductDetailView = () => {
                       <img
                         key={file._id}
                         src={`${process.env.REACT_APP_API_URL}/uploads/300x300/${file.new_filename}`}
-                        className={`border border-secondary me-2 ${index === 0 ? 'img-fluid mb-3' : ''}`}
+                        className={`border border-secondary me-2 ${index === 0 ? 'img-fluid mb-3 thumbnail' : ''}`}
                         width={index === 0 ? undefined : "75"}
                         height={index === 0 ? undefined : "50"}
                         alt=""

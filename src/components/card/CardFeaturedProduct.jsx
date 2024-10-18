@@ -12,7 +12,7 @@ const CardFeaturedProduct = (props) => {
       const config = {
         method: 'get',
         maxBodyLength: Infinity,
-        url: `${process.env.REACT_APP_API_URL}/api/vehicle?page=1&limit=5&inspection=true`,
+        url: `${process.env.REACT_APP_API_URL}/api/vehicle?page=1&limit=3&inspection=true`,
         headers: {}
       };
 

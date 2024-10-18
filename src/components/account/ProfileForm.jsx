@@ -9,7 +9,6 @@ import { ReactComponent as IconPerson } from "bootstrap-icons/icons/person.svg";
 import { ReactComponent as IconPhone } from "bootstrap-icons/icons/phone.svg";
 import { ReactComponent as IconEnvelop } from "bootstrap-icons/icons/envelope.svg";
 import { ReactComponent as IconGeoAlt } from "bootstrap-icons/icons/geo-alt.svg";
-import uploadFile from '../../helpers/uploadFile.js';
 
 const capitalizeWords = (value) =>
   value && value.replace(/\b\w/g, char => char.toUpperCase());
@@ -42,14 +41,14 @@ const handlePasswordReset = async (userEmail) => {
 };
 
 const ProfileForm = (props) => {
-  const { handleSubmit, userEmail } = props;
+  const { handleSubmit, userEmail, userRole } = props;
 
   return (
     <form onSubmit={handleSubmit}>
       <div className="card border-primary">
         <h6 className="card-header d-flex align-items-center justify-content-between">
           <span>
-            <i className="bi bi-person-lines-fill" /> Profile Detail
+            <i className="bi bi-person-lines-fill" /> Profile Details {userRole === "mechanic" ? "(Verified)" : userRole === "mechanicNotVerified" ? "(Not Verified)" : ""}
           </span>
           <button
             type="submit"
@@ -64,6 +63,7 @@ const ProfileForm = (props) => {
             <Field
               name="name"
               type="text"
+              disabled={userRole === "mechanic"}
               component={renderFormGroupField}
               placeholder="Your Name"
               icon={IconPerson}
