@@ -12,7 +12,7 @@ const CardFeaturedProduct = (props) => {
       const config = {
         method: 'get',
         maxBodyLength: Infinity,
-        url: `${process.env.REACT_APP_API_URL}/api/vehicle?page=1&limit=3&inspection=true`,
+        url: `${process.env.REACT_APP_API_URL}/api/vehicle?page=1&limit=4&inspection=true`,
         headers: {}
       };
 
@@ -35,7 +35,7 @@ const CardFeaturedProduct = (props) => {
         Other AutoAssured Vehicles
       </div>
       <div className="card-body">
-        {products.filter(product => product._id !== vid).map((product, idx) => (
+        {products.filter(product => product._id !== vid).slice(0, 3).map((product, idx) => (
           <div className={`row ${idx + 1 === products.length ? "" : "mb-3"}`} key={product._id}>
             <div className="col-md-4">
               <img
@@ -67,6 +67,7 @@ const CardFeaturedProduct = (props) => {
             </div>
           </div>
         ))}
+
       </div>
     </div>
   );
