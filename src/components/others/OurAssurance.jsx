@@ -119,11 +119,11 @@ const ShippingReturns = forwardRef((props, ref) => {
       <hr />
       <p>! What are the benefits of being AutoAssured?</p>
       <ul>
-        <li>Benefit Benefit Benefit Benefit Benefit </li>
-        <li>Benefit Benefit Benefit Benefit Benefit </li>
-        <li>Benefit Benefit Benefit Benefit Benefit </li>
-        <li>Benefit Benefit Benefit Benefit Benefit </li>
-        <li>Benefit Benefit Benefit Benefit Benefit </li>
+        <li>Increased marketability </li>
+        <li>Increased buyer confidence </li>
+        <li>Identify issues early </li>
+        <li>Stand out amoung many other sellers </li>
+        <li>Get the vehicle certified by skilled mechanics </li>
       </ul>
     </React.Fragment>
   );

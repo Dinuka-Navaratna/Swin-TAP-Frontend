@@ -10,9 +10,7 @@ const Carousel = lazy(() => import("../../components/carousel/Carousel"));
 const CardIcon = lazy(() => import("../../components/card/CardIcon"));
 const CardImage = lazy(() => import("../../components/card/CardImage"));
 const OurAssurance = lazy(() => import("../pages/OurAssurance"));
-const CardDealsOfTheDay = lazy(() =>
-  import("../../components/card/CardDealsOfTheDay")
-);
+const CardDealsOfTheDay = lazy(() => import("../../components/card/CardDealsOfTheDay"));
 
 class HomeView extends Component {
 
