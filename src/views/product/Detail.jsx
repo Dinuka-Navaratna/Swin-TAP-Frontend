@@ -369,7 +369,7 @@ const ProductDetailView = () => {
       }
     });
   };
-  
+
 
   const handleAssignInspection = (state) => {
     let data = {
@@ -829,9 +829,7 @@ const ProductDetailView = () => {
                           aria-labelledby="nav-faq-tab"
                         >
                           <dl>
-                            {Array.from({ length: 5 }, (_, key) => (
-                              <QuestionAnswer key={key} />
-                            ))}
+                            <QuestionAnswer />
                           </dl>
                         </div>
                       </>}
