@@ -42,8 +42,11 @@ const SignInForm = (props) => {
         const userRole = decoded.role; 
         console.log("User role: " + userRole);
 
-        if(userRole === 'seller' || userRole === 'mechanic'){
+        if(userRole === 'seller'){
           window.location.href = "/listing";
+        }
+        else if(userRole === 'mechanic'){
+          window.location.href = "/account/profile";
         }
         else if(userRole === 'admin'){
           window.location.href = "/admin";

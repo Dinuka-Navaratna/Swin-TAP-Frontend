@@ -77,7 +77,7 @@ const CheckListView = () => {
 
       return { sectionChecks, sectionCompletedChecks, sectionTotalChecks };
     };
-
+    
     const exteriorData = getSectionData(exteriorRef);
     const interiorData = getSectionData(interiorRef);
     const mechanicalData = getSectionData(mechanicalRef);
@@ -85,13 +85,26 @@ const CheckListView = () => {
     const testDriveData = getSectionData(testDriveRef);
     const documentationData = getSectionData(documentationRef);
     const advancedChecksData = getSectionData(advancedChecksRef, true);
-
-    const sectionsData = [exteriorData, interiorData, mechanicalData, underTheHoodData, testDriveData, documentationData, advancedChecksData];
-    const totalCompletedChecks = sectionsData.reduce((acc, data) => acc + data.sectionCompletedChecks, 0);
-    const totalChecks = sectionsData.reduce((acc, data) => acc + data.sectionTotalChecks, 0);
-
+    const sectionsData = [
+      exteriorData,
+      interiorData,
+      mechanicalData,
+      underTheHoodData,
+      testDriveData,
+      documentationData
+    ];
+    
+    const totalCompletedChecks = sectionsData.reduce(
+      (acc, data) => acc + data.sectionCompletedChecks,
+      0
+    );
+    const totalChecks = sectionsData.reduce(
+      (acc, data) => acc + data.sectionTotalChecks,
+      0
+    );
+    
     if (totalCompletedChecks !== totalChecks) {
-      warningDialog(`Following checks needs to be fully completed!<br>
+      warningDialog(`Following checks need to be fully completed!<br>
         <small>
         <br>Exterior checks: ${exteriorCount}
         <br>Interior checks: ${interiorCount}
