@@ -23,3 +23,15 @@ export const getSession = () => {
 export const clearSession = () => {
   document.cookie = "userSession=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
 };
+
+export const setRole = (newRole) => {
+  const cookie = document.cookie.split('; ').find(row => row.startsWith('userSession='));
+  if (!cookie) return;
+  
+  const sessionData = JSON.parse(decodeURIComponent(cookie.split('=')[1]));
+  sessionData.role = newRole;
+  
+  const expirationDate = new Date();
+  expirationDate.setDate(expirationDate.getDate() + 7);
+  document.cookie = `userSession=${encodeURIComponent(JSON.stringify(sessionData))}; expires=${expirationDate.toUTCString()}; path=/`;
+};

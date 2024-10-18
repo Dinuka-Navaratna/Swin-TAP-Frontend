@@ -1,6 +1,6 @@
 import { lazy, Component } from "react";
 import axios from "axios";
-import { getSession } from "../../actions/session";
+import { getSession, setRole } from "../../actions/session";
 import { successDialog, errorDialog } from "../../helpers/alerts.js";
 import uploadFile from '../../helpers/uploadFile.js';
 import './style.css';
@@ -39,6 +39,13 @@ class MyProfileView extends Component {
           } else {
             this.setState({ userDetails: response.data.data });
             console.log(response.data.data);
+            if (response.data.data.role === "mechanic" && response.data.data.mechanic_verification === "verified" && session.role !== "mechanic") {
+              setRole("mechanic");
+              window.location.reload();
+            } else if (response.data.data.role === "mechanic" && response.data.data.mechanic_verification === "not_verified" && session.role !== "mechanicNotVerified") {
+              setRole("mechanicNotVerified");
+              window.location.reload();
+            }
           }
         })
         .catch((error) => {
@@ -153,7 +160,7 @@ class MyProfileView extends Component {
       <div className="container-fluid my-3">
         <br></br>
         <div className="row">
-          {session.role !== "mechanic" &&
+          {(session.role !== "mechanic" && session.role !== "mechanicNotVerified") &&
             <div className="col-md-1"></div>
           }
           <div className="col-md-3" style={{ textAlign: "center" }}>
@@ -169,7 +176,7 @@ class MyProfileView extends Component {
               <span className="hover-text">Click to Update</span>
             </div>
           </div>
-          {session.role !== "mechanic" &&
+          {(session.role !== "mechanic" && session.role !== "mechanicNotVerified") &&
             <div className="col-md-1"></div>
           }
           <div className="col-md-5">
@@ -178,6 +185,7 @@ class MyProfileView extends Component {
               onImageChange={this.onImageChange}
               imagePreview={this.state.imagePreview}
               userEmail={session.email}
+              userRole={session.role}
               initialValues={{
                 name: userDetails.name,
                 phone: userDetails.phone !== "Not Provided" ? userDetails.phone : '',
@@ -186,7 +194,7 @@ class MyProfileView extends Component {
               }}
             />
           </div>
-          {session.role === "mechanic" &&
+          {(session.role === "mechanic" || session.role === "mechanicNotVerified") &&
             <div className="col-md-4">
               <DocumentUpload
                 type={"identity_verification_documents"}

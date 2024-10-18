@@ -90,3 +90,8 @@
 .img-fluid {
   height: auto !important;
 }
+
+.thumbnail {
+  height: 250px !important;
+  width: 100%;
+}

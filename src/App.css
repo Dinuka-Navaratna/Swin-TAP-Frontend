@@ -1,8 +1,6 @@
-body, html {
-  margin: 0;
-  padding: 0;
-  overflow-x: hidden; /* Prevent horizontal scroll */
-  width: 100vw; /* Ensure the body takes full width of the viewport */
+body,
+html {
+  overflow-x: hidden;
 }
 
 .required:after {
@@ -17,23 +15,24 @@ body, html {
   overflow: hidden;
 }
 
-.clickable{
+.clickable {
   cursor: pointer;
 }
 
-.loading-img{
+.loading-img {
   max-width: 100%;
-  height: auto; 
+  height: auto;
 }
 
 .centered {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh; /* Full viewport height */
+  height: 100vh;
+  /* Full viewport height */
 }
 
-.login-img{
+.login-img {
   width: 500px;
   height: auto;
 }
@@ -139,13 +138,15 @@ body, html {
 }
 
 .headerTitleStyle {
-  font-size: 2.5rem; /* Title font size */
+  font-size: 2.5rem;
+  /* Title font size */
   font-weight: bold;
   margin-bottom: 0.5rem;
 }
 
 .headerSubtitleStyle {
-  font-size: 1.5rem; /* Subtitle font size */
+  font-size: 1.5rem;
+  /* Subtitle font size */
   margin-top: 0.5rem;
 }
 
