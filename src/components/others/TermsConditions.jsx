@@ -32,8 +32,7 @@ const RatingsReviews = (props) => {
     //   </div>
     // </div>
     <div>
-      <p>T & C</p>
-      <p>By posting the advertisement you agree to our terms and conditions.</p>
+      <p>By posting the advertisement you agree to our <a href="/terms-condition" target="_blank">terms and conditions</a>.</p>
     </div>
   );
 };

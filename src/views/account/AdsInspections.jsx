@@ -146,6 +146,7 @@ const AdsInspectionsView = () => {
                             <img
                               src={files !== 0 ? `${process.env.REACT_APP_API_URL}/uploads/300x300/${whatPage() === "ads" ? ad.files[0].new_filename : ad.vehicle.files[0].new_filename}` : "../../images/products/vehicle.jpg"}
                               className="img-fluid"
+                              style={{ height: "100% !important" }}
                               alt="..."
                             />
                           </div>
