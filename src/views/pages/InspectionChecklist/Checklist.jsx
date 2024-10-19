@@ -72,7 +72,7 @@ const CheckListView = () => {
           }
         }
 
-        sectionChecks[`${id}`] = `${passChecked ? 'Passed' : failChecked ? 'Failed' : 'N/A'}${notes ? ` <small>[${notes}]</small>` : ''} <br><small>? <i>${description}</i></small>`;
+        sectionChecks[`${id}`] = `${passChecked ? 'Passed' : failChecked ? 'Failed' : 'N/A'}${notes ? ` <small>[${notes}]</small>` : ''} <br><small>➡ <i>${description}</i></small>`;
       });
 
       return { sectionChecks, sectionCompletedChecks, sectionTotalChecks };
