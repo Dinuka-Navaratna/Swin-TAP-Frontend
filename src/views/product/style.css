@@ -95,3 +95,8 @@
   height: 250px !important;
   width: 100%;
 }
+
+.featuredProduct {
+  width: 120px !important;
+  height: 90px !important;
+}
