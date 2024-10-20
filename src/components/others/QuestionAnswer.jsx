@@ -2,15 +2,6 @@ const QuestionAnswer = (props) => {
   return (
     <div>
       <div className="border-bottom mb-3">
-        <dt>Q: Will there be any price cut within one month?</dt>
-        <dd>
-          <p>
-            <strong>A:</strong> Dont know but can hope for it.
-          </p>
-        </dd>
-      </div>
-
-      <div className="border-bottom mb-3">
         <dt>Q: How does AutoAssure make selling my car easier?</dt>
         <dd>
           <p>
