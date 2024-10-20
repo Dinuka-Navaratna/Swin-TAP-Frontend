@@ -48,76 +48,76 @@ const OurAssurance = () => {
 
   return (
     <div className="our-assurance-container mx-2">
-     
-     <div className="row mb-3">
-          <div className="col-md-6">
-            <div className="card shadow-sm" style={cardStyle}>
-              <img
-                src="/images/assurance/sellCar.jpg"
-                alt="Sell Car"
-                style={imgStyle}
-              />
-              <div className="card-body" style={cardBodyStyle}>
-                <strong className="d-inline-block mb-2 text-primary">
-                  Sell
-                </strong>
-                <h4 className="card-title">Advertise on AutoAssure</h4>
-                <p className="card-text mb-auto">
-                  <ul>
-                    <li>Convenience</li>
-                    <li>Quick and Easy Listings</li>
-                    <li>Flexibility in Communication</li>
-                    <li>Reach millions of potential buyers, until sold</li>
-                  </ul>
-                </p>
-                <Link
-                  to="/listing/new"
-                  className="stretched-link btn btn-sm btn-light"
-                  style={stretchedLinkStyle}
-                >
-                  Create an ad
-                  <i className="bi bi-chevron-right"></i>
-                </Link>
-              </div>
-            </div>
-          </div>
 
-          <div className="col-md-6">
-            <div className="card shadow-sm" style={cardStyle}>
-              <img
-                src="/images/assurance/mobileMechanic.jpg"
-                alt="Mobile Mechanic"
-                style={imgStyle}
-              />
-              <div className="card-body" style={cardBodyStyle}>
-                <strong className="d-inline-block mb-2 text-success">
-                  Inspection
-                </strong>
-                <h4 className="card-title">AutoAssure Vehicle Inspections</h4>
-                <p className="card-text mb-auto">
-                  <ul>
-                    <li>Transparency</li>
-                    <li>Identifying Issues Early</li>
-                    <li>Increased Marketability</li>
-                    <li>Increased Buyer Confidence</li>
-                  </ul>
-                </p>
-                <Link
-                  to="/listing/new"
-                  className="stretched-link btn btn-sm btn-light"
-                  style={stretchedLinkStyle}
-                >
-                  Book vehicle inspections
-                  <i className="bi bi-chevron-right"></i>
-                </Link>
-              </div>
+      <div className="row mb-3">
+        <div className="col-md-6">
+          <div className="card shadow-sm" style={cardStyle}>
+            <img
+              src="/images/assurance/sellCar.jpg"
+              alt="Sell Car"
+              style={imgStyle}
+            />
+            <div className="card-body" style={cardBodyStyle}>
+              <strong className="d-inline-block mb-2 text-primary">
+                Sell
+              </strong>
+              <h4 className="card-title">Advertise on AutoAssure</h4>
+              <p className="card-text mb-auto">
+                <ul>
+                  <li>Convenience</li>
+                  <li>Quick and Easy Listings</li>
+                  <li>Flexibility in Communication</li>
+                  <li>Reach millions of potential buyers, until sold</li>
+                </ul>
+              </p>
+              <Link
+                to="/listing/new"
+                className="stretched-link btn btn-sm btn-light"
+                style={stretchedLinkStyle}
+              >
+                Create an ad
+                <i className="bi bi-chevron-right"></i>
+              </Link>
             </div>
           </div>
         </div>
 
+        <div className="col-md-6">
+          <div className="card shadow-sm" style={cardStyle}>
+            <img
+              src="/images/assurance/mobileMechanic.jpg"
+              alt="Mobile Mechanic"
+              style={imgStyle}
+            />
+            <div className="card-body" style={cardBodyStyle}>
+              <strong className="d-inline-block mb-2 text-success">
+                Inspection
+              </strong>
+              <h4 className="card-title">AutoAssure Vehicle Inspections</h4>
+              <p className="card-text mb-auto">
+                <ul>
+                  <li>Transparency</li>
+                  <li>Identifying Issues Early</li>
+                  <li>Increased Marketability</li>
+                  <li>Increased Buyer Confidence</li>
+                </ul>
+              </p>
+              <Link
+                to="/listing/new"
+                className="stretched-link btn btn-sm btn-light"
+                style={stretchedLinkStyle}
+              >
+                Book vehicle inspections
+                <i className="bi bi-chevron-right"></i>
+              </Link>
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* Main Content */}
       <div className="container my-3">
-      
+
 
         {/* SellCar Section */}
         <section className="sellcar-section">
@@ -146,7 +146,7 @@ const OurAssurance = () => {
         {/* BuyCar Section */}
         <section className="buycar-section">
           <img
-            src="/images/assurance/buycar.jpg"
+            src="/images/assurance/buyCar.jpg"
             className="buycar-img"
             alt="Find Your Next Car with AutoAssure"
           />
