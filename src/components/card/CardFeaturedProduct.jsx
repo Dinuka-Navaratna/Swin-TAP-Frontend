@@ -40,7 +40,7 @@ const CardFeaturedProduct = (props) => {
             <div className="col-md-4">
               <img
                 src={product.files[0]?.new_filename ? `${process.env.REACT_APP_API_URL}/uploads/300x300/${product.files[0].new_filename}` : '../../images/products/vehicle.jpg'}
-                className="img-fluid"
+                className="img-fluid featuredProduct"
                 alt="..."
               />
             </div>
