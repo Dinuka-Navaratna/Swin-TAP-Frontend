@@ -70,7 +70,7 @@ const AboutUsDetailView = () => {
 
       <section className="section-container">
         <img
-          src="../../images/blog/person1.jpeg"
+          src="../../images/blog/person1.jpg"
           className="section-image"
           alt=""
         />
@@ -176,7 +176,7 @@ const AboutUsDetailView = () => {
 
       <section className="vision-section">
         <img
-          src="../../images/blog/vision.avif"
+          src="../../images/blog/vision.jpg"
           className="vision-image"
           alt=""
         />
